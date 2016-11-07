@@ -77,7 +77,8 @@
                                 </div>
                                 <div class="col-md-2 text-right"><label asp-for="mem_testcenter_code" class="control-label"></label></div>
                                 <div class="col-md-4">
-                                    <select asp-for="mem_testcenter_code" class="form-control" asp-items="@ViewBag.mem_testcenter_code" asp-is-disabled="@ViewBag.IsDisabled" ></select>
+                                    <select asp-for="mem_testcenter_code" class="form-control" asp-items="@ViewBag.mem_testcenter_code" asp-is-disabled="@ViewBag.IsDisabled" style="border-color:orangered;"></select>
+                                    <span asp-validation-for="mem_testcenter_code" class="text-danger" />
                                 </div>
                             </div>
                         </div>

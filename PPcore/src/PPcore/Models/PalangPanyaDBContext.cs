@@ -867,6 +867,7 @@ namespace PPcore.Models
 
                 entity.Property(e => e.mem_testcenter_code).HasColumnType("varchar(30)");
                 entity.Property(e => e.register_date).HasColumnType("datetime"); //.HasDefaultValueSql("getdate()");
+                entity.Property(e => e.mlevel_change_date).HasColumnType("datetime");
 
                 entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
 

@@ -548,6 +548,7 @@ create table member (
    parent_code          varchar(30)          null,
    mem_testcenter_code varchar(30) NULL,
    register_date DATETIME NULL,
+   mlevel_change_date DATETIME NULL,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
    x_log                nvarchar(500)        null,

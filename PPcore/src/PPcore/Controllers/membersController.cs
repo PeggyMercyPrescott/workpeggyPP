@@ -70,7 +70,8 @@ namespace PPcore.Controllers
             ViewBag.ini_province = new SelectList(ip.AsEnumerable(), "Value", "Text", "0");
 
             var mtc = _context.mem_testcenter.Where(mtcc => mtcc.x_status != "N").OrderBy(mtcc => mtcc.mem_testcenter_desc).Select(mtcc => new { Value = mtcc.mem_testcenter_code, Text = mtcc.mem_testcenter_desc }).ToList();
-            mtc.Insert(0, (new { Value = "0", Text = "" }));
+            //mtc.Insert(0, (new { Value = "0", Text = "" }));
+            mtc.Insert(0, (new { Value = "", Text = "--- สนามสอบ ---" }));
             ViewBag.mem_testcenter_code = new SelectList(mtc.AsEnumerable(), "Value", "Text", "0");
 
             ViewBag.IsCreate = 0; ViewBag.IsEdit = 0; ViewBag.IsDetails = 0; ViewBag.IsDetailsPersonal = 0;
@@ -1035,7 +1036,7 @@ namespace PPcore.Controllers
             //{
                 member.x_status = "Y";
                 if (member.title == "0") { member.title = null; }
-                if (member.mem_testcenter_code == "0") { member.mem_testcenter_code = null; }
+                if (member.mem_testcenter_code == "") { member.mem_testcenter_code = null; }
                 if (member.marry_status == "0") { member.marry_status = null; }
                 if (member.mem_group_code == "0") { member.mem_group_code = null; }
                 if (member.mlevel_code == "0") { member.mlevel_code = null; }
@@ -1119,6 +1120,7 @@ namespace PPcore.Controllers
                 member.mem_role_id = new Guid("17822a90-1029-454a-b4c7-f631c9ca6c7d"); //Role member
 
                 member.register_date = DateTime.Now;
+                member.mlevel_change_date = DateTime.Now;
             //var user = new ApplicationUser { UserName = member.cid_card, Email = member.email };
             //_userManager.CreateAsync(user, password);
             //_userManager.AddToRoleAsync(user, "Members");
@@ -1226,16 +1228,21 @@ namespace PPcore.Controllers
                 var mo = _context.member.SingleOrDefault(moo => moo.id == new Guid(id));
                 var mem_photo_old = mo.mem_photo;
                 var cid_card_pic_old = mo.cid_card_pic;
+                var mlevel_code_old = mo.mlevel_code;
+                var register_date_old = mo.register_date;
+                var mlevel_change_date_old = mo.mlevel_change_date;
                 _context.Entry(mo).State = EntityState.Detached;
 
                 member.x_status = "Y";
                 if (member.title == "0") { member.title = null; }
-                if (member.mem_testcenter_code == "0") { member.mem_testcenter_code = null; }
+                if (member.mem_testcenter_code == "") { member.mem_testcenter_code = null; }
                 if (member.marry_status == "0") { member.marry_status = null; }
                 if (member.mem_group_code == "0") { member.mem_group_code = null; }
                 if (member.mlevel_code == "0") { member.mlevel_code = null; }
                 if (member.mstatus_code == "0") { member.mstatus_code = null; }
                 if (member.province_code == "0") { member.province_code = null; }
+                member.register_date = register_date_old;
+                if (member.mlevel_code != mlevel_code_old) { member.mlevel_change_date = DateTime.Now; } else { member.mlevel_change_date = mlevel_change_date_old; }
                 if ((!string.IsNullOrEmpty(member.mem_photo)) && (member.mem_photo.Substring(0,1) != "M"))
                 {
                     var fileName = member.mem_photo.Substring(9);

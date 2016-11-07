@@ -287,7 +287,7 @@ namespace PPcore.Controllers
                 mem_testcenter_code = (mem_testcenter_code == "0") ? "NULL" : "'" + mem_testcenter_code + "'";
 
                 //_context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,mem_username,mem_password,mem_role_id,mem_photo,cid_card_pic) VALUES ('" + cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','" + mobile + "','" + email + "','Y','" + cid_card + "','" + passwordMD5 + "','17822a90-1029-454a-b4c7-f631c9ca6c7d','" + mem_photo + "','" + cid_card_pic + "')");
-                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,mem_username,mem_password,mem_role_id,mem_testcenter_code,register_date) VALUES ('" + cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','" + mobile + "','" + email + "','Y','" + cid_card + "','" + passwordMD5 + "','17822a90-1029-454a-b4c7-f631c9ca6c7d', " + mem_testcenter_code + ",GETDATE())");
+                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,mem_username,mem_password,mem_role_id,mem_testcenter_code,register_date,mlevel_change_date) VALUES ('" + cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','" + mobile + "','" + email + "','Y','" + cid_card + "','" + passwordMD5 + "','17822a90-1029-454a-b4c7-f631c9ca6c7d', " + mem_testcenter_code + ",GETDATE(),GETDATE())");
 
                 var mb = _context.member.SingleOrDefault(mm => mm.member_code == cid_card);
                 SecurityMemberRoles smr = new SecurityMemberRoles();
