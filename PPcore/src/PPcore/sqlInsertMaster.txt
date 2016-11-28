@@ -1121,6 +1121,9 @@ INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (101010, 2, 0, 0, N'เพิ่มสมาชิก', N'members', N'Create', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;เพิ่มสมาชิก')
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (101020, 2, 0, 0, N'ข้อมูลสมาชิก', N'members', N'Index', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ข้อมูลสมาชิก')
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (101021, 2, 0, 0, N'ข้อมูลสมาชิกส่วนบุคคล', N'members', N'DetailsPersonal', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ข้อมูลสมาชิกส่วนบุคคล')
+
+INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (101030, 2, 0, 0, N'รายงานข้อมูลสมาชิก', N'ReportMembers', N'Index', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;รายงานข้อมูลสมาชิก')
+
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (201000, 1, 0, 0, N'ภาพกิจกรรม', N'albums', N'Index', NULL, N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;ภาพกิจกรรม')
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (301000, 1, 0, 0, N'คลิปกิจกรรม', N'videos', N'Index', NULL, N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;คลิปกิจกรรม')
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (401000, 1, 1, 0, N'โครงการอบรม', NULL, NULL, NULL, N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;โครงการอบรม')
@@ -1138,6 +1141,7 @@ INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (601000, 1, 0, 0, N'ส่งข่าว EMail', N'news', N'EMailAllMembers', NULL, N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;ส่งข่าว EMail')
 
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (651000, 1, 1, 0, N'ตั้งค่าระบบ', NULL, NULL, NULL, N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;ตั้งค่าระบบ')
+INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (651050, 2, 0, 0, N'ตั้งค่าระบบทั่วไป', N'Settings', N'Index', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ตั้งค่าระบบทั่วไป')
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (651100, 2, 0, 0, N'สนามสอบ', N'mem_testcenter', N'Index', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;สนามสอบ')
 
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (701000, 1, 0, 0, N'รายงานข้อมูล', NULL, NULL, N'http://api.palangpanya.com/report', N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;รายงานข้อมูล')
@@ -1164,6 +1168,9 @@ INSERT INTO [dbo].[SecurityMemberRoles] ([MemberId], [CreatedBy], [CreatedDate],
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 101000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 101010, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 101020, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
+
+INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'C5A644A2-97B0-40E5-AA4D-E2AFE4CDF428', 101030, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
+
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 201000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 301000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 401000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
@@ -1180,6 +1187,7 @@ INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDa
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 601000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 651000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
+INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'C5A644A2-97B0-40E5-AA4D-E2AFE4CDF428', 651050, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 651100, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
 
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'c5a644a2-97b0-40e5-aa4d-e2afe4cdf428', 701000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
