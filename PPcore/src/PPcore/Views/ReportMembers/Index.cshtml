@@ -11,23 +11,42 @@
             <div class="panel panel-blue">
                 <div class="panel-heading">
                     <div class="pull-left" style="padding-top:5px;">รายงานข้อมูลสมาชิก&nbsp;&nbsp;</div>
+                    <div class="pull-right" style="margin-top:-2px;">
+                        <div id="btnPrintExcel" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-print" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;Excel&nbsp;&nbsp;</div>
+                    </div>
                 </div>
 
                 <div class="pull-left" style="margin-top:12px;">
                     <form class="form-inline" role="form">
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;สนามสอบ <select id="mem_testcenter_code" class="form-control" asp-items="@ViewBag.mem_testcenter_code" style="width:150px;"></select>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ระดับสมาชิก <select id="ctype_code" class="form-control" asp-items="@ViewBag.mem_level" style="width:150px;"></select>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;จังหวัด <select id="ctype_code" class="form-control" asp-items="@ViewBag.ini_province" style="width:150px;"></select>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่เริ่ม <select id="ctype_code" class="form-control" style="width:150px;"></select>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่สิ้นสุด <select id="ctype_code" class="form-control" style="width:150px;"></select>
-                        &nbsp;&nbsp;<button id="btnDetails" class="btn btn-default btn-panel-yellow" onclick="location.href='@Url.Action("Create", "members")'"><i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ค้นหา</button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ระดับสมาชิก <select id="mem_level_code" class="form-control" asp-items="@ViewBag.mem_level" style="width:150px;"></select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;จังหวัด <select id="ini_province_code" class="form-control" asp-items="@ViewBag.ini_province" style="width:150px;"></select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่เริ่ม 
+
+                            <div class="input-group">
+                                <input id="startdate" class="form-control" readonly style="background-color:white;width:100px">
+                                <span class="input-group-btn">
+                                    <button id="startdateButton" class="btn btn-default" type="button">
+                                        <i class="fa fa-calendar"></i>
+                                    </button>
+                                </span>
+                            </div>
+
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;วันที่สิ้นสุด 
+                        <div class="input-group">
+                            <input id="enddate" class="form-control" readonly style="background-color:white;width:100px">
+                            <span class="input-group-btn">
+                                <button id="enddateButton" class="btn btn-default" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<div id="btnCriteriaSearch" class="btn btn-default btn-panel-yellow" onclick="a_details_as_table()"><i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ค้นหา</div>
                     </form>
                 </div>
                 <br/><br/><br/>
                 <!-- /.panel-heading -->
-
-                @*<div style="position:absolute;left:250px;top:130px;"><span id="count_course" class="badge">จำนวนรายการทั้งหมด @ViewBag.countRecords รายการ</span></div>*@
-                
                 <div class="panel-body">
                     <div class="dataTable_wrapper" style="padding-right:10px;" id="a_details_as_table">
 
@@ -120,43 +139,31 @@
     <script src="~/lib/bootstrap/js/modal.js"></script>
     <script>
         $(document).ready(function () {
-            $('#cgroup_code').off("change").on("change", function (e) {
-                $.ajax({
-                    type: 'get', url: '@Url.Action("SelectBy", "course_type")' + '?cgroup_code=' + $('#cgroup_code').val(),
-                }).done(function (resp) {
-                    if (resp == "") {
-                        $('#ctype_code').empty();
-                        $('#ctype_code').prop("disabled", true);
-                        $('#ctype_code').trigger("change");
-                    } else {
-                        $("#ctype_code").prop("disabled", false);
-                        $('#ctype_code').empty();
-                        $('#ctype_code').append(resp);
-                        $('#ctype_code').trigger("change");
-                    }
-                });
-            });
+            $.datepicker.regional['th'] = {
+                dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                yearRange: "-100:+0", yearOffSet: 543, beforeShow: dateDefault
+            };
+            $.datepicker.setDefaults($.datepicker.regional['th']);
+            $("#startdate").datepicker($.datepicker.regional["th"]);
+            $("#enddate").datepicker($.datepicker.regional["th"]);
 
-            $('#ctype_code').off("change").on("change", function (e) {
-                a_details_as_table();
+            $('#startdateButton').click(function () {
+                $('#startdate').datepicker("show");
             });
-
-            $('#cgroup_code').trigger("change");
-            @*setTimeout(function () {
-                $('#ctype_code').val('@ViewBag.ctype_code');
-            }, 300);*@
-            $('#ctype_code').trigger("change");
+            $('#enddateButton').click(function () {
+                $('#enddate').datepicker("show");
+            });
+            a_details_as_table();
         });
-        function count_course() {
-            $.ajax({
-                type: 'get', url: '@Url.Action("CountCourse", "project_course_register")?cgroup_code=' + $('#cgroup_code').val() + '&ctype_code=' + $('#ctype_code').val(),
-            }).done(function (resp) {
-                $('#count_course').text('จำนวนรายการทั้งหมด ' + resp.count + ' รายการ');
-            });
+
+        function dateDefault() {
+            if ($("#startdate").val() == "") { $("#startdate").datepicker("setDate", new Date()); }
+            if ($("#enddate").val() == "") { $("#enddate").datepicker("setDate", new Date()); }
         }
+
         function a_details_as_table() {
             $.ajax({
-                type: 'get', url: '@Url.Action("DetailsAsTable", "ReportMembers")?cgroup_code=' + $('#cgroup_code').val() + '&ctype_code=' + $('#ctype_code').val(),
+                type: 'get', url: '@Url.Action("DetailsAsTable", "ReportMembers")?mem_testcenter_code=' + $('#mem_testcenter_code').val() + '&mem_level_code=' + $('#mem_level_code').val() + '&ini_province_code=' + $('#ini_province_code').val() + '&startdate=' + $('#startdate').val() + '&enddate=' + $('#enddate').val(),
             }).done(function (resp) {
                 $('#a_details_as_table').html(resp);
                 var w = [
@@ -171,75 +178,21 @@
                     { "targets": [8], "width": "70", "className": "dt-center" },
                     { "targets": [9], "width": "70", "className": "dt-center" },
                     { "targets": [10], "width": "70", "className": "dt-center" },
-                    //{ "targets": [11], "width": "150", "className": "dt-center" },
-                    //{ "targets": [12], "width": "150", "className": "dt-center" },
-                    //{ "targets": [13], "width": "50", "className": "dt-center" },
                 ];
                 var table = setTable_default($('#a_table'), w);
-                table.$('tr:first').click();
-                count_course();
+                //table.$('tr:first').click();
             });
         }
-        @*$('#btnEdit').on('click', function () {
-            var table = $('#a_table').DataTable();
-            var datarow = table.row('.selected').data();
-            window.location.href = "@Url.Action("Edit", "courses")" + "/" + datarow[1];
+        $('#btnPrintExcel').off('click').on('click', function () {
+            var url = '@Url.Action("DetailsAsExcel", "ReportMembers")?mem_testcenter_code=' + $('#mem_testcenter_code').val() + '&mem_level_code=' + $('#mem_level_code').val() + '&ini_province_code=' + $('#ini_province_code').val() + '&startdate=' + $('#startdate').val() + '&enddate=' + $('#enddate').val();
+
+            //var data = tableMember.row('.selected').data();
+            @*var url = '@Url.Action("DetailsPdf", "members", new { id = "__id__" })';*@
+            //window.location.href = url.replace('__id__', data[1]);
+            var win = window.open(url, '_blank');
+            //var win = window.open(url.replace('__id__', data[1]));
+            win.focus();
         });
-        $('#btnDetails').on('click', function () {
-            var table = $('#a_table').DataTable();
-            var datarow = table.row('.selected').data();
-            window.location.href = "@Url.Action("Details", "courses")" + "/" + datarow[1];
-        });*@
-        function detailsClick(id) {
-            $.ajax({
-                type: 'get', url: '@Url.Action("DetailsCourse", "project_course_register")?id=' + id,
-            }).done(function (resp) {
-                $('#a_body').html(resp);
-                $('#a_label').text('ลงทะเบียน');
-                $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-
-                $('#a_submit').off('click').on('click', function () {
-                    $('#a_modal').modal('hide');
-                    $('#courseId').val(id); $('#cid').val(''); $('#cidmsg').text('');
-                    $('#confirm_modal').modal({ backdrop: 'static', keyboard: false });
-                });
-
-            });
-        }
-        function registerConfirm(c_id, course_id) {
-            if (!c_id) {
-                $('#cidmsg').text('กรุณากรอกข้อมูล');
-            } else {
-                $.ajax({
-                    async: false,
-                    type: "POST",
-                    url: "@Url.Action("Register", "project_course_register")",
-                    data: {
-                        courseId: course_id,
-                        cid: c_id,
-                    },
-                    success: function (data) {
-                        $('#confirm_modal').modal('hide');
-                        if (data.result == "success") {
-                            $('#alert_label').text('ลงทะเบียนเรียบร้อย');
-                            $('#alert_modal_body').html('<div style="color:green">ระบบได้ทำการลงทะเบียน เลขที่บัตรประชาชน ' + data.cid + " เรียบร้อยแล้ว</div>");
-                            $('#alert_modal').modal({ backdrop: 'static', keyboard: false });
-                            a_details_as_table();
-                        } else if (data.result == "full") {
-                            $('#alert_label').text('ขออภัยไม่สามารถลงทะเบียนเพิ่มได้');
-                            $('#alert_modal_body').html('<div style="color:red">ขออภัยไม่สามารถลงทะเบียนเพิ่มได้ เนื่องจากเกินจำนวนที่หลักสูตรสามารถรับได้</div>');
-                            $('#alert_modal').modal({ backdrop: 'static', keyboard: false });
-                        } else {
-                            $('#alert_label').text('เลขที่บัตรประชาชนผิดพลาด');
-                            $('#alert_modal_body').html('<div style="color:red">ไม่พบ เลขที่บัตรประชาชน '+data.cid+"</div>");
-                            $('#alert_modal').modal({ backdrop: 'static', keyboard: false });
-                        }
-                    }
-                });
-
-            }
-
-        }
     </script>
 }
 

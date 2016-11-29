@@ -57,5 +57,12 @@ namespace PPcore.Helpers
             int ran = rd.Next(1234, 9876);
             return ran.ToString();
         }
+
+        public static string ToSQLDate(string dateThai)
+        {
+            var d = dateThai.Split('-');
+            d[2] = (Int32.Parse(d[2]) - 543).ToString();
+            return d[2]+d[1]+d[0];
+        }
     }
 }
