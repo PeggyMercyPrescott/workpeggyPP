@@ -19,5 +19,26 @@ namespace PPcore.Helpers
             else if (v == "N") { return "ไม่ใช้แล้ว"; }
             return "not identified";
         }
+
+        public static string education_degree_text(this IHtmlHelper htmlHelper, string v)
+        {
+            string res = "";
+            switch (v)
+            {
+                case "340": res = "ปริญญาเอก"; break;
+                case "330": res = "ปริญญาโท"; break;
+
+                case "320": res = "ปริญญาตรี"; break;
+                case "310": res = "อนุปริญญา"; break;
+                case "240": res = "ปวส"; break;
+                case "230": res = "ปวช"; break;
+                case "220": res = "มัธยมศึกษาตอนปลาย"; break;
+                case "210": res = "มัธยมศึกษาตอนต้น"; break;
+                case "101": res = "ประถมศึกษา"; break;
+            }
+            return res;
+
+        }
+
     }
 }

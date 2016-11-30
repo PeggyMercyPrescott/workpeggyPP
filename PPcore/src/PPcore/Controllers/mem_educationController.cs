@@ -6,6 +6,7 @@ using PPcore.Models;
 using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PPcore.Helpers;
 
 namespace PPcore.Controllers
 {
@@ -24,17 +25,18 @@ namespace PPcore.Controllers
             List<Models.mem_education> mem_educations = new List<Models.mem_education>();
             var member = _context.member.Single(m => m.id == new Guid(memberId));
             mem_educations = _context.mem_education.Where(m => m.member_code == member.member_code).OrderBy(m => m.rec_no).ToList();
-            ViewBag.mem_education_degree = new SelectList(new[] {
-                new { Value = "340", Text = "ปริญญาเอก" },
-                new { Value = "330", Text = "ปริญญาโท" },
-                new { Value = "320", Text = "ปริญญาตรี" },
-                new { Value = "310", Text = "อนุปริญญา" },
-                new { Value = "240", Text = "ปวส" },
-                new { Value = "230", Text = "ปวช"},
-                new { Value = "220", Text = "มัธยมศึกษาตอนปลาย"},
-                new { Value = "210", Text = "มัธยมศึกษาตอนต้น"},
-                new { Value = "101", Text = "ประถมศึกษา"}
-            }, "Value", "Text", "101");
+            //ViewBag.mem_education_degree = new SelectList(new[] {
+            //    new { Value = "340", Text = "ปริญญาเอก" },
+            //    new { Value = "330", Text = "ปริญญาโท" },
+            //    new { Value = "320", Text = "ปริญญาตรี" },
+            //    new { Value = "310", Text = "อนุปริญญา" },
+            //    new { Value = "240", Text = "ปวส" },
+            //    new { Value = "230", Text = "ปวช"},
+            //    new { Value = "220", Text = "มัธยมศึกษาตอนปลาย"},
+            //    new { Value = "210", Text = "มัธยมศึกษาตอนต้น"},
+            //    new { Value = "101", Text = "ประถมศึกษา"}
+            //}, "Value", "Text", "101");
+            ViewBag.mem_education_degree = Utils.getEducationDegreeList();
             ViewBag.memberId = memberId;
             if (!String.IsNullOrEmpty(v)) { ViewBag.isViewOnly = 1; } else { ViewBag.isViewOnly = 0; }
             return View(mem_educations);

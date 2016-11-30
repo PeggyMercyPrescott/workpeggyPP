@@ -195,13 +195,26 @@ namespace PPcore.Controllers
             var mtc = _context.mem_testcenter.Where(mtcc => mtcc.x_status != "N").OrderBy(mtcc => mtcc.mem_testcenter_desc).Select(mtcc => new { Value = mtcc.mem_testcenter_code, Text = mtcc.mem_testcenter_desc }).ToList();
             mtc.Insert(0, (new { Value = "0", Text = "--- สนามสอบ ---" }));
             ViewBag.mem_testcenter_code = new SelectList(mtc.AsEnumerable(), "Value", "Text", "0");
+            ViewBag.mem_education_degree = new SelectList(new[] {
+                new { Value = "0", Text = "--- ประวัติการศึกษา ---" },
+                new { Value = "340", Text = "ปริญญาเอก" },
+                new { Value = "330", Text = "ปริญญาโท" },
+                new { Value = "320", Text = "ปริญญาตรี" },
+                new { Value = "310", Text = "อนุปริญญา" },
+                new { Value = "240", Text = "ปวส" },
+                new { Value = "230", Text = "ปวช"},
+                new { Value = "220", Text = "มัธยมศึกษาตอนปลาย"},
+                new { Value = "210", Text = "มัธยมศึกษาตอนต้น"},
+                new { Value = "101", Text = "ประถมศึกษา"}
+            }, "Value", "Text", "0");
+            //ViewBag.mem_education_degree = Utils.getEducationDegreeList();
             return View();
         }
 
         [HttpPost]
         //public async Task<IActionResult> Create(string birthdate, string cid_card, string email, string fname, string lname, string mobile, string mem_photo, string cid_card_pic)
         //public IActionResult RegisterMember(string birthdate, string cid_card, string email, string fname, string lname, string mobile, string mem_photo, string cid_card_pic)
-        public IActionResult RegisterMember(string birthdate, string cid_card, string email, string fname, string lname, string mobile, string mem_testcenter_code)
+        public IActionResult RegisterMember(string birthdate, string cid_card, string email, string fname, string lname, string mobile, string mem_testcenter_code, string mem_education_degree_code, string occupation, string social_desc)
         {
             DateTime bd = Convert.ToDateTime(birthdate);
             //birthdate = (bd.Year).ToString() + bd.Month.ToString() + bd.Day.ToString();
@@ -284,10 +297,12 @@ namespace PPcore.Controllers
                 //    cid_card_pic = pic_image.image_code;
                 //}
 
-                mem_testcenter_code = (mem_testcenter_code == "0") ? "NULL" : "'" + mem_testcenter_code + "'";
+                mem_testcenter_code = (mem_testcenter_code == "0") ? null : "'" + mem_testcenter_code + "'";
+
+                mem_education_degree_code = (mem_education_degree_code == "0") ? null : mem_education_degree_code;
 
                 //_context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,mem_username,mem_password,mem_role_id,mem_photo,cid_card_pic) VALUES ('" + cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','" + mobile + "','" + email + "','Y','" + cid_card + "','" + passwordMD5 + "','17822a90-1029-454a-b4c7-f631c9ca6c7d','" + mem_photo + "','" + cid_card_pic + "')");
-                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,mem_username,mem_password,mem_role_id,mem_testcenter_code,register_date,mlevel_change_date) VALUES ('" + cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','" + mobile + "','" + email + "','Y','" + cid_card + "','" + passwordMD5 + "','17822a90-1029-454a-b4c7-f631c9ca6c7d', " + mem_testcenter_code + ",GETDATE(),GETDATE())");
+                _context.Database.ExecuteSqlCommand("INSERT INTO member (member_code,cid_card,birthdate,fname,lname,mobile,email,x_status,mem_username,mem_password,mem_role_id,mem_testcenter_code,register_date,mlevel_change_date,occupation) VALUES ('" + cid_card + "','" + cid_card + "','" + birthdate + "',N'" + fname + "',N'" + lname + "','" + mobile + "','" + email + "','Y','" + cid_card + "','" + passwordMD5 + "','17822a90-1029-454a-b4c7-f631c9ca6c7d', " + mem_testcenter_code + ",GETDATE(),GETDATE(), N'" + occupation+ "')");
 
                 var mb = _context.member.SingleOrDefault(mm => mm.member_code == cid_card);
                 SecurityMemberRoles smr = new SecurityMemberRoles();
@@ -299,6 +314,26 @@ namespace PPcore.Controllers
                 smr.x_status = "Y";
                 _scontext.Add(smr);
                 _scontext.SaveChanges();
+
+                var mee = _context.mem_education.Where(meee => meee.member_code == mb.member_code).Max(meee => meee.rec_no);
+                mem_education me = new mem_education();
+                me.member_code = mb.member_code;
+                me.rec_no = mee + 1;
+                me.degree = mem_education_degree_code;
+                me.x_status = "Y";
+                _context.Add(me);
+                _context.SaveChanges();
+
+
+                var mss = _context.mem_social.Where(msss => msss.member_code == mb.member_code).Max(msss => msss.rec_no);
+                mem_social ms = new mem_social();
+                ms.member_code = mb.member_code;
+                ms.rec_no = mss + 1;
+                ms.social_desc = social_desc;
+                ms.x_status = "Y";
+                _context.Add(ms);
+                _context.SaveChanges();
+
 
                 SendEmail(email, cid_card, password);
             }

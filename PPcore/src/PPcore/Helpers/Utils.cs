@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -63,6 +64,21 @@ namespace PPcore.Helpers
             var d = dateThai.Split('-');
             d[2] = (Int32.Parse(d[2]) - 543).ToString();
             return d[2]+d[1]+d[0];
+        }
+
+        public static SelectList getEducationDegreeList()
+        {
+            return new SelectList(new[] {
+                new { Value = "340", Text = "ปริญญาเอก" },
+                new { Value = "330", Text = "ปริญญาโท" },
+                new { Value = "320", Text = "ปริญญาตรี" },
+                new { Value = "310", Text = "อนุปริญญา" },
+                new { Value = "240", Text = "ปวส" },
+                new { Value = "230", Text = "ปวช"},
+                new { Value = "220", Text = "มัธยมศึกษาตอนปลาย"},
+                new { Value = "210", Text = "มัธยมศึกษาตอนต้น"},
+                new { Value = "101", Text = "ประถมศึกษา"}
+            }, "Value", "Text", "101");
         }
     }
 }

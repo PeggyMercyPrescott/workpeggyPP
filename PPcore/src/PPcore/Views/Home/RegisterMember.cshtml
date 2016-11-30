@@ -54,6 +54,27 @@
                     <select id="mem_testcenter_code" class="form-control" asp-items="@ViewBag.mem_testcenter_code"></select>
                 </div>
 
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-graduation-cap" style="font-size:10px;"></i>
+                    </span>
+                    <select id="mem_education_degree_code" class="form-control" asp-items="@ViewBag.mem_education_degree"></select>
+                </div>
+
+                <div class="form-group input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-male" style="font-size:14px;">&nbsp;</i>
+                    </span>
+                    <input id="occupation" type="text" class="form-control" placeholder="อาชีพ / ตำแหน่ง" onkeypress="return !(event.charCode >= 48 && event.charCode <= 57)" autocomplete="off" />
+                </div>
+
+                <div class="form-group input-group">
+                    @*<span class="input-group-addon">
+                        <i class="fa fa-user">&nbsp;</i>
+                    </span>*@
+                    <textarea id="social_desc" type="text" class="form-control" placeholder='         ประสบการณ์ช่วยเหลือสังคม&#10;   (ถ้ามีจะได้รับการพิจารณาเป็นพิเศษ)' autocomplete="off" rows="3" cols="35" style="resize: none;"></textarea>
+                </div>
+
                 @*<div class="form-group input-group" onclick="$('#fileMemPhoto').click();">
                     <input id="mem_photo_input" type="text" class="form-control" placeholder="แนบไฟล์ รูปถ่าย" readonly />
                     <input id="mem_photo" type="text" style="display:none" />
@@ -82,10 +103,11 @@
                 <button class="btn btn-default btn-panel-yellow pull-left" type="button" style="width:120px" onclick='confirm()' > ยืนยัน </button>
                 <button class="btn btn-default btn-panel-yellow pull-right" type="button" style="width:120px" onclick="location.href='@Url.Action("Login", "Home")'">เข้าสู่ระบบ</button>
                 @*<div id="waitBtnConfirm" style="display:none;position:absolute;top:603px;text-align:center;height:34px;width:260px;background-color:#FFC000;z-index:11;border-radius:5px;">*@
-                <div id="waitBtnConfirm" style="display:none;position:absolute;top:554px;text-align:center;height:34px;width:260px;background-color:#FFC000;z-index:11;border-radius:5px;">
+                @*<div id="waitBtnConfirm" style="display:none;position:absolute;top:554px;text-align:center;height:34px;width:260px;background-color:#FFC000;z-index:11;border-radius:5px;">*@
                 @*<div id="waitBtnConfirm" style="display:none;position:absolute;top:505px;text-align:center;height:34px;width:260px;background-color:#FFC000;z-index:11;border-radius:5px;">*@
-                        <i class="fa fa-refresh fa-spin fa-2x" style="margin-top:3px;color:gray;" aria-hidden="true"></i>
-                    </div>
+                <div id="waitBtnConfirm" style="display:none;position:absolute;top:741px;text-align:center;height:34px;width:260px;background-color:#FFC000;z-index:11;border-radius:5px;">
+                    <i class="fa fa-refresh fa-spin fa-2x" style="margin-top:3px;color:gray;" aria-hidden="true"></i>
+                </div>
             </form>
             <br/>
             
@@ -97,7 +119,7 @@
         </div>
     </div>
 </div>
-
+<br/><br/>
 <!-- Modal -->
 <div class="modal fade modalForm1" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog">

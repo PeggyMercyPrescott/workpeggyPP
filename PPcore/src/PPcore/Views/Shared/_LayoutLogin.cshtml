@@ -97,7 +97,6 @@
                         $('#birthdate').datepicker("show");
                     });
                 }
-
             });
             function dateDefault() {
                 if ($("#birthdate").val() == "") { $("#birthdate").datepicker("setDate", new Date()); }
@@ -110,14 +109,18 @@
                 var birthdate = $('#birthdate').val().trim();
                 var mobile = $('#mobile').val().trim();
                 var email = $('#email').val().trim();
-                var mem_testcenter_code = $('#mem_testcenter_code').val().trim(); console.log(mem_testcenter_code)
+                var mem_testcenter_code = $('#mem_testcenter_code').val().trim(); 
+                var mem_education_degree_code = $('#mem_education_degree_code').val().trim();
+                var occupation = $('#occupation').val().trim();
+                var social_desc = $('#social_desc').val().trim();
+                console.log(mem_education_degree_code); console.log(occupation); console.log(social_desc);
                 var mem_photo = $('#mem_photo').val(); var cid_card_pic = $('#cid_card_pic').val();
                 //if ((cid_card != '') && (fname != '') && (lname != '') && (birthdate != '') && (mobile != '') && (email != '')) {
-                if ((cid_card != '') && (fname != '') && (lname != '') && (birthdate != '') && (mobile != '') && (mem_testcenter_code != '0')) {
+                if ((cid_card != '') && (fname != '') && (lname != '') && (birthdate != '') && (mobile != '') && (mem_testcenter_code != '0') && (mem_education_degree_code != '0') && (occupation != '')) {
                     $.ajax({
                         type: 'post',
                         @*url: '@Url.Action("RegisterMember", "Home")' + "?cid_card=" + cid_card + "&fname=" + fname + "&lname=" + lname + "&birthdate=" + birthdate + "&mobile=" + mobile + "&email=" + email + "&mem_photo=" + mem_photo + "&cid_card_pic=" + cid_card_pic,*@
-                        url: '@Url.Action("RegisterMember", "Home")' + "?cid_card=" + cid_card + "&fname=" + fname + "&lname=" + lname + "&birthdate=" + birthdate + "&mobile=" + mobile + "&email=" + email + "&mem_testcenter_code=" + mem_testcenter_code,
+                        url: '@Url.Action("RegisterMember", "Home")' + "?cid_card=" + cid_card + "&fname=" + fname + "&lname=" + lname + "&birthdate=" + birthdate + "&mobile=" + mobile + "&email=" + email + "&mem_testcenter_code=" + mem_testcenter_code + "&mem_education_degree_code=" + mem_education_degree_code + "&occupation=" + occupation + "&social_desc=" + social_desc,
                     }).done(function (resp) {
                         if (resp.result == "success") {
                             if (email != '') {

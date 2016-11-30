@@ -33,6 +33,7 @@
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.rec_no)</th>
                         <th style="display:none">@Html.DisplayNameFor(model => model.id)</th>
+                        <th>รหัสระดับการศึกษา</th>
                         <th>@Html.DisplayNameFor(model => model.degree)</th>
                         <th>@Html.DisplayNameFor(model => model.colledge_name)</th>
                         <th>@Html.DisplayNameFor(model => model.faculty)</th>
@@ -45,6 +46,7 @@
                             <td>@Html.DisplayFor(modelItem => item.rec_no)</td>
                             <td style="display:none">@Html.DisplayFor(modelItem => item.id)</td>
                             <td>@Html.DisplayFor(modelItem => item.degree)</td>
+                            <td>@Html.education_degree_text(item.degree)</td>
                             <td>@Html.DisplayFor(modelItem => item.colledge_name)</td>
                             <td>@Html.DisplayFor(modelItem => item.faculty)</td>
                         </tr>
