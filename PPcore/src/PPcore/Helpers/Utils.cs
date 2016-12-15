@@ -80,5 +80,24 @@ namespace PPcore.Helpers
                 new { Value = "101", Text = "ประถมศึกษา"}
             }, "Value", "Text", "101");
         }
+
+        public static string getEducationDegree(string educationCode)
+        {
+            string res = "";
+            switch (educationCode)
+            {
+                case "340": res = "ปริญญาเอก"; break;
+                case "330": res = "ปริญญาโท"; break;
+
+                case "320": res = "ปริญญาตรี"; break;
+                case "310": res = "อนุปริญญา"; break;
+                case "240": res = "ปวส"; break;
+                case "230": res = "ปวช"; break;
+                case "220": res = "มัธยมศึกษาตอนปลาย"; break;
+                case "210": res = "มัธยมศึกษาตอนต้น"; break;
+                case "101": res = "ประถมศึกษา"; break;
+            }
+            return res;
+        }
     }
 }

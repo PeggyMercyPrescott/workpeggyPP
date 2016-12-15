@@ -286,7 +286,7 @@ namespace PPcore.Controllers
             List<mem_education> mes = _context.mem_education.Where(me => (me.member_code == m.member_code) && (me.x_status == "Y")).OrderBy(me => me.rec_no).ToList();
             foreach (mem_education me in mes)
             {
-                var level = String.IsNullOrEmpty(me.degree) ? "" : "ระดับ " + me.degree + " ";
+                var level = String.IsNullOrEmpty(me.degree) ? "" : "ระดับ " + Utils.getEducationDegree(me.degree) + " ";
                 var fct = String.IsNullOrEmpty(me.faculty) ? "" : " สาขา/วิชาเอก " + me.faculty;
                 education.Add(new listInfo { rec_no = me.rec_no.ToString(), desc = level + me.colledge_name + fct });
             }
