@@ -1,0 +1,163 @@
+@model IEnumerable<PPcore.Models.project_course>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.active_member_join)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.budget)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.cgroup_code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.charge_head)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.course_approve_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.course_begin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.course_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.course_desc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.course_end)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ctype_code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.passed_member)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.passed_score)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.project_code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.project_manager)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ref_doc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.support_head)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.target_member_join)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.x_log)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.x_note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.x_status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.active_member_join)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.budget)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cgroup_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.charge_head)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_approve_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_begin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_desc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.course_end)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ctype_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.passed_member)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.passed_score)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.project_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.project_manager)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ref_doc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.support_head)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.target_member_join)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.x_log)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.x_note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.x_status)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.course_code">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.course_code">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.course_code">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>
