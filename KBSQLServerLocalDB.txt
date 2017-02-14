@@ -1,0 +1,44 @@
+Enter SqlLocalDB.exe
+SqlLocalDB.exe is a tool provided by Microsoft that can be used to manage the instances of LocalDB on your box. This tool is usually at C:\Program Files\Microsoft SQL Server\{ver}\Tools\Binn location where {ver} references to the version of SQL Server you are using.
+
+So navigate to the location above and fire this command
+
+SqlLocalDB -info
+You will notice an output like this
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>SqlLocalDB.exe i
+MSSQLLocalDB
+ProjectsV12
+v11.0
+The above are the instances of LocalDB that I have running on my machine. Next I select one instance and again fire the info command
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>SqlLocalDB.exe i ProjectsV12
+Name: ProjectsV12
+Version: 12.0.2000.8
+Shared name:
+Owner: FIREBALL\Nik Gupta
+Auto-create: No
+State: Stopped
+Last start time: 09-Dec-15 2:38:45 PM
+Instance pipe name:
+As you can notice on my machine named FIREBALL (I told you I need help) this particular instance is stopped. So let us start it.
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>SqlLocalDB.exe start ProjectsV12
+LocalDB instance "ProjectsV12" started.
+Now with the instance started if I run the info command again I get a value for the “Instance pipe name” property (highlighted below)
+
+C:\Program Files\Microsoft SQL Server\110\Tools\Binn>SqlLocalDB.exe i ProjectsV12
+Name: ProjectsV12
+Version: 12.0.2000.8
+Shared name:
+Owner: FIREBALL\Nik Gupta
+Auto-create: No
+State: Running
+Last start time: 10-Dec-15 9:47:12 AM
+Instance pipe name: np:\\.\pipe\LOCALDB#E81A1F33\tsql\query
+
+Simply copy this value and paste it in the SQL Server Management Studio’s “Server Name” property
+
+Copy np:\\.\pipe\LOCALDB#E81A1F33\tsql\query and put it to Server Name on connection
+
+
