@@ -9,5 +9,5 @@
 9. mem_saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code
 10. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_code เพื่อให้ คีย์ เป็นชื่อเดียวกันกับ table อื่น
 11. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_desc_thai, saleproduct_unit_desc_eng เพื่อให้ไปในทางเดียวกัน
-12. เปลี่ยน data type ของ field id ในทุก table เป็น id uniqueidentifier NOT NULL DEFAULT (newid())
+12. เพิ่ม table mem_saleproduct_image สำหรับเก็บ ref ไปยัง table pic_image ที่เก็บรูปภาพ
 

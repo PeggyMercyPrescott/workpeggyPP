@@ -12,6 +12,184 @@ namespace PPcore.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<saleproduct>(entity =>
+            {
+                entity.HasKey(e => e.saleproduct_code)
+                    .HasName("pk_saleproduct");
+
+                entity.Property(e => e.saleproduct_code).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.saleproduct_desc)
+                    .IsRequired().HasColumnType("nvarchar(100)");
+
+                entity.Property(e => e.saleproduct_group_code).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.saleproduct_type_code).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
+
+            modelBuilder.Entity<mem_saleproduct>(entity =>
+            {
+                entity.HasKey(e => new { e.saleproduct_code, e.member_code })
+                    .HasName("pk_mem_saleproduct");
+
+                entity.Property(e => e.saleproduct_code).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.member_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.saleproduct_unit_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.store_quantity).HasColumnType("int"); //test test
+                entity.Property(e => e.retail_price).HasColumnType("decimal");
+                entity.Property(e => e.wholesale_price).HasColumnType("decimal");
+
+                entity.Property(e => e.wholesale_condition).HasColumnType("varchar(150)");
+                entity.Property(e => e.product_life).HasColumnType("varchar(50)");
+                entity.Property(e => e.capacity_per_day).HasColumnType("varchar(50)");
+                entity.Property(e => e.capacity_per_month).HasColumnType("varchar(50)");
+                entity.Property(e => e.advance_order_condition).HasColumnType("varchar(150)");
+                entity.Property(e => e.distribution_channels).HasColumnType("varchar(150)");
+                entity.Property(e => e.contact_telephone).HasColumnType("varchar(30)");
+                entity.Property(e => e.contact_email).HasColumnType("varchar(50)");
+                entity.Property(e => e.contact_other).HasColumnType("varchar(50)");
+
+                entity.Property(e => e.delivery_post).HasColumnType("char(1)");
+                entity.Property(e => e.delivery_bus).HasColumnType("char(1)");
+                entity.Property(e => e.delivery_train).HasColumnType("char(1)");
+
+                entity.Property(e => e.delivery_other).HasColumnType("varchar(50)");
+                entity.Property(e => e.product_detail).HasColumnType("varchar(500)");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
+
+            modelBuilder.Entity<mem_saleproduct_plan>(entity =>
+            {
+                entity.HasKey(e => new { e.saleproduct_code, e.member_code, e.launch_date })
+                    .HasName("pk_mem_saleproduct_plan");
+
+                entity.Property(e => e.saleproduct_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.member_code).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.launch_date).HasColumnType("datetime");
+                entity.Property(e => e.launch_year).HasColumnType("varchar(4)");
+
+                entity.Property(e => e.period_no).HasColumnType("int"); //test test
+                entity.Property(e => e.estimate_qty).HasColumnType("int");
+                entity.Property(e => e.actual_qty).HasColumnType("int");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
+
+            modelBuilder.Entity<saleproduct_standard>(entity =>
+            {
+                entity.HasKey(e => new { e.saleproduct_standard_code })
+                    .HasName("pk_saleproduct_standard");
+
+                entity.Property(e => e.saleproduct_standard_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.saleproduct_standard_desc_thai).HasColumnType("varchar(100)");
+                entity.Property(e => e.saleproduct_standard_desc_eng).HasColumnType("varchar(100)");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
+
+            modelBuilder.Entity<mem_saleproduct_standard>(entity =>
+            {
+                entity.HasKey(e => new { e.saleproduct_code, e.member_code, e.saleproduct_standard_code })
+                    .HasName("pk_mem_saleproduct_standard");
+
+                entity.Property(e => e.saleproduct_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.member_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.saleproduct_standard_code).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.rec_no).HasColumnType("int"); //test test
+                entity.Property(e => e.ref_image).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
+
+            modelBuilder.Entity<saleproduct_unit>(entity =>
+            {
+                entity.HasKey(e => new { e.saleproduct_unit_code })
+                    .HasName("pk_saleproduct_unit");
+
+                entity.Property(e => e.saleproduct_unit_code).HasColumnType("varchar(3)");
+                entity.Property(e => e.saleproduct_unit_desc_thai).HasColumnType("varchar(30)");
+                entity.Property(e => e.saleproduct_unit_desc_eng).HasColumnType("varchar(30)");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
+
+            modelBuilder.Entity<mem_saleproduct_image>(entity =>
+            {
+                entity.HasKey(e => new { e.saleproduct_code, e.member_code, e.saleproduct_image_code })
+                    .HasName("pk_mem_saleproduct_image");
+
+                entity.Property(e => e.saleproduct_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.member_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.saleproduct_image_code).HasColumnType("varchar(30)");
+            });
+
+
             modelBuilder.Entity<product>(entity =>
             {
                 entity.HasKey(e => e.product_code)
