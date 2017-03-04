@@ -72,16 +72,16 @@ go
 /*==============================================================*/
 /* Table: saleproduct_standard                                  */
 /*==============================================================*/
-create table product_standard (
-   standard_code        varchar(30)          not null,
-   standard_desc_thai   varchar(100)         null,
-   standard_desc_eng    varchar(100)         null,
+create table saleproduct_standard (
+   saleproduct_standard_code        varchar(30)          not null,
+   saleproduct_standard_desc_thai   varchar(100)         null,
+   saleproduct_standard_desc_eng    varchar(100)         null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
    x_log                nvarchar(500)        null,
    id                   binary(99)           not null,
    rowversion           timestamp            null,
-   constraint pk_product_standard primary key (standard_code)
+   constraint pk_saleproduct_standard primary key (saleproduct_standard_code)
 )
 go
 
@@ -91,7 +91,7 @@ go
 create table mem_saleproduct_standard (
    member_code          varchar(30)          not null,
    saleproduct_code     varchar(30)          not null,
-   standard_code        varchar(30)          not null,
+   saleproduct_standard_code        varchar(30)          not null,
    rec_no               int                  not null,
    ref_image            varchar(30)          null,
    x_status             char(1)              null,
