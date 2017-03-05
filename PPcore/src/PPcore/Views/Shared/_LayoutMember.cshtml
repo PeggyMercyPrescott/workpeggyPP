@@ -53,6 +53,9 @@
                                 @*<a id="mem_product" onclick="mem_productIndex('@ViewBag.memberId', 1);" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>*@
                                 <a id="mem_product" onclick="location.href='@Url.Action("Index", "mem_product", new {memberId=ViewBag.memberId, v = 1})'" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>
                             </li>
+                            <li>
+                                <a id="mem_saleproduct" onclick="location.href='@Url.Action("Index", "mem_saleproduct", new {memberId=ViewBag.memberId, v = 1})'" style="width:90px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตภัณฑ์</div></a>
+                            </li>
                         </ul>
                     }
                     else
@@ -86,6 +89,9 @@
                             <li>
                                 @*<a id="mem_product" onclick="mem_productIndex('@ViewBag.memberId', 0);" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>*@
                                 <a id="mem_product" onclick="location.href='@Url.Action("Index", "mem_product", new {memberId=ViewBag.memberId})'" style="width:140px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตผลในครัวเรือน</div></a>
+                            </li>
+                            <li>
+                                <a id="mem_saleproduct" onclick="location.href='@Url.Action("Index", "mem_saleproduct", new {memberId=ViewBag.memberId})'" style="width:90px;" data-toggle="tab">&nbsp;<br /><br /><div style="position:absolute;top:20px;">ผลิตภัณฑ์</div></a>
                             </li>
                         </ul>
                     }

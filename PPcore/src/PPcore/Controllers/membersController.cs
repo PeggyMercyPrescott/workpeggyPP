@@ -1468,6 +1468,10 @@ namespace PPcore.Controllers
             {
                 t.Add(new tab { name = "mem_product", value = 0 });
             }
+            if (_context.mem_saleproduct.Where(mt => mt.member_code == memberCode).Count() == 0)
+            {
+                t.Add(new tab { name = "mem_saleproduct", value = 0 });
+            }
             return Json(JsonConvert.SerializeObject(t));
         }
 

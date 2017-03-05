@@ -49,8 +49,6 @@ namespace PPcore.Models
         [Display(Name = "รายละเอียดสินค้า")]
         public string product_detail { get; set; }
 
-        [Display(Name = "ลำดับ")]
-        public int rec_no { get; set; }
         public string x_status { get; set; }
         public string x_note { get; set; }
         public string x_log { get; set; }

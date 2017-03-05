@@ -1275,6 +1275,17 @@ namespace PPcore.Models
                 entity.Property(e => e.x_status).HasColumnType("char(1)");
             });
         }
+
+        public virtual DbSet<saleproduct> saleproduct { get; set; }
+        public virtual DbSet<saleproduct_standard> saleproduct_standard { get; set; }
+        public virtual DbSet<saleproduct_unit> saleproduct_unit { get; set; }
+
+        public virtual DbSet<mem_saleproduct> mem_saleproduct { get; set; }
+        public virtual DbSet<mem_saleproduct_standard> mem_saleproduct_standard { get; set; }
+        public virtual DbSet<mem_saleproduct_image> mem_saleproduct_image { get; set; }
+        public virtual DbSet<mem_saleproduct_plan> mem_saleproduct_plan { get; set; }
+
+
         public virtual DbSet<product> product { get; set; }
         public virtual DbSet<product_group> product_group { get; set; }
         public virtual DbSet<product_type> product_type { get; set; }

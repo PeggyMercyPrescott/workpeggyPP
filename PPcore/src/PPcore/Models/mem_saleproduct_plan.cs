@@ -14,6 +14,7 @@ namespace PPcore.Models
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public DateTime launch_date { get; set; }
         public string launch_year { get; set; }
+        [Display(Name = "งวดที่")]
         public int period_no { get; set; }
 
         [Display(Name = "จำนวนผลิตผล")]
