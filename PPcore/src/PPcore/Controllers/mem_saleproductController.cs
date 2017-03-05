@@ -44,6 +44,33 @@ namespace PPcore.Controllers
 
         }
 
+        public IActionResult Create()
+        {
+            ViewBag.IsCreate = 1;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("saleproduct_code,member_code,advance_order_condition,capacity_per_day,capacity_per_month,contact_email,contact_other,contact_telephone,delivery_bus,delivery_other,delivery_post,delivery_train,distribution_channels,id,product_detail,product_life,rec_no,retail_price,rowversion,saleproduct_unit_code,store_quantity,wholesale_condition,wholesale_price,x_log,x_note,x_status")] mem_saleproduct mem_saleproduct)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(mem_saleproduct);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View(mem_saleproduct);
+        }
+
+
+
+
+
+
+
+
+
         // GET: mem_saleproduct/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -58,28 +85,6 @@ namespace PPcore.Controllers
                 return NotFound();
             }
 
-            return View(mem_saleproduct);
-        }
-
-        // GET: mem_saleproduct/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: mem_saleproduct/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("saleproduct_code,member_code,advance_order_condition,capacity_per_day,capacity_per_month,contact_email,contact_other,contact_telephone,delivery_bus,delivery_other,delivery_post,delivery_train,distribution_channels,id,product_detail,product_life,rec_no,retail_price,rowversion,saleproduct_unit_code,store_quantity,wholesale_condition,wholesale_price,x_log,x_note,x_status")] mem_saleproduct mem_saleproduct)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(mem_saleproduct);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
             return View(mem_saleproduct);
         }
 

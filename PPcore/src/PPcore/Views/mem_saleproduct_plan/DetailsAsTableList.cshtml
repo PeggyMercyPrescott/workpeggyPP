@@ -23,11 +23,9 @@
                 <thead>
                     <tr>
                         <th class="text-center">@Html.DisplayNameFor(model => model.period_no)</th>
-                        <th class="text-center">@Html.DisplayNameFor(model => model.saleproduct_code)</th>
-                        @*<th>@Html.DisplayNameFor(model => model.product_group_desc)</th>
-                            <th>@Html.DisplayNameFor(model => model.product_type_desc)</th>*@
-                        <th>@Html.DisplayNameFor(model => model.saleproduct_code)</th>
-                        <th>เลือก</th>
+                        <th class="text-center">@Html.DisplayNameFor(model => model.launch_date)</th>
+                        <th class="text-center">@Html.DisplayNameFor(model => model.estimate_qty)</th>
+                        <th class="text-center">หน่วย</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,9 +33,8 @@
                     {
                         <tr>
                             <td class="text-center">@Html.DisplayFor(modelItem => item.period_no)</td>
-                            <td class="text-center">@Html.DisplayFor(modelItem => item.saleproduct_code)</td>
-                            @*<td>@Html.DisplayFor(modelItem => item.product_group_desc)</td>
-                                <td>@Html.DisplayFor(modelItem => item.product_type_desc)</td>*@
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.launch_date)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.estimate_qty)</td>
                             <td>@Html.DisplayFor(modelItem => item.saleproduct_code)</td>
                             <td></td>
                         </tr>

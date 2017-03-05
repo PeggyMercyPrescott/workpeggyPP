@@ -222,9 +222,13 @@
 
         function mem_saleproductCreate(memberId) {
             $.ajax({
+                type: 'get', url: '@Url.Action("Create", "mem_saleproduct")' + '?memberId=' + memberId,
+            }).done(function (resp) {
+                $('#mem_saleproductCreateModalRenderBody').html(resp);
+            });
+            $.ajax({
                 type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + memberId,
             }).done(function (resp) {
-                //$('#mem_saleproductCreateModalRenderBody').html(resp);
                 $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
 
             });
