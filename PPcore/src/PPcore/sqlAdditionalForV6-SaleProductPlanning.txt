@@ -6,7 +6,6 @@ create table saleproduct (
    saleproduct_type_code    varchar(30)          not null,
    saleproduct_group_code   varchar(30)          not null,
    saleproduct_desc         nvarchar(100)        not null,
-   rec_no               int                  not null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
    x_log                nvarchar(500)        null,
@@ -26,20 +25,20 @@ create table mem_saleproduct (
    store_quantity       integer              null,
    retail_price         money                null,
    wholesale_price      money                null,
-   wholesale_condition  varchar(150)         null,
-   product_life         varchar(50)          null,
-   capacity_per_day     varchar(50)          null,
-   capacity_per_month   varchar(50)          null,
-   advance_order_condition varchar(150)      null,
-   distribution_channels varchar(150)        null,
+   wholesale_condition  nvarchar(150)         null,
+   product_life         nvarchar(50)          null,
+   capacity_per_day     nvarchar(50)          null,
+   capacity_per_month   nvarchar(50)          null,
+   advance_order_condition nvarchar(150)      null,
+   distribution_channels nvarchar(150)        null,
    contact_telephone    varchar(30)          null,
    contact_email        varchar(50)          null,
-   contact_other        varchar(50)          null,
+   contact_other        nvarchar(50)          null,
    delivery_post        char(1)              null,
    delivery_bus         char(1)              null,
    delivery_train       char(1)              null,
-   delivery_other       varchar(50)          null,
-   product_detail       varchar(500)         null,
+   delivery_other       nvarchar(50)          null,
+   product_detail       nvarchar(500)         null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
    x_log                nvarchar(500)        null,
@@ -108,7 +107,7 @@ go
 /*==============================================================*/
 create table saleproduct_unit (
    saleproduct_unit_code            varchar(3)           not null,
-   saleproduct_unit_desc_thai       varchar(30)          not null,
+   saleproduct_unit_desc_thai       nvarchar(30)         not null,
    saleproduct_unit_desc_eng        varchar(30)          null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
@@ -129,3 +128,4 @@ create table mem_saleproduct_image (
    constraint pk_mem_saleproduct_image primary key (saleproduct_code, member_code, saleproduct_image_code)
 )
 go
+

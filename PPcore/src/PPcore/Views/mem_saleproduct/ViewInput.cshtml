@@ -1,21 +1,286 @@
-﻿@model PPcore.Models.mem_worklist
+﻿@model PPcore.ViewModels.mem_saleproduct.mem_saleproductInputViewModel
 
-<form id="mem_worklistForm" class="form-horizontal">
+<form id="mem_saleproductForm" class="form-horizontal"><input id="saleproduct_code" value="@ViewBag.saleproduct_code" hidden/>
     <div class="form-group">
-        <label asp-for="company_name_th" class="col-md-3 control-label"></label>
-        <div class="col-md-9">
-            <input asp-for="company_name_th" class="form-control" />
-            <span asp-validation-for="company_name_th" class="text-danger" />
+        <label asp-for="saleproduct.saleproduct_desc" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="saleproduct.saleproduct_desc" class="form-control" />
+            <span asp-validation-for="saleproduct.saleproduct_desc" class="text-danger" />
+        </div>
+    </div>
+
+    @*<div class="form-group">
+        <label class="col-md-3 control-label">ปีที่เริ่มทำงาน</label>
+        <div class="col-md-2">
+            <input id="work_year_start" class="form-control" maxlength="4" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+        </div>
+        <label class="col-md-4 control-label">ปีที่สิ้นสุด (ยังทำงานอยู่)</label>
+        <div class="col-md-2">
+            <input id="work_year_finish" class="form-control" maxlength="4" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+        </div>
+    </div>*@
+
+    <div class="form-group">
+        <label asp-for="saleproduct.saleproduct_group_code" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <select id="saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group" style="border-color:orangered;"></select>
+            <span id="saleproduct_group_code_msg" class="text-danger" />
+        </div>
+        <label asp-for="aAmount" class="col-md-2 control-label">จำนวน</label>
+        <div asp-for="aAmount" class="col-md-4">
+            <input class="form-control" readonly value="@ViewBag.aAmount"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="saleproduct.saleproduct_type_code" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <select id="saleproduct_type_code" class="form-control" style="border-color:orangered;"></select>
+            <span id="saleproduct_type_code_msg" class="text-danger" />
+        </div>
+
+        <label asp-for="mem_saleproduct.saleproduct_unit_code" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <select id="saleproduct_unit_code" class="form-control" asp-items="@ViewBag.saleproduct_unit" style="border-color:orangered;"></select>
+            <span id="saleproduct_unit_code_msg" class="text-danger" />
+        </div>
+    </div>
+
+
+
+            @*<div class="panel-body">
+
+
+                <div style="float:left;display:inline;padding-left:20px;width:100%">*@
+
+<div class="panel-group" id="accordion">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse1" data-toggle="collapse" data-parent="#accordion"> <i class="fa fa-edit" aria-hidden="true"></i>&nbsp;ข้อมูลสำคัญ</a>
+            </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-6 txt-color-blue">ข้อมูลสำคัญ</label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.retail_price" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.retail_price" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+                        <span asp-validation-for="mem_saleproduct.retail_price" class="text-danger" />
+                    </div>
+                    <label asp-for="mem_saleproduct.wholesale_price" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.wholesale_price" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+                        <span asp-validation-for="mem_saleproduct.wholesale_price" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.wholesale_condition" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.wholesale_condition" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.wholesale_condition" class="text-danger" />
+                    </div>
+                    <label asp-for="mem_saleproduct.product_life" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.product_life" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.product_life" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.capacity_per_day" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.capacity_per_day" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.capacity_per_day" class="text-danger" />
+                    </div>
+                    <label asp-for="mem_saleproduct.capacity_per_month" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.capacity_per_month" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.capacity_per_month" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.advance_order_condition" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="mem_saleproduct.advance_order_condition" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.advance_order_condition" class="text-danger" />
+                    </div>
+                    <label asp-for="aStoreQuantity" class="col-md-3 control-label"></label>
+                    <div class="col-md-3">
+                        <input asp-for="aStoreQuantity" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+                        <span asp-validation-for="aStoreQuantity" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.distribution_channels" class="col-md-3 control-label"></label>
+                    <div class="col-md-9">
+                        <input asp-for="mem_saleproduct.distribution_channels" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.distribution_channels" class="text-danger" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-6 txt-color-blue">ช่องทางการสั่งซื้อ</label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.contact_email" class="col-md-2 control-label"></label>
+                    <div class="col-md-4">
+                        <input asp-for="mem_saleproduct.contact_email" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.contact_email" class="text-danger" />
+                    </div>
+                    <label asp-for="mem_saleproduct.contact_telephone" class="col-md-2 control-label"></label>
+                    <div class="col-md-4">
+                        <input asp-for="mem_saleproduct.contact_telephone" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.contact_telephone" class="text-danger" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.contact_other" class="col-md-2 control-label"></label>
+                    <div class="col-md-4">
+                        <input asp-for="mem_saleproduct.contact_other" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.contact_other" class="text-danger" />
+                    </div>
+                </div>
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse2" data-toggle="collapse" data-parent="#accordion"> <i class="fa fa-edit" aria-hidden="true"></i>&nbsp;ข้อมูลการขนส่ง</a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-6 txt-color-blue">ข้อมูลการขนส่ง</label>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-11">
+                            <label class="checkbox-inline">
+                                <input id="special_foodCheckVet" type="checkbox" onclick="special_foodCheckVetTick();"><label asp-for="mem_saleproduct.delivery_post"></label>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="checkbox-inline">
+                                <input id="special_foodCheckOther" type="checkbox" onclick="special_foodCheckOtherTick();"><label asp-for="mem_saleproduct.delivery_bus"></label>
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="checkbox-inline">
+                                <input id="special_foodCheckOther" type="checkbox" onclick="special_foodCheckOtherTick();"><label asp-for="mem_saleproduct.delivery_train"></label>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <label class="checkbox-inline">
+                                <input id="special_foodCheckOther" type="checkbox" onclick="special_foodCheckOtherTick();"><label asp-for="mem_saleproduct.delivery_other"></label>
+                            </label>
+                            <input id="mem_saleproduct.delivery_other" class="form-control" readonly />
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#collapse3" data-toggle="collapse" data-parent="#accordion"> <i class="fa fa-edit" aria-hidden="true"></i>&nbsp;ข้อมูลรายละเอียดสินค้า</a>
+            </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-md-3 control-label">การรับรองมาตรฐาน</label>
+                    <div class="col-md-9">
+
+                        <div id="btnCreate" class="btn btn-default btn-panel-yellow " onclick="mem_saleproductCreate('@ViewBag.memberId');">&nbsp;<i class="fa fa-plus-circle" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    </div>
+                    
+                </div>
+                <div class="form-group">
+                    <div id="mem_saleproduct_standardRenderBody" class="col-md-12">
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="mem_saleproduct.product_detail" class="col-md-3 control-label"></label>
+                    <div class="col-md-9">
+                    <textarea asp-for="mem_saleproduct.product_detail" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="mem_saleproduct.product_detail" class="text-danger" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label">ข้อมูลอื่นๆ</label>
+                    <div class="col-md-9">
+                        <input asp-for="mem_saleproduct.x_note" class="form-control" />
+                        <span asp-validation-for="mem_saleproduct.x_note" class="text-danger" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+            @*</div>
+
+
+        </div>*@
+
+
+    <div class="form-group">
+        <label class="col-md-6 txt-color-blue">ประมาณการออกสู่ตลาด</label>
+    </div>
+    <div class="form-group">
+        <label asp-for="aYear" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <input asp-for="aYear" class="form-control" />
+            <span asp-validation-for="aYear" class="text-danger" />
+        </div>
+        <label asp-for="aAmountOfPeriod" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <input asp-for="aAmountOfPeriod" class="form-control" />
+            <span asp-validation-for="aAmountOfPeriod" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
-        <label asp-for="company_name_eng" class="col-md-3 control-label"></label>
-        <div class="col-md-9">
-            <input asp-for="company_name_eng" class="form-control" />
-            <span asp-validation-for="company_name_eng" class="text-danger" />
+        <label asp-for="aAmountPerYear" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <input asp-for="aAmountPerYear" class="form-control" />
+            <span asp-validation-for="aAmountPerYear" class="text-danger" />
+        </div>
+        <label asp-for="aUnit" class="col-md-2 control-label"></label>
+        <div class="col-md-4">
+            <input asp-for="aUnit" class="form-control" />
+            <span asp-validation-for="aUnit" class="text-danger" />
         </div>
     </div>
-    <div class="form-group">
+
+
+
+
+    @*<div class="form-group">
         <label asp-for="position_name_th" class="col-md-3 control-label"></label>
         <div class="col-md-9">
             <input asp-for="position_name_th" class="form-control" />
@@ -28,7 +293,9 @@
             <input asp-for="position_name_eng" class="form-control" />
             <span asp-validation-for="position_name_eng" class="text-danger" />
         </div>
-    </div>
+    </div>*@
+
+
 @*<div class="form-group">
     <label asp-for="work_year" class="col-md-3 control-label"></label>
     <div class="col-md-9">
@@ -36,22 +303,14 @@
         <span asp-validation-for="work_year" class="text-danger" />
     </div>
 </div>*@
-    <div class="form-group">
-        <label class="col-md-3 control-label">ปีที่เริ่มทำงาน</label>
-        <div class="col-md-2">
-            <input id="work_year_start" class="form-control" maxlength="4" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
-        </div>
-        <label class="col-md-4 control-label">ปีที่สิ้นสุด (ยังทำงานอยู่)</label>
-        <div class="col-md-2">
-            <input id="work_year_finish" class="form-control" maxlength="4" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
-        </div>
-    </div>
-    <div class="form-group">
-        <label asp-for="office_address" class="col-md-3 control-label"></label>
-        <div class="col-md-9">
-            <textarea asp-for="office_address" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="office_address" class="text-danger" />
-        </div>
-    </div>
+
+
+
+
+
+
+
+
+
 
 </form>

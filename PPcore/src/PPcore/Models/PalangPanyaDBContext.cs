@@ -52,22 +52,22 @@ namespace PPcore.Models
                 entity.Property(e => e.retail_price).HasColumnType("decimal");
                 entity.Property(e => e.wholesale_price).HasColumnType("decimal");
 
-                entity.Property(e => e.wholesale_condition).HasColumnType("varchar(150)");
-                entity.Property(e => e.product_life).HasColumnType("varchar(50)");
-                entity.Property(e => e.capacity_per_day).HasColumnType("varchar(50)");
-                entity.Property(e => e.capacity_per_month).HasColumnType("varchar(50)");
-                entity.Property(e => e.advance_order_condition).HasColumnType("varchar(150)");
-                entity.Property(e => e.distribution_channels).HasColumnType("varchar(150)");
+                entity.Property(e => e.wholesale_condition).HasColumnType("nvarchar(150)");
+                entity.Property(e => e.product_life).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.capacity_per_day).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.capacity_per_month).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.advance_order_condition).HasColumnType("nvarchar(150)");
+                entity.Property(e => e.distribution_channels).HasColumnType("nvarchar(150)");
                 entity.Property(e => e.contact_telephone).HasColumnType("varchar(30)");
                 entity.Property(e => e.contact_email).HasColumnType("varchar(50)");
-                entity.Property(e => e.contact_other).HasColumnType("varchar(50)");
+                entity.Property(e => e.contact_other).HasColumnType("nvarchar(50)");
 
                 entity.Property(e => e.delivery_post).HasColumnType("char(1)");
                 entity.Property(e => e.delivery_bus).HasColumnType("char(1)");
                 entity.Property(e => e.delivery_train).HasColumnType("char(1)");
 
-                entity.Property(e => e.delivery_other).HasColumnType("varchar(50)");
-                entity.Property(e => e.product_detail).HasColumnType("varchar(500)");
+                entity.Property(e => e.delivery_other).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.product_detail).HasColumnType("nvarchar(500)");
 
                 entity.Property(e => e.id).HasDefaultValueSql("newid()");
 
