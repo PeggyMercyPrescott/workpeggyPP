@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -28,5 +29,18 @@ namespace PPcore.ViewModels.mem_saleproduct
         [Display(Name = "หน่วย")]
         public string aUnit { get; set; }
 
+        [HiddenInput(DisplayValue = false)]
+        public string saleproduct_type_code_hidden { get; set; }
+        [HiddenInput(DisplayValue = false)]
+        public string delivery_post_hidden { get; set; }
+        [HiddenInput(DisplayValue = false)]
+        public string delivery_bus_hidden { get; set; }
+        [HiddenInput(DisplayValue = false)]
+        public string delivery_train_hidden { get; set; }
+        [HiddenInput(DisplayValue = false)]
+        public string delivery_other_hidden { get; set; }
+
+        [HiddenInput(DisplayValue = false)]
+        public string product_detail_hidden { get; set; }
     }
 }

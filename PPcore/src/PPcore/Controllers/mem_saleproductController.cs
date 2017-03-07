@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
+using Newtonsoft.Json;
 
 namespace PPcore.Controllers
 {
@@ -104,7 +105,8 @@ namespace PPcore.Controllers
             _context.Add(sp);
             _context.SaveChanges();
 
-            ViewBag.IsCreate = 1; //??
+            ViewBag.memberId = memberId;
+            ViewBag.IsCreate = 1;
 
             ViewBag.product_group = new SelectList(_context.product_group, "product_group_code", "product_group_desc", "1");
 
@@ -185,6 +187,53 @@ namespace PPcore.Controllers
 
         public IActionResult Edit(string memberId, string mem_saleproduct_id)
         {
+            ViewBag.memberId = memberId;
+            ViewBag.IsCreate = 0;
+
+            var member = _context.member.Single(m => m.id == new Guid(memberId));
+            var mspI = new ViewModels.mem_saleproduct.mem_saleproductInputViewModel();
+
+            var msp = _context.mem_saleproduct.Single(ms => ms.id == new Guid(mem_saleproduct_id));
+            mspI.mem_saleproduct = msp;
+
+            var saleproduct = _context.saleproduct.Single(p => p.saleproduct_code == msp.saleproduct_code);
+            mspI.saleproduct = saleproduct;
+
+            mspI.saleproduct_type_code_hidden = saleproduct.saleproduct_type_code;
+            mspI.aStoreQuantity = msp.store_quantity.ToString();
+
+            mspI.delivery_post_hidden = msp.delivery_post;
+            mspI.delivery_bus_hidden = msp.delivery_bus;
+            mspI.delivery_train_hidden = msp.delivery_train;
+            mspI.delivery_other_hidden = msp.delivery_other;
+
+            mspI.product_detail_hidden = msp.product_detail;
+
+            var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(mspp => mspp.member_code == member.member_code && mspp.saleproduct_code == msp.saleproduct_code);
+            var sum_estimate_qty = 0; var count_period = 0;
+            foreach (var mspp in mem_saleproduct_plans)
+            {
+                count_period++;
+                sum_estimate_qty += mspp.estimate_qty;
+            }
+            mspI.aAmountPerYear = sum_estimate_qty.ToString();
+
+            mspI.aAmountOfPeriod = count_period.ToString();
+
+            ViewBag.saleproduct_code = msp.saleproduct_code;
+            ViewBag.aAmount = mspI.aAmountPerYear;
+
+            ViewBag.product_group = new SelectList(_context.product_group, "product_group_code", "product_group_desc", saleproduct.saleproduct_group_code);
+
+            ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", msp.saleproduct_unit_code);
+
+            ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
+
+            return View(mspI);
+        }
+
+        public IActionResult EditLoadData(string memberId, string mem_saleproduct_id)
+        {
 
             var member = _context.member.Single(m => m.id == new Guid(memberId));
             var msp = _context.mem_saleproduct.Single(ms => ms.id == new Guid(mem_saleproduct_id));
@@ -194,6 +243,8 @@ namespace PPcore.Controllers
 
             var saleproduct = _context.saleproduct.Single(p => p.saleproduct_code == msp.saleproduct_code);
             mspI.saleproduct = saleproduct;
+
+            
 
             var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(mspp => mspp.member_code == member.member_code && mspp.saleproduct_code == msp.saleproduct_code);
             var sum_estimate_qty = 0; var count_period = 0;
@@ -219,47 +270,94 @@ namespace PPcore.Controllers
             ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
 
 
+            string pjson = JsonConvert.SerializeObject(mspI);
+            return Json(pjson);
 
-
-            return View();
+            //return View(mspI);
         }
     
-
-        // POST: mem_saleproduct/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("saleproduct_code,member_code,advance_order_condition,capacity_per_day,capacity_per_month,contact_email,contact_other,contact_telephone,delivery_bus,delivery_other,delivery_post,delivery_train,distribution_channels,id,product_detail,product_life,rec_no,retail_price,rowversion,saleproduct_unit_code,store_quantity,wholesale_condition,wholesale_price,x_log,x_note,x_status")] mem_saleproduct mem_saleproduct)
+        public async Task<IActionResult> Save(string memberId, string IsCreate, string saleproduct_code, string saleproduct_desc, string saleproduct_group_code, string saleproduct_type_code, string saleproduct_unit_code,
+            string retail_price, string wholesale_price, string wholesale_condition, string product_life, string capacity_per_day, string capacity_per_month,
+            string advance_order_condition, string store_quantity, string distribution_channels, string contact_email, string contact_telephone, string contact_other,
+            string delivery_post, string delivery_bus, string delivery_train, string delivery_other, string product_detail, string x_note
+
+        )
         {
-            if (id != mem_saleproduct.saleproduct_code)
+            var member = _context.member.Single(m => m.id == new Guid(memberId));
+
+            saleproduct sp = _context.saleproduct.Single(s => s.saleproduct_code == saleproduct_code);
+            mem_saleproduct msp;
+            if (IsCreate == "1")
             {
-                return NotFound();
+                msp = new mem_saleproduct();
+                msp.member_code = member.member_code;
+                msp.saleproduct_code = sp.saleproduct_code;
+
+
+            } else
+            {
+                msp = _context.mem_saleproduct.Single(ms => ms.member_code == member.member_code && ms.saleproduct_code == saleproduct_code);
+
+
             }
 
-            if (ModelState.IsValid)
+
+            sp.saleproduct_desc = saleproduct_desc;
+            sp.saleproduct_group_code = saleproduct_group_code;
+            sp.saleproduct_type_code = saleproduct_type_code;
+            sp.x_status = "Y";
+            _context.Update(sp);
+
+
+            msp.saleproduct_unit_code = saleproduct_unit_code;
+
+            msp.retail_price = decimal.Parse(retail_price);
+            msp.wholesale_price = decimal.Parse(wholesale_price);
+            msp.wholesale_condition = wholesale_condition;
+            msp.product_life = product_life;
+            msp.capacity_per_day = capacity_per_day;
+            msp.capacity_per_month = capacity_per_month;
+            msp.advance_order_condition = advance_order_condition;
+            msp.store_quantity = int.Parse(store_quantity);
+            msp.distribution_channels = distribution_channels;
+            msp.contact_email = contact_email;
+            msp.contact_telephone = contact_telephone;
+            msp.contact_other = contact_other;
+
+            msp.delivery_post = delivery_post;
+            msp.delivery_bus = delivery_bus;
+            msp.delivery_train = delivery_train;
+            msp.delivery_other = delivery_other;
+
+            msp.product_detail = product_detail;
+            msp.x_note = x_note;
+
+            msp.x_status = "Y";
+            
+
+
+            if (IsCreate == "1")
             {
-                try
-                {
-                    _context.Update(mem_saleproduct);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!mem_saleproductExists(mem_saleproduct.saleproduct_code))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
+                _context.Add(msp);
             }
-            return View(mem_saleproduct);
+            else
+            {
+                _context.Update(msp);
+            }
+
+
+            
+
+
+
+
+            await _context.SaveChangesAsync();
+            //return Json(new { result = "success", rec_no = mpMax, mem_product_id = mp.id, product_group_desc = pgrp.product_group_desc, product_type_desc = ptyp.product_type_desc, product_desc = pd.product_desc });
+
+            return Json(new { result = "success" });
+
         }
-
 
 
 
