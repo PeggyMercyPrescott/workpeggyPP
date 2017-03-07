@@ -13,6 +13,32 @@ namespace PPcore.Controllers
     {
         private readonly PalangPanyaDBContext _context;
 
+        private void clearTempData()
+        {
+            var d = DateTime.Now.AddDays(-1);
+            var dFormat = "SP" + d.ToString("yyMMddHHmmssfffffff");
+            var saleproducts = _context.saleproduct.Where(sp => sp.x_status == "T" && sp.saleproduct_code.CompareTo(dFormat) < 0);
+            foreach (var sp in saleproducts)
+            {
+                //System.Diagnostics.Debug.WriteLine("Found saleproduct_code: {0}.", sp.saleproduct_code);
+                _context.saleproduct.Remove(sp);
+            }
+            //foreach (var sp in saleproducts)
+            //{
+            //    _context.saleproduct.Remove(sp);
+            //}
+            _context.SaveChanges();
+        }
+
+        private void prepareViewBag(string member_code)
+        {
+            //ViewBag.mem_title = new SelectList(new[] { new { Value = "0", Text = "" }, new { Value = "นาย", Text = "นาย" }, new { Value = "นาง", Text = "นาง" }, new { Value = "นางสาว", Text = "นางสาว" } }, "Value", "Text", "0");
+
+            //var ml = _context.mem_level.OrderBy(tt => tt.mlevel_code).Select(tt => new { Value = tt.mlevel_code, Text = tt.mlevel_desc }).ToList();
+            //ml.Insert(0, (new { Value = "0", Text = "" }));
+            //ViewBag.mem_level = new SelectList(ml.AsEnumerable(), "Value", "Text", "0");
+
+        }
         public mem_saleproductController(PalangPanyaDBContext context)
         {
             _context = context;    
@@ -35,7 +61,25 @@ namespace PPcore.Controllers
                 mem_saleproductViewModel.saleproduct = saleproduct;
                 mem_saleproductViewModel.saleproduct_group_desc = _context.product_group.SingleOrDefault(p => p.product_group_code == saleproduct.saleproduct_group_code).product_group_desc;
                 mem_saleproductViewModel.saleproduct_type_desc = _context.product_type.SingleOrDefault(p => (p.product_type_code == saleproduct.saleproduct_type_code) && (p.product_group_code == saleproduct.saleproduct_group_code)).product_type_desc;
+
+
+                var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(msp => msp.member_code == member.member_code && msp.saleproduct_code == mp.saleproduct_code);
+                var sum_estimate_qty = 0; var count_period = 0;
+                foreach (var msp in mem_saleproduct_plans)
+                {
+                    count_period++;
+                    sum_estimate_qty += msp.estimate_qty;
+                }
+                mem_saleproductViewModel.amount = sum_estimate_qty;
+                mem_saleproductViewModel.amountOfPeriod = count_period;
+
+                var saleproduct_unit = _context.saleproduct_unit.Single(u => u.saleproduct_unit_code == mp.saleproduct_unit_code);
+                mem_saleproductViewModel.unit = saleproduct_unit.saleproduct_unit_desc_thai;
+
                 mem_saleproductViewModels.Add(mem_saleproductViewModel);
+
+
+
             }
             ViewBag.memberId = memberId;
             //ViewBag.course_grade = new SelectList(_context.course_grade, "cgrade_code", "cgrade_desc");(x.Body.Scopes.Count > 5) && (x.Foo == "test")
@@ -46,6 +90,8 @@ namespace PPcore.Controllers
 
         public IActionResult Create(string memberId)
         {
+            clearTempData();
+
             var member = _context.member.Single(m => m.id == new Guid(memberId));
 
             var sp = new saleproduct();
@@ -72,6 +118,8 @@ namespace PPcore.Controllers
 
             ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", "1");
 
+            ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
+
 
 
 
@@ -81,8 +129,8 @@ namespace PPcore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(string memberId, string saleproduct_code, string saleproduct_desc, string saleproduct_group_code, string saleproduct_type_code, string saleproduct_unit_code,
                     string retail_price, string  wholesale_price, string wholesale_condition, string product_life, string capacity_per_day, string capacity_per_month,
-                    string advance_order_condition, string store_quantity, string distribution_channels, string contact_email, string contact_telephone, string contact_other
-
+                    string advance_order_condition, string store_quantity, string distribution_channels, string contact_email, string contact_telephone, string contact_other,
+                    string delivery_post, string delivery_bus, string delivery_train, string delivery_other, string product_detail, string x_note
 
             ) 
             
@@ -115,7 +163,13 @@ namespace PPcore.Controllers
             msp.contact_telephone = contact_telephone;
             msp.contact_other = contact_other;
 
+            msp.delivery_post = delivery_post;
+            msp.delivery_bus = delivery_bus;
+            msp.delivery_train = delivery_train;
+            msp.delivery_other = delivery_other;
 
+            msp.product_detail = product_detail;
+            msp.x_note = x_note;
 
             msp.x_status = "Y";
             _context.Add(msp);
@@ -129,46 +183,47 @@ namespace PPcore.Controllers
 
         }
 
-
-
-
-
-
-
-
-
-        // GET: mem_saleproduct/Details/5
-        public async Task<IActionResult> Details(string id)
+        public IActionResult Edit(string memberId, string mem_saleproduct_id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var mem_saleproduct = await _context.mem_saleproduct.SingleOrDefaultAsync(m => m.saleproduct_code == id);
-            if (mem_saleproduct == null)
-            {
-                return NotFound();
-            }
+            var member = _context.member.Single(m => m.id == new Guid(memberId));
+            var msp = _context.mem_saleproduct.Single(ms => ms.id == new Guid(mem_saleproduct_id));
 
-            return View(mem_saleproduct);
+            var mspI = new ViewModels.mem_saleproduct.mem_saleproductInputViewModel();
+            mspI.mem_saleproduct = msp;
+
+            var saleproduct = _context.saleproduct.Single(p => p.saleproduct_code == msp.saleproduct_code);
+            mspI.saleproduct = saleproduct;
+
+            var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(mspp => mspp.member_code == member.member_code && mspp.saleproduct_code == msp.saleproduct_code);
+            var sum_estimate_qty = 0; var count_period = 0;
+            foreach (var mspp in mem_saleproduct_plans)
+            {
+                count_period++;
+                sum_estimate_qty += mspp.estimate_qty;
+            }
+            mspI.aAmountPerYear = sum_estimate_qty.ToString();
+
+            mspI.aAmountOfPeriod = count_period.ToString();
+
+            ViewBag.saleproduct_code = msp.saleproduct_code;
+            ViewBag.aAmount = mspI.aAmountPerYear;
+
+
+            ViewBag.IsCreate = 1; //??
+
+            ViewBag.product_group = new SelectList(_context.product_group, "product_group_code", "product_group_desc", "1");
+
+            ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", "1");
+
+            ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
+
+
+
+
+            return View();
         }
-
-        // GET: mem_saleproduct/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var mem_saleproduct = await _context.mem_saleproduct.SingleOrDefaultAsync(m => m.saleproduct_code == id);
-            if (mem_saleproduct == null)
-            {
-                return NotFound();
-            }
-            return View(mem_saleproduct);
-        }
+    
 
         // POST: mem_saleproduct/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -204,6 +259,40 @@ namespace PPcore.Controllers
             }
             return View(mem_saleproduct);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // GET: mem_saleproduct/Details/5
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var mem_saleproduct = await _context.mem_saleproduct.SingleOrDefaultAsync(m => m.saleproduct_code == id);
+            if (mem_saleproduct == null)
+            {
+                return NotFound();
+            }
+
+            return View(mem_saleproduct);
+        }
+
 
         // GET: mem_saleproduct/Delete/5
         public async Task<IActionResult> Delete(string id)

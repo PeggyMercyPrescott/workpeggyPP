@@ -33,13 +33,13 @@
                     <tr>
                         <th class="text-center" style="width:50px;">ลำดับ</th>
                         <th style="display:none">@Html.DisplayNameFor(model => model.mem_saleproduct.id)</th>
-                        <th style="width:200px;">@Html.DisplayNameFor(model => model.saleproduct.saleproduct_desc)</th>
+                        <th>@Html.DisplayNameFor(model => model.saleproduct.saleproduct_desc)</th>
                         <th style="width:200px;">@Html.DisplayNameFor(model => model.saleproduct_group_desc)</th>
                         <th style="width:200px;">@Html.DisplayNameFor(model => model.saleproduct_type_desc)</th>
-                        <th>@Html.DisplayNameFor(model => model.amount)</th>
-                        <th>@Html.DisplayNameFor(model => model.unit)</th>
-                        <th>@Html.DisplayNameFor(model => model.amountOfPeriod)</th>
-                        <th>สถานะ</th>
+                        <th style="width:50px;" class="text-center">@Html.DisplayNameFor(model => model.amount)</th>
+                        <th style="width:50px;" class="text-center">@Html.DisplayNameFor(model => model.unit)</th>
+                        <th style="width:70px;" class="text-center">@Html.DisplayNameFor(model => model.amountOfPeriod)</th>
+                        <th style="width:20px;" class="text-center">สถานะ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,10 +53,10 @@
                             <td>@Html.DisplayFor(modelItem => item.saleproduct.saleproduct_desc)</td>
                             <td>@Html.DisplayFor(modelItem => item.saleproduct_group_desc)</td>
                             <td>@Html.DisplayFor(modelItem => item.saleproduct_type_desc)</td>
-                            <td>@Html.DisplayFor(modelItem => item.amount)</td>
-                            <td>@Html.DisplayFor(modelItem => item.unit)</td>
-                            <td>@Html.DisplayFor(modelItem => item.amountOfPeriod)</td>
-                            <td>@Html.DisplayFor(modelItem => item.mem_saleproduct.x_status)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.amount)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.unit)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.amountOfPeriod)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.mem_saleproduct.x_status)</td>
                         </tr>
                     }
                 </tbody>
@@ -166,8 +166,8 @@
     <script src="~/lib/bootstrap/js/modal.js"></script>
     <script>
     $(document).ready(function () {
-        var tableMemProduct = setDataTablesSimple();
-        tableMemProduct.$('tr:first').click();
+        var tableMemSaleProduct = setDataTablesSimple();
+        tableMemSaleProduct.$('tr:first').click();
 
 
 
@@ -183,8 +183,48 @@
 
 
         $('#btnEdit').off('click').on('click', function () {
-            var data = tableMemProduct.row('.selected').data();
+            var data = tableMemSaleProduct.row('.selected').data();
             if (data) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
+                }).done(function (resp) {
+                    $('#mem_saleproductCreateModalRenderBody').html(resp);
+                    $('#saleproduct_group_code').off('change').on('change', function () {
+                        $.ajax({
+                            type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                        }).done(function (resp) {
+                            if (resp != "") {
+                                $('#saleproduct_type_code').empty();
+                                $('#saleproduct_type_code').append(resp);
+                                $('#saleproduct_type_code').trigger("change");
+                            } else {
+                                $('#saleproduct_type_code').empty();
+                            }
+                        });
+                    });
+                    $('#saleproduct_group_code').trigger("change");
+
+                    $('#saleproduct_unit_code').off('change').on('change', function () {
+                        $('#aUnit').val($("#saleproduct_unit_code option:selected").text());
+                    });
+                    $('#saleproduct_unit_code').trigger("change");
+
+
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + memberId,
+                    }).done(function (resp) {
+                        $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+
+                    });
+                });
+
+                $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
+
+
+
+
+
+
                 $.ajax({
                     type: 'get', url: '@Url.Action("DetailsAsTableList", "products")' + '?memberId=' + '@ViewBag.memberId',
                 }).done(function (resp) {
@@ -256,13 +296,20 @@
                 });
                 $('#saleproduct_group_code').trigger("change");
 
-            });
-            $.ajax({
-                type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + memberId,
-            }).done(function (resp) {
-                $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+                $('#saleproduct_unit_code').off('change').on('change', function () {
+                    $('#aUnit').val($("#saleproduct_unit_code option:selected").text());
+                });
+                $('#saleproduct_unit_code').trigger("change");
 
+
+                $.ajax({
+                    type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + memberId,
+                }).done(function (resp) {
+                    $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+
+                });
             });
+
             $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
         }
 
@@ -286,18 +333,29 @@
             var contact_telephone = $('#mem_saleproduct_contact_telephone').val().trim();
             var contact_other = $('#mem_saleproduct_contact_other').val().trim();
 
+            var delivery_post; if ($('#delivery_post').prop("checked") == true) { delivery_post = 'Y'; } else { delivery_post = 'N'; }
+            var delivery_bus; if ($('#delivery_bus').prop("checked") == true) { delivery_bus = 'Y'; } else { delivery_bus = 'N'; }
+            var delivery_train; if ($('#delivery_train').prop("checked") == true) { delivery_train = 'Y'; } else { delivery_train = 'N'; }
+            var delivery_other = $('#mem_saleproduct_delivery_other').val().trim();
+
+            var product_detail = $('#mem_saleproduct_product_detail').val().trim();
+            var x_note = $('#mem_saleproduct_x_note').val().trim();
+
             $.ajax({
                 type: 'post', url: '@Url.Action("Create", "mem_saleproduct")' + '?memberId=' + memberId + '&saleproduct_code=' + saleproduct_code + '&saleproduct_desc=' + saleproduct_desc +
                     '&saleproduct_group_code=' + saleproduct_group_code + '&saleproduct_type_code=' + saleproduct_type_code + '&saleproduct_unit_code=' + saleproduct_unit_code +
-                    '&retail_price=' + retail_price + '&wholesale_price=' + wholesale_price + '&wholesale_condition=' + wholesale_condition + 
-                    '&product_life=' + product_life + '&capacity_per_day=' + capacity_per_day + '&capacity_per_month=' + capacity_per_month + 
-                    '&advance_order_condition=' + advance_order_condition + '&store_quantity=' + store_quantity + '&distribution_channels=' + distribution_channels + 
-                    '&contact_email=' + contact_email + '&contact_telephone=' + contact_telephone + '&contact_other=' + contact_other
+                    '&retail_price=' + retail_price + '&wholesale_price=' + wholesale_price + '&wholesale_condition=' + wholesale_condition +
+                    '&product_life=' + product_life + '&capacity_per_day=' + capacity_per_day + '&capacity_per_month=' + capacity_per_month +
+                    '&advance_order_condition=' + advance_order_condition + '&store_quantity=' + store_quantity + '&distribution_channels=' + distribution_channels +
+                    '&contact_email=' + contact_email + '&contact_telephone=' + contact_telephone + '&contact_other=' + contact_other +
+                    '&delivery_post=' + delivery_post + '&delivery_bus=' + delivery_bus + '&delivery_train=' + delivery_train + '&delivery_other=' + delivery_other +
+                    '&product_detail=' + product_detail + '&x_note=' + x_note
                 ,
             }).done(function (resp) {
                 if (resp != "") {
                     if (resp.result == "success") {
                         $('#mem_saleproductCreateModal').modal('hide');
+                        window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
                     }
                 }
             });
@@ -324,9 +382,20 @@
                     });
 
                 }*@
-            
+
 
         }
+
+        function delivery_otherTick() {
+            if ($('#delivery_other').prop("checked") == true) {
+                $('#mem_saleproduct_delivery_other').prop('readonly', false);
+            } else {
+                $('#mem_saleproduct_delivery_other').prop('readonly', true);
+            }
+
+        }
+
+
 
     function mem_productProductDetailsAsTableList(memberId) {
         $.ajax({
