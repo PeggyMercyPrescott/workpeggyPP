@@ -1,12 +1,7 @@
 ﻿@model PPcore.ViewModels.mem_saleproduct.mem_saleproductInputViewModel
 
-<div class="pull-right" style="margin-top:0px;">
-    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="mem_saleproductPost('@ViewBag.memberId','@ViewBag.IsCreate');">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
-    @*<div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="mem_saleproductCreatePost('@ViewBag.memberId');">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>*@
-</div>
-<br /><br /><br />
-
 <form id="mem_saleproductForm" class="form-horizontal"><input id="saleproduct_code" value="@ViewBag.saleproduct_code" hidden/>
+    <input id="vbIsCreate" value="@ViewBag.IsCreate" hidden /><input id="vbMemberId" value="@ViewBag.memberId" hidden />
     <div class="form-group">
         <label asp-for="saleproduct.saleproduct_desc" class="col-md-2 control-label"></label>
         <div class="col-md-10">
@@ -250,14 +245,14 @@
         </div>
         <label asp-for="aAmountOfPeriod" class="col-md-2 control-label"></label>
         <div class="col-md-4">
-            <input asp-for="aAmountOfPeriod" class="form-control" />
+            <input asp-for="aAmountOfPeriod" class="form-control" readonly />
             <span asp-validation-for="aAmountOfPeriod" class="text-danger" />
         </div>
     </div>
     <div class="form-group">
         <label asp-for="aAmountPerYear" class="col-md-2 control-label"></label>
         <div class="col-md-4">
-            <input asp-for="aAmountPerYear" class="form-control" />
+            <input asp-for="aAmountPerYear" class="form-control" readonly />
             <span asp-validation-for="aAmountPerYear" class="text-danger" />
         </div>
         <label asp-for="aUnit" class="col-md-2 control-label"></label>

@@ -24,7 +24,7 @@ namespace PPcore.ViewModels.mem_saleproduct
         public string aYear { get; set; }
         [Display(Name = "จำนวนงวด")]
         public string aAmountOfPeriod { get; set; }
-        [Display(Name = "จำนวนต่อปี")]
+        [Display(Name = "จำนวนรวม")]
         public string aAmountPerYear { get; set; }
         [Display(Name = "หน่วย")]
         public string aUnit { get; set; }

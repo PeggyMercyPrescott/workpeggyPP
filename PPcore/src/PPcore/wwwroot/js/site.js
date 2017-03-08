@@ -214,7 +214,6 @@ function setTableProductDetailsAsTableList(tableId) {
     return tableMember;
 }
 
-
 //--------------------------------------------------------------------------------------------
 function setTable_default(tableId, w) {
     var d = tableId.DataTable({

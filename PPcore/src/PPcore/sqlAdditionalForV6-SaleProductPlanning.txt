@@ -68,6 +68,25 @@ create table mem_saleproduct_plan (
 )
 go
 
+-- mem_saleproduct_plan
+  
+IF OBJECT_ID(N'mem_saleproduct_plan_Insert', N'TR') IS NOT NULL
+    exec sp_executesql N'DROP TRIGGER mem_saleproduct_plan_Insert';
+GO
+
+CREATE TRIGGER mem_saleproduct_plan_Insert ON mem_saleproduct_plan 
+INSTEAD OF INSERT 
+AS
+BEGIN
+	DECLARE @maxi int;
+	SELECT TOP 1 @maxi = period_no FROM mem_saleproduct_plan WHERE member_code = (SELECT member_code FROM Inserted) and saleproduct_code = (SELECT saleproduct_code FROM Inserted) ORDER BY period_no DESC;
+	INSERT INTO mem_saleproduct_plan ([member_code], [saleproduct_code], [launch_date], [launch_year], [period_no], [estimate_qty], [actual_qty], [x_status], [x_note], [x_log], [id])
+	SELECT [member_code], [saleproduct_code], [launch_date], [launch_year], IsNull(@maxi, 0 ) + 1, [estimate_qty], [actual_qty], [x_status], [x_note], [x_log], [id]
+	FROM Inserted;
+END;
+
+GO
+
 /*==============================================================*/
 /* Table: saleproduct_standard                                  */
 /*==============================================================*/

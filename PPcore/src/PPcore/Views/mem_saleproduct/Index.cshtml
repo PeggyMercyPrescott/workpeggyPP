@@ -70,27 +70,60 @@
 </div>
 
 <!-- Modal -->
-<div id="mem_saleproductCreateModal" class="modal fade modalForm2" tabindex="-1" role="dialog" aria-labelledby="mem_saleproductCreateModalLabel" aria-hidden="true">
+<div id="mem_saleproductCreateModal" class="modal fade modalForm3" tabindex="-1" role="dialog" aria-labelledby="mem_saleproductCreateModalLabel" aria-hidden="true">
     <div class="modal-lg">
         <div class="modal-content">
-            <div class="modal-body container-fluid">
+            <div class="modal-header">
+                @*<div class="pull-left" style="margin-top:0px;">
+                <i class="fa fa-list" style="color:sandybrown"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>*@
+                <div class="pull-right" style="margin-top:0px;">
+                    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="mem_saleproductPost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                </div>
+            </div>
+            <div class="modal-body container-fluid modalForm3Body">
                 
 
                 <div id="mem_saleproductCreateModalRenderBody"></div>
 
                 <div id="mem_saleproduct_planDetailsAsTableListModalRenderBody"></div>
 
+
+            </div>
+            <div class="modal-footer">
                 <div class="pull-right" style="margin-top:-2px;">
-                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true" onclick="mem_saleproductClose();">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 <!-- /Modal -->
 
+<!-- Modal -->
+<div id="mem_saleproduct_planCreateModal" class="modal fade modalForm1" tabindex="-3" role="dialog" aria-labelledby="mem_saleproduct_planCreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="mem_saleproduct_planCreateModalHeader" class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px" onclick="closeMemSaleProductPlanCreateModal();">&times;</button>*@
 
+                <button type="button" class="close" aria-hidden="true" style="vertical-align:middle;top:15px" onclick="$('#mem_saleproduct_planCreateModal').modal('hide');" >&times;</button>
+                <h4 id="mem_saleproduct_planCreateModalLabel" class="modal-title" style="vertical-align:middle;">วันที่ประมาณการออกสู่ตลาด</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="mem_saleproduct_planCreateModalRenderBody">
+                    @*@{ await Html.RenderPartialAsync("ViewInput", new product()); }*@
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
 
 
 
@@ -231,72 +264,21 @@
                             $('#delivery_other').prop('checked', false); delivery_otherTick();
                         }
                         $("#mem_saleproduct_product_detail").val($("#product_detail_hidden").val().trim());
-                        
 
-                        $.ajax({
-                            type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + '@ViewBag.memberId',
-                        }).done(function (resp) {
-                            $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
-
+                        $('#aYear').off('change').on('change', function () {
+                            loadTableMemProductPlan($('#aYear').val());
                         });
+                        $('#aYear').trigger('change');
+
                     });
 
                     $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
-
-
-
-
-
-
-                    @*$.ajax({
-                    type: 'get', url: '@Url.Action("DetailsAsTableList", "products")' + '?memberId=' + '@ViewBag.memberId',
-                }).done(function (resp) {
-                    $('#mem_productProductDetailsAsTableListModalRenderBody').html(resp);
-                    $('#btnCreateProduct').hide(); $('#btnEditProduct').hide();
-                    var tableProduct = setTableProductDetailsAsTableList($('#dataTablesProductDetailsAsTableList'));
-                    tableProduct.$('tr:first').click();
-                    $('#product_type').off('change').on('change', function () {
-                        var sPattern = $('#searchPattern').val().trim();
-                        $.ajax({
-                            type: 'get', url: '@Url.Action("DetailsAsJsonList", "products")' + '?product_type_code=' + $('#product_type').val() + '&product_group_code=' + $('#product_group').val() + '&pattern=' + sPattern,
-                        }).done(function (resp) {
-                            if (resp != "") {
-                                resp = JSON.parse(resp);
-                                if (!jQuery.isEmptyObject(resp)) {
-                                    tableProduct.clear().draw();
-                                    for (var i in resp) {
-                                        tableProduct.row.add([resp[i].rec_no, resp[i].product_code, resp[i].product_desc, '<div id="btnS' + resp[i].id + '"><div class="btn btn-xs btn-default btn-panel-yellow" onclick="mem_productEdit(\'' + data[1] + '\',\'' + resp[i].id + '\')">&nbsp;<i class="fa fa-plus-circle" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;เลือก&nbsp;&nbsp;</div></div>']);
-                                    }
-                                    tableProduct.draw();
-                                } else {
-                                    tableProduct.clear().draw();
-                                }
-                            } else {
-                                tableProduct.clear().draw();
-                            }
-                            tableProduct.$('tr:first').click();
-                        });
-                    });
-
-                    $('#product_group').off('change').on('change', function () {
-                        $.ajax({
-                            type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#product_group').val(),
-                        }).done(function (resp) {
-                            if (resp != "") {
-                                $('#product_type').empty();
-                                $('#product_type').append(resp);
-                                $('#product_type').trigger("change");
-                            } else {
-                                $('#product_type').empty();
-                            }
-                        });
-                    });
-                    $('#product_group').trigger("change");
-                    $('#mem_productProductDetailsAsTableListModal').modal({ backdrop: 'static', keyboard: false });
-                });*@
-
                 }
             });
+
+
+
+
         });
 
         function mem_saleproductCreate(memberId) {
@@ -324,19 +306,43 @@
                 });
                 $('#saleproduct_unit_code').trigger("change");
 
+                loadTableMemProductPlan("-1");
 
-                $.ajax({
+                @*$.ajax({
                     type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + memberId,
                 }).done(function (resp) {
                     $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+                    var tableMemSaleProductPlan = setDataTables($('#dataTablesMemSaleProductPlanDetailsAsTableList'));
+                    tableMemSaleProductPlan.$('tr:first').click();
 
-                });
+                    $('#btnEditMemSaleProductPlan').off('click').on('click', function () {
+                        var saleproduct_code = $('#saleproduct_code').val();
+                        var datarow = tableMemSaleProductPlan.row('.selected').data();
+                        $.ajax({
+                            type: 'get', url: '@Url.Action("Edit", "mem_saleproduct_plan")' + '?planId=' + datarow[1],
+                        }).done(function (resp) {
+                            $('#mem_saleproduct_planCreateModalRenderBody').html(resp);
+                            $('#launch_date').removeAttr("style")
+                            $('#launch_date').attr('readonly', 'readonly');
+
+                            $('#pUnit').val($("#saleproduct_unit_code option:selected").text());
+                        });
+
+                        $('#mem_saleproduct_planCreateModal').modal({ backdrop: 'static', keyboard: false });
+
+                    });
+                });*@
+
+
+
             });
 
             $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
         }
 
-        function mem_saleproductPost(memberId,IsCreate) {
+        function mem_saleproductPost() {
+            var memberId = $('#vbMemberId').val();
+            var IsCreate = $('#vbIsCreate').val();
             var saleproduct_code = $('#saleproduct_code').val();
             var saleproduct_desc = $('#saleproduct_saleproduct_desc').val().trim();
             var saleproduct_group_code = $('#saleproduct_group_code').val();
@@ -417,6 +423,158 @@
             }
 
         }
+
+        function mem_saleproductClose() {
+            window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+        }
+
+        function loadTableMemProductPlan(pYear) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + '@ViewBag.memberId' + '&saleproductCode=' + $('#saleproduct_code').val() + '&unit=' + $("#saleproduct_unit_code option:selected").text() + '&lyear=' + pYear,
+            }).done(function (resp) {
+                $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+                var tableMemSaleProductPlan = setDataTables($('#dataTablesMemSaleProductPlanDetailsAsTableList'));
+                tableMemSaleProductPlan.$('tr:first').click();
+
+                $('#aAmountOfPeriod').val($('#aAmountOfPeriodHidden').val());
+                $('#aAmountPerYear').val($('#aAmountPerYearHidden').val());
+
+                $('#btnEditMemSaleProductPlan').off('click').on('click', function () {
+                    var saleproduct_code = $('#saleproduct_code').val();
+                    var datarow = tableMemSaleProductPlan.row('.selected').data();
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("Edit", "mem_saleproduct_plan")' + '?planId=' + datarow[1],
+                    }).done(function (resp) {
+                        $('#mem_saleproduct_planCreateModalRenderBody').html(resp);
+
+                        //$.datepicker.regional['th'] = {
+                        //    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                        //    yearRange: "-100:+0", yearOffSet: 543, beforeShow: function () { if ($("#launch_date").val() == "") { $("#launch_date").datepicker("setDate", new Date()); } }
+                        //};
+                        //$.datepicker.setDefaults($.datepicker.regional['th']);
+                        //$("#launch_date").datepicker($.datepicker.regional["th"]);
+                        //$('#launch_dateButton').off('click').on('click', function () {
+                        //    $('#launch_date').datepicker("show");
+                        //});
+
+                        $('#launch_date').removeAttr("style")
+                        $('#launch_date').attr('readonly', 'readonly');
+
+                        $('#pUnit').val($("#saleproduct_unit_code option:selected").text());
+                    });
+
+                    $('#mem_saleproduct_planCreateModal').modal({ backdrop: 'static', keyboard: false });
+
+                });
+            });
+
+        }
+
+        function mem_saleproduct_planCreate(memberId) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "mem_saleproduct_plan")' + '?memberId=' + memberId,
+            }).done(function (resp) {
+                $('#mem_saleproduct_planCreateModalRenderBody').html(resp);
+
+
+
+
+
+
+                $.datepicker.regional['th'] = {
+                    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                    yearRange: "-100:+0", yearOffSet: 543, beforeShow: function () { if ($("#launch_date").val() == "") { $("#launch_date").datepicker("setDate", new Date()); } }
+                };
+                $.datepicker.setDefaults($.datepicker.regional['th']);
+                $("#launch_date").datepicker($.datepicker.regional["th"]);
+                $('#launch_dateButton').off('click').on('click', function () {
+                    $('#launch_date').datepicker("show");
+                });
+
+                $('#pUnit').val($("#saleproduct_unit_code option:selected").text());
+            });
+
+            $('#mem_saleproduct_planCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+
+
+
+        function mem_saleproduct_planPost() {
+            var planId = $('#planId').val();
+            var saleproduct_code = $('#saleproduct_code').val();
+            var launch_date = $('#launch_date').val().trim();
+            var estimate_qty = $('#estimate_qty').val().trim();
+            $.ajax({
+                type: 'post', url: '@Url.Action("Save", "mem_saleproduct_plan")' + '?id=' + planId + '&memberId=' + '@ViewBag.memberId' + '&saleproduct_code=' + saleproduct_code +
+                    '&launch_date=' + launch_date + '&estimate_qty=' + estimate_qty
+                    ,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+
+                        $.ajax({
+                            type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + '@ViewBag.memberId' + '&saleproductCode=' + $('#saleproduct_code').val() + '&unit=' + $("#saleproduct_unit_code option:selected").text(),
+                        }).done(function (resp) {
+                            $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+                            var tableMemSaleProductPlan = setDataTables($('#dataTablesMemSaleProductPlanDetailsAsTableList'));
+                            tableMemSaleProductPlan.$('tr:first').click();
+
+                            $('#btnEditMemSaleProductPlan').off('click').on('click', function () {
+                                var saleproduct_code = $('#saleproduct_code').val();
+                                var datarow = tableMemSaleProductPlan.row('.selected').data();
+                                $.ajax({
+                                    type: 'get', url: '@Url.Action("Edit", "mem_saleproduct_plan")' + '?planId=' + datarow[1],
+                                }).done(function (resp) {
+                                    $('#mem_saleproduct_planCreateModalRenderBody').html(resp);
+
+                                    //$.datepicker.regional['th'] = {
+                                    //    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                                    //    yearRange: "-100:+0", yearOffSet: 543, beforeShow: function () { if ($("#launch_date").val() == "") { $("#launch_date").datepicker("setDate", new Date()); } }
+                                    //};
+                                    //$.datepicker.setDefaults($.datepicker.regional['th']);
+                                    //$("#launch_date").datepicker($.datepicker.regional["th"]);
+                                    //$('#launch_dateButton').off('click').on('click', function () {
+                                    //    $('#launch_date').datepicker("show");
+                                    //});
+
+                                    $('#launch_date').removeAttr("style")
+                                    $('#launch_date').attr('readonly', 'readonly');
+
+                                    $('#pUnit').val($("#saleproduct_unit_code option:selected").text());
+                                });
+                            });
+                        });
+
+                        $('#mem_saleproduct_planCreateModal').modal('hide');
+
+                        @*window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";*@
+                    }
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

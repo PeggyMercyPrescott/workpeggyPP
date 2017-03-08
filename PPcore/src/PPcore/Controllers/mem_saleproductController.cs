@@ -117,10 +117,11 @@ namespace PPcore.Controllers
                 aAmount += mspp.estimate_qty;
             }
             ViewBag.aAmount = aAmount;
+            ViewBag.aAmount = 0;
 
             ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", "1");
 
-            ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
+            //ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
 
 
 
@@ -211,14 +212,18 @@ namespace PPcore.Controllers
 
             var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(mspp => mspp.member_code == member.member_code && mspp.saleproduct_code == msp.saleproduct_code);
             var sum_estimate_qty = 0; var count_period = 0;
+            string lyear = "";
+            List<string> lyearList = new List<string>();
+            
             foreach (var mspp in mem_saleproduct_plans)
             {
                 count_period++;
                 sum_estimate_qty += mspp.estimate_qty;
+                if (!mspp.launch_year.Equals(lyear)) { lyear = mspp.launch_year; lyearList.Add(lyear); }
             }
             mspI.aAmountPerYear = sum_estimate_qty.ToString();
-
             mspI.aAmountOfPeriod = count_period.ToString();
+            
 
             ViewBag.saleproduct_code = msp.saleproduct_code;
             ViewBag.aAmount = mspI.aAmountPerYear;
@@ -227,53 +232,18 @@ namespace PPcore.Controllers
 
             ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", msp.saleproduct_unit_code);
 
-            ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
+
+            lyearList.Sort();
+
+            List<SelectListItem> lyearSList = new List<SelectListItem>();
+            for(var i = 0; i < lyearList.LongCount(); i++)
+            {
+                lyearSList.Add(new SelectListItem() { Value = lyearList[i], Text = lyearList[i] });
+            }
+            lyearSList.Insert(0, (new SelectListItem() { Value = "0", Text = "<ทั้งหมด>" }));
+            ViewBag.aYear = new SelectList(lyearSList.AsEnumerable(), "Value", "Text", "0");
 
             return View(mspI);
-        }
-
-        public IActionResult EditLoadData(string memberId, string mem_saleproduct_id)
-        {
-
-            var member = _context.member.Single(m => m.id == new Guid(memberId));
-            var msp = _context.mem_saleproduct.Single(ms => ms.id == new Guid(mem_saleproduct_id));
-
-            var mspI = new ViewModels.mem_saleproduct.mem_saleproductInputViewModel();
-            mspI.mem_saleproduct = msp;
-
-            var saleproduct = _context.saleproduct.Single(p => p.saleproduct_code == msp.saleproduct_code);
-            mspI.saleproduct = saleproduct;
-
-            
-
-            var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(mspp => mspp.member_code == member.member_code && mspp.saleproduct_code == msp.saleproduct_code);
-            var sum_estimate_qty = 0; var count_period = 0;
-            foreach (var mspp in mem_saleproduct_plans)
-            {
-                count_period++;
-                sum_estimate_qty += mspp.estimate_qty;
-            }
-            mspI.aAmountPerYear = sum_estimate_qty.ToString();
-
-            mspI.aAmountOfPeriod = count_period.ToString();
-
-            ViewBag.saleproduct_code = msp.saleproduct_code;
-            ViewBag.aAmount = mspI.aAmountPerYear;
-
-
-            ViewBag.IsCreate = 1; //??
-
-            ViewBag.product_group = new SelectList(_context.product_group, "product_group_code", "product_group_desc", "1");
-
-            ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", "1");
-
-            ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
-
-
-            string pjson = JsonConvert.SerializeObject(mspI);
-            return Json(pjson);
-
-            //return View(mspI);
         }
     
         [HttpPost]

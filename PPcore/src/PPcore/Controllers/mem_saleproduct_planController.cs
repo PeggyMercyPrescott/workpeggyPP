@@ -18,95 +18,89 @@ namespace PPcore.Controllers
             _context = context;    
         }
 
-        public IActionResult DetailsAsTableList(string memberId, string saleproductCode, string v)
+        public IActionResult DetailsAsTableList(string memberId, string saleproductCode, string unit, string lyear)
         {
-            //var roleId = HttpContext.Session.GetString("roleId");
-            //if (roleId != "17822a90-1029-454a-b4c7-f631c9ca6c7d") //Not member
-            //{
-            //    ViewBag.IsMember = 0;
-            //}
-            //else //Is member
-            //{
-            //    ViewBag.IsMember = 1;
-            //}
-            //ViewBag.product_group = new SelectList(_context.product_group, "product_group_code", "product_group_desc", "1");
             ViewBag.memberId = memberId;
+            ViewBag.spUnit = unit;
             var member = _context.member.Single(m => m.id == new Guid(memberId));
-            if (!String.IsNullOrEmpty(saleproductCode)) {
-                if (!String.IsNullOrEmpty(v)) { ViewBag.isViewOnly = 1; } else { ViewBag.isViewOnly = 0; }
-                var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(m => m.member_code == member.member_code && m.saleproduct_code == saleproductCode).ToList();
-                return View(mem_saleproduct_plans);
+            if (lyear != "-1") {
+                List<mem_saleproduct_plan> mm;
+                if (lyear != "0")
+                {
+                    mm = _context.mem_saleproduct_plan.Where(m => m.member_code == member.member_code && m.saleproduct_code == saleproductCode && m.launch_year == lyear).OrderBy(m => m.period_no).ToList();
+                }
+                else
+                {
+                    mm = _context.mem_saleproduct_plan.Where(m => m.member_code == member.member_code && m.saleproduct_code == saleproductCode).OrderBy(m => m.period_no).ToList();
+                }
+
+                var sum_estimate_qty = 0; var count_period = 0;
+                foreach (var m in mm)
+                {
+                    count_period++;
+                    sum_estimate_qty += m.estimate_qty;
+                }
+                ViewBag.hAmountOfPeriod = count_period;
+                ViewBag.hAmountPerYear = sum_estimate_qty;
+
+                return View(mm);
             } else {
-                ViewBag.isViewOnly = 0;
                 return View(new List<mem_saleproduct_plan>());
             }
         }
 
 
-
-
-
-
-
-        // GET: mem_saleproduct_plan
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.mem_saleproduct_plan.ToListAsync());
-        }
-
-        // GET: mem_saleproduct_plan/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var mem_saleproduct_plan = await _context.mem_saleproduct_plan.SingleOrDefaultAsync(m => m.saleproduct_code == id);
-            if (mem_saleproduct_plan == null)
-            {
-                return NotFound();
-            }
-
-            return View(mem_saleproduct_plan);
-        }
-
-        // GET: mem_saleproduct_plan/Create
         public IActionResult Create()
         {
+            ViewBag.planId = "";
             return View();
         }
 
-        // POST: mem_saleproduct_plan/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("saleproduct_code,member_code,launch_date,actual_qty,estimate_qty,id,launch_year,period_no,rowversion,x_log,x_note,x_status")] mem_saleproduct_plan mem_saleproduct_plan)
+        public IActionResult Edit(string planId)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(mem_saleproduct_plan);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(mem_saleproduct_plan);
+            ViewBag.planId = planId;
+
+            var mspp = _context.mem_saleproduct_plan.SingleOrDefault(m => m.id == new Guid(planId));
+            ViewBag.estimate_qty = mspp.estimate_qty;
+            return View(mspp);
         }
 
-        // GET: mem_saleproduct_plan/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        [HttpPost]
+        //public async Task<IActionResult> Save([Bind("saleproduct_code,member_code,launch_date,actual_qty,estimate_qty,id,launch_year,period_no,rowversion,x_log,x_note,x_status")] mem_saleproduct_plan mem_saleproduct_plan)
+        public async Task<IActionResult> Save(string id, string memberId, string saleproduct_code, string launch_date, string estimate_qty)
         {
-            if (id == null)
+            var member = _context.member.Single(m => m.id == new Guid(memberId));
+            saleproduct_code = saleproduct_code.Trim(); launch_date = launch_date.Trim(); estimate_qty = estimate_qty.Trim();
+            var ldate = DateTime.Parse(launch_date);
+            //var mspp = _context.mem_saleproduct_plan.SingleOrDefault(m => m.member_code == member.member_code && m.saleproduct_code == saleproduct_code && m.launch_date == ldate);
+            //if (mspp != null)
+            if(id != null)
             {
-                return NotFound();
+                var mspp = _context.mem_saleproduct_plan.SingleOrDefault(m => m.id == new Guid(id.Trim()));
+                mspp.launch_date = ldate;
+                mspp.estimate_qty = int.Parse(estimate_qty);
+                _context.Update(mspp);
+                await _context.SaveChangesAsync();
+
+            }
+            else
+            {
+
+                var p = new mem_saleproduct_plan();
+                p.member_code = member.member_code;
+                p.saleproduct_code = saleproduct_code;
+                p.launch_date = ldate;
+                p.launch_year = ldate.Year.ToString();
+                p.estimate_qty = int.Parse(estimate_qty);
+
+                _context.Add(p);
+                await _context.SaveChangesAsync();
+
             }
 
-            var mem_saleproduct_plan = await _context.mem_saleproduct_plan.SingleOrDefaultAsync(m => m.saleproduct_code == id);
-            if (mem_saleproduct_plan == null)
-            {
-                return NotFound();
-            }
-            return View(mem_saleproduct_plan);
+
+
+            return Json(new { result = "success" });
         }
 
     }

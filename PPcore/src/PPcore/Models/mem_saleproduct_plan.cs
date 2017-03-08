@@ -11,6 +11,7 @@ namespace PPcore.Models
         public string saleproduct_code { get; set; }
 
         [Display(Name = "วันที่ผลิตผลออกสู่ตลาด")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public DateTime launch_date { get; set; }
         public string launch_year { get; set; }
