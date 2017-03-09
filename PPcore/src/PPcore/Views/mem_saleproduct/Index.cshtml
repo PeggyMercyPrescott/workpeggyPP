@@ -281,7 +281,7 @@
                             loadTableMemProductPlan($('#aYear').val());
                         });
                         $('#aYear').trigger('change');
-
+                        mem_saleproduct_standardDetails();
                     });
 
                     $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
@@ -383,7 +383,7 @@
             var x_note = $('#mem_saleproduct_x_note').val().trim();
 
             $.ajax({
-                type: 'post', url: '@Url.Action("Save", "mem_saleproduct")' + '?memberId=' + memberId + '&IsCreate='+ IsCreate + '&saleproduct_code=' + saleproduct_code + '&saleproduct_desc=' + saleproduct_desc +
+                type: 'post', url: '@Url.Action("Save", "mem_saleproduct")' + '?memberId=' + memberId + '&IsCreate=' + IsCreate + '&saleproduct_code=' + saleproduct_code + '&saleproduct_desc=' + saleproduct_desc +
                     '&saleproduct_group_code=' + saleproduct_group_code + '&saleproduct_type_code=' + saleproduct_type_code + '&saleproduct_unit_code=' + saleproduct_unit_code +
                     '&retail_price=' + retail_price + '&wholesale_price=' + wholesale_price + '&wholesale_condition=' + wholesale_condition +
                     '&product_life=' + product_life + '&capacity_per_day=' + capacity_per_day + '&capacity_per_month=' + capacity_per_month +
@@ -594,9 +594,9 @@
 
 
 
-                //var tableProduct = setTableProductDetailsAsTableList($('#dataTablesProductDetailsAsTableList'));
-                //tableProduct.$('tr:first').click();
-                @*$('#btnEditProduct').off('click').on('click', function () {
+            //var tableProduct = setTableProductDetailsAsTableList($('#dataTablesProductDetailsAsTableList'));
+            //tableProduct.$('tr:first').click();
+            @*$('#btnEditProduct').off('click').on('click', function () {
                     var data = tableProduct.row('.selected').data();
                     $.ajax({
                         type: 'get', url: '@Url.Action("Edit", "products")' + '?product_code=' + data[1],
@@ -607,7 +607,7 @@
                         $('#mem_productProductEditModal').modal({ backdrop: 'static', keyboard: false });
                     });
                 });*@
-                @*$('#product_type').off('change').on('change', function () {
+            @*$('#product_type').off('change').on('change', function () {
                     var sPattern = $('#searchPattern').val().trim();
                     $.ajax({
                         type: 'get', url: '@Url.Action("DetailsAsJsonList", "products")' + '?product_type_code=' + $('#product_type').val() + '&product_group_code=' + $('#product_group').val() + '&pattern=' + sPattern,
@@ -629,7 +629,7 @@
                         tableProduct.$('tr:first').click();
                     });
                 });*@
-                @*$('#product_group').off('change').on('change', function () {
+            @*$('#product_group').off('change').on('change', function () {
                     $.ajax({
                         type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#product_group').val(),
                     }).done(function (resp) {
@@ -704,9 +704,74 @@
             });
         }
 
+        function mem_saleproduct_standardDetails() {
+            var memberId = '@ViewBag.memberId';
+            var saleproduct_code = $('#saleproduct_code').val();
+            $.ajax({
+                type: 'get', url: '@Url.Action("DetailsAsJson", "mem_saleproduct_standard")' + '?memberId=' + memberId + "&saleproduct_code=" + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    console.log(resp);
+                    resp = JSON.parse(resp);
+                    for (var i = 0; i < resp.length; i++) {
+                        var imgblock = '<div id="' + resp[i].saleproduct_standard_code + '" class="img-thumbnail" style="height:200px;width:150px;margin-top:10px;margin-left:15px;margin-right:15px;">';
+                        var idIsMark = "ismark" + resp[i].saleproduct_standard_code; //var idImageCode = "ic" + resp[i].image_code;
+                        imgblock += '<div id="' + idIsMark + '" style="display:none">0</div><div id="imc" style="display:none">' + resp[i].saleproduct_standard_code + '</div>';
+                        imgblock += '<div class="row" style="position:relative;">&nbsp;<br/>&nbsp;';
+                        var idMark = "mark" + resp[i].saleproduct_standard_code;
+                        //imgblock += '<div class="col-xs-6" style="position:absolute;top:0px;left:10px;"><div class="photo-mark" id="' + idMark + '" aria-hidden="true" style="font-size:25px;" onclick="markPhoto(\'' + resp[i].saleproduct_standard_code + '\');"><i class="fa fa-square-o" aria-hidden="true"></i></div></div>';
+                        imgblock += '<div class="col-xs-6" style="position:absolute;top:-5px;left:122px;"><div class="photo-delete" aria-hidden="true" style="font-size:20px;" onclick="deletePhoto(\'' + resp[i].saleproduct_code + '\',\'' + resp[i].saleproduct_standard_code + '\');"><i class="fa fa-times" aria-hidden="true"></i></div></div>';
+                        imgblock += '</div>';
+                        imgblock += '<img id="imgMSTD' + resp[i].saleproduct_standard_code + '" class="img-responsive center-block" style="margin-top:-15px;height:130px;cursor:pointer;cursor:hand;" onclick="$(\'#fileInput' + resp[i].saleproduct_standard_code + '\').click();" src="' + '@Url.Action("image", "pic_image")' + '?id=' + resp[i].ref_image + '" />';
+                        var desc = "";
+                        if (resp[i].saleproduct_standard_desc_thai != "") {
+                            if (resp[i].saleproduct_standard_desc_thai.length > 25) {
+                                desc = resp[i].saleproduct_standard_desc_thai.substring(0, 25) + '...';
+                            } else { desc = resp[i].saleproduct_standard_desc_thai; }
+                        } else { desc = "&nbsp;"; }
+
+                        //var idDesc2 = "desc2" + resp[i].saleproduct_standard_code;
+                        //imgblock += '<div id="' + idDesc2 + '" style="display:none">' + resp[i].image_desc + '</div>';
+                        var idDesc = "desc" + resp[i].saleproduct_standard_code;
+                        //imgblock += '<div id="' + idDesc + '" class="btn btn-default center-block btn-photo-blue" style="margin-top:5px;width:100%" onclick="changeDesc(\'' + resp[i].saleproduct_standard_code + '\');">' + desc + '</div>';
+                        imgblock += '<div id="' + idDesc + '" style="margin-top:5px;width:100%;text-align:center;font-weight:bold;" >' + desc + '</div>';
+
+                        imgblock += '</div>';
+
+                        $('#mem_saleproduct_standardPanel').append(imgblock); console.log(imgblock);
+
+                        var fInput = '<form id="formFileInput' + resp[i].saleproduct_standard_code + '" enctype="multipart/form-data"><input id="fileInput' + resp[i].saleproduct_standard_code + '" type="file" style="visibility:hidden" onchange="mem_saleproduct_standardUploadImage(\'' + resp[i].member_code + '\',\'' + resp[i].saleproduct_code + '\',\'' + resp[i].saleproduct_standard_code + '\')" accept="image/*" /></form>';
+                        $('#mem_saleproduct_standardFileInput').append(fInput); console.log(fInput);
+                    }
+                }
+            });
 
 
+        }
 
+        function mem_saleproduct_standardUploadImage(member_code, saleproduct_code, saleproduct_standard_code) {
+            var fInput = '#fileInput' + saleproduct_standard_code;
+            var imgMSTD = '#imgMSTD' + saleproduct_standard_code;
+            if ($(fInput)[0].files[0]) {
+                $('#waitMemPhoto').show();
+                var formData = new FormData();
+                formData.append("fileImage", $(fInput)[0].files[0]);
+                formData.append("member_code", member_code); formData.append("saleproduct_code", saleproduct_code); formData.append("saleproduct_standard_code", saleproduct_standard_code);
+                $.ajax({
+                    type: 'post', url: '@Url.Action("uploadImage", "mem_saleproduct_standard")',
+                    data: formData, processData: false, contentType: false,
+                }).done(function (resp) {
+                    var result = resp.result; var fileName = resp.fileName;
+                    console.log(resp);
+                    @*$('#mem_photo').val(resp.fileName);
+                    $('#waitMemPhoto').hide(); $('#emptyMemPhoto').hide();
+                     $('#picMemPhoto').show();*@
+                    $(imgMSTD).attr('src', '@Url.Action("image", "pic_image")' + '?id=' + resp.fileName);
+                });
+            }
+
+
+        }
 
 
 
