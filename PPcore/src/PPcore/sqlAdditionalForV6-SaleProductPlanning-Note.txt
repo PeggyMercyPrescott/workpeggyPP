@@ -17,9 +17,11 @@
    
             
 6. table saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code 
-7. table saleproduct_standard ชื่อ field standard_desc_thai เปลี่ยนเป็น saleproduct_standard_desc_thai
-8. table saleproduct_standard ชื่อ field standard_desc_eng เปลี่ยนเป็น saleproduct_standard_desc_eng
+7. table saleproduct_standard ชื่อ field standard_desc_thai เปลี่ยนเป็น saleproduct_standard_desc_thai เปลี่ยนประเภทข้อมูลจาก varchar(100) เป็น nvarchar(100) 
+8. table saleproduct_standard ชื่อ field standard_desc_eng เปลี่ยนเป็น saleproduct_standard_desc_eng เปลี่ยนประเภทข้อมูลจาก varchar(100) เป็น nvarchar(100) 
 9. mem_saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code
+9. mem_saleproduct_standard ลบ field rec_no ออก
+
 10. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_code เพื่อให้ คีย์ เป็นชื่อเดียวกันกับ table อื่น
 11. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_desc_thai, saleproduct_unit_desc_eng เพื่อให้ไปในทางเดียวกัน
 12. table saleproduct_unit เปลี่ยนประเภทข้อมูลของ field saleproduct_unit_desc_thai จาก nvarchar(30) ไปเป็น nvarchar(30) 

@@ -92,8 +92,8 @@ GO
 /*==============================================================*/
 create table saleproduct_standard (
    saleproduct_standard_code        varchar(30)          not null,
-   saleproduct_standard_desc_thai   varchar(100)         null,
-   saleproduct_standard_desc_eng    varchar(100)         null,
+   saleproduct_standard_desc_thai   nvarchar(100)         null,
+   saleproduct_standard_desc_eng    nvarchar(100)         null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,
    x_log                nvarchar(500)        null,
@@ -110,7 +110,6 @@ create table mem_saleproduct_standard (
    member_code          varchar(30)          not null,
    saleproduct_code     varchar(30)          not null,
    saleproduct_standard_code        varchar(30)          not null,
-   rec_no               int                  not null,
    ref_image            varchar(30)          null,
    x_status             char(1)              null,
    x_note               nvarchar(50)         null,

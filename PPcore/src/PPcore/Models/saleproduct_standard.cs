@@ -8,10 +8,14 @@ namespace PPcore.Models
 {
     public partial class saleproduct_standard
     {
+        [HiddenInput]
         public string saleproduct_standard_code { get; set; }
-        [Display(Name = "การรับรองมาตรฐาน (ภาษาไทย)")]
+
+        [Display(Name = "มาตรฐาน")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string saleproduct_standard_desc_thai { get; set; }
+
+        [HiddenInput]
         [Display(Name = "การรับรองมาตรฐาน (ภาษาอังกฤษ)")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string saleproduct_standard_desc_eng { get; set; }
@@ -20,6 +24,7 @@ namespace PPcore.Models
         public string x_note { get; set; }
         public string x_log { get; set; }
         public Guid id { get; set; }
+
         [HiddenInput]
         public byte[] rowversion { get; set; }
     }

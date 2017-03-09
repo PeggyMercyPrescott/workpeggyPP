@@ -116,8 +116,8 @@ namespace PPcore.Models
                     .HasName("pk_saleproduct_standard");
 
                 entity.Property(e => e.saleproduct_standard_code).HasColumnType("varchar(30)");
-                entity.Property(e => e.saleproduct_standard_desc_thai).HasColumnType("varchar(100)");
-                entity.Property(e => e.saleproduct_standard_desc_eng).HasColumnType("varchar(100)");
+                entity.Property(e => e.saleproduct_standard_desc_thai).HasColumnType("nvarchar(100)");
+                entity.Property(e => e.saleproduct_standard_desc_eng).HasColumnType("nvarchar(100)");
 
                 entity.Property(e => e.id).HasDefaultValueSql("newid()");
 
@@ -141,7 +141,6 @@ namespace PPcore.Models
                 entity.Property(e => e.member_code).HasColumnType("varchar(30)");
                 entity.Property(e => e.saleproduct_standard_code).HasColumnType("varchar(30)");
 
-                entity.Property(e => e.rec_no).HasColumnType("int"); //test test
                 entity.Property(e => e.ref_image).HasColumnType("varchar(30)");
 
                 entity.Property(e => e.id).HasDefaultValueSql("newid()");

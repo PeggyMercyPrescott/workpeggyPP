@@ -125,22 +125,14 @@
 </div>
 <!-- /Modal -->
 
-
-
-
-
-
-
-
-
 <!-- Modal -->
-<div id="mem_productProductDetailsAsTableListModal" class="modal fade modalForm2" tabindex="-1" role="dialog" aria-labelledby="mem_productProductDetailsAsTableListModalLabel" aria-hidden="true">
-    <div class="modal-lg">
+<div id="saleproduct_standardDetailsAsTableListModal" class="modal fade modalForm2" tabindex="-1" role="dialog" aria-labelledby="saleproduct_standardDetailsAsTableListModalLabel" aria-hidden="true">
+    <div class="modal-lg" style="width:650px;margin-left:10%;">
         <div class="modal-content">
             <div class="modal-body container-fluid">
-                <div id="mem_productProductDetailsAsTableListModalRenderBody"></div>
+                <div id="saleproduct_standardDetailsAsTableListModalRenderBody"></div>
                 <div class="pull-right" style="margin-top:-2px;">
-                    <div class="btn btn-default btn-panel-yellow" data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
                 </div>
             </div>
 
@@ -148,6 +140,42 @@
     </div>
 </div>
 <!-- /Modal -->
+
+<!-- Modal -->
+<div id="saleproduct_standardCreateModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="saleproduct_standardCreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="saleproduct_standardCreateModalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
+                <h4 id="saleproduct_standardCreateModalLabel" class="modal-title" style="vertical-align:middle;">ข้อมูลมาตรฐาน</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="saleproduct_standardCreateModalRenderBody">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Modal -->
 <div id="mem_productProductCreateModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="mem_productProductCreateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -174,23 +202,7 @@
     </div>
 </div>
 <!-- /Modal -->
-<!-- Modal -->
-<div id="mem_productProductEditModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="mem_productProductEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div id="mem_productProductEditModalHeader" class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
-                <h4 id="mem_productProductEditModalLabel" class="modal-title" style="vertical-align:middle;"></h4>
-            </div>
-            <div class="modal-body container-fluid">
-                <div id="mem_productProductEditModalRenderBody">
-                    @*@{ await Html.RenderPartialAsync("ViewInput", new product()); }*@
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /Modal -->
+
 
 @section Scripts {
     <script src="~/lib/bootstrap/js/modal.js"></script>
@@ -554,38 +566,37 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        function mem_productProductDetailsAsTableList(memberId) {
+        function saleproduct_standardDetailsAsTableList() {
             $.ajax({
-                type: 'get', url: '@Url.Action("DetailsAsTableList", "products")' + '?memberId=' + memberId,
+                type: 'get', url: '@Url.Action("DetailsAsTableList", "saleproduct_standard")',
             }).done(function (resp) {
-                $('#mem_productProductDetailsAsTableListModalRenderBody').html(resp);
-                var tableProduct = setTableProductDetailsAsTableList($('#dataTablesProductDetailsAsTableList'));
-                tableProduct.$('tr:first').click();
-                $('#btnEditProduct').off('click').on('click', function () {
+                $('#saleproduct_standardDetailsAsTableListModalRenderBody').html(resp);
+                var tableSaleProductStd = setDataTables($('#dataTablesSaleProductStdDetailsAsTableList'));
+                tableSaleProductStd.$('tr:first').click();
+
+                $('#btnEditSaleProductStd').off('click').on('click', function () {
+                    var datarow = tableSaleProductStd.row('.selected').data();
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("Edit", "saleproduct_standard")' + '?saleproduct_standard_code=' + datarow[1],
+                    }).done(function (resp) {
+                        $('#saleproduct_standardCreateModalRenderBody').html(resp);
+                    });
+
+                    $('#saleproduct_standardCreateModal').modal({ backdrop: 'static', keyboard: false });
+                });
+
+            });
+
+            $('#saleproduct_standardDetailsAsTableListModal').modal({ backdrop: 'static', keyboard: false });
+
+
+
+
+
+
+                //var tableProduct = setTableProductDetailsAsTableList($('#dataTablesProductDetailsAsTableList'));
+                //tableProduct.$('tr:first').click();
+                @*$('#btnEditProduct').off('click').on('click', function () {
                     var data = tableProduct.row('.selected').data();
                     $.ajax({
                         type: 'get', url: '@Url.Action("Edit", "products")' + '?product_code=' + data[1],
@@ -595,8 +606,8 @@
                         $('#product_code').text(data[1]);
                         $('#mem_productProductEditModal').modal({ backdrop: 'static', keyboard: false });
                     });
-                });
-                $('#product_type').off('change').on('change', function () {
+                });*@
+                @*$('#product_type').off('change').on('change', function () {
                     var sPattern = $('#searchPattern').val().trim();
                     $.ajax({
                         type: 'get', url: '@Url.Action("DetailsAsJsonList", "products")' + '?product_type_code=' + $('#product_type').val() + '&product_group_code=' + $('#product_group').val() + '&pattern=' + sPattern,
@@ -617,8 +628,8 @@
                         }
                         tableProduct.$('tr:first').click();
                     });
-                });
-                $('#product_group').off('change').on('change', function () {
+                });*@
+                @*$('#product_group').off('change').on('change', function () {
                     $.ajax({
                         type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#product_group').val(),
                     }).done(function (resp) {
@@ -632,10 +643,79 @@
                     });
                 });
                 $('#product_group').trigger("change");
-                $('#mem_productProductDetailsAsTableListModal').modal({ backdrop: 'static', keyboard: false });
-            });
+                $('#mem_productProductDetailsAsTableListModal').modal({ backdrop: 'static', keyboard: false });*@
 
         }
+
+        function saleproduct_standardCreate() {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "saleproduct_standard")',
+            }).done(function (resp) {
+                $('#saleproduct_standardCreateModalRenderBody').html(resp);
+
+
+            });
+
+            $('#saleproduct_standardCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+
+        function saleproduct_standardPost() {
+            var saleproduct_standard_code = $('#saleproduct_standard_code').val();
+            var saleproduct_standard_desc_thai = $('#saleproduct_standard_desc_thai').val().trim();
+            var saleproduct_standard_desc_eng = $('#saleproduct_standard_desc_eng').val().trim();
+
+            if (!saleproduct_standard_desc_thai) { $('#saleproduct_standard_desc_thai_msg').text('กรุณากรอกข้อมูล'); $('#saleproduct_standard_desc_thai_msg').show(); } else { $('#saleproduct_standard_desc_thai_msg').hide(); }
+
+
+            $.ajax({
+                type: 'post', url: '@Url.Action("Save", "saleproduct_standard")' + '?saleproduct_standard_code=' + saleproduct_standard_code +
+                    '&saleproduct_standard_desc_thai=' + saleproduct_standard_desc_thai + '&saleproduct_standard_desc_eng=' + saleproduct_standard_desc_eng
+        ,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                        saleproduct_standardDetailsAsTableList();
+                    } else {
+
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                    }
+                }
+            });
+        }
+
+        function mem_saleproduct_standardCreate(saleproduct_standard_code) {
+            var id = "btn" + saleproduct_standard_code;
+            var oldV = $('#' + id).html();
+            $('#' + id).html('<i class="fa fa-spin fa-refresh" aria-hidden="true" style="color:#093D6A;"></i>');
+            $.ajax({
+                type: 'post', url: '@Url.Action("Create", "mem_saleproduct_standard")' + '?saleproduct_standard_code=' + saleproduct_standard_code +
+                    '&saleproduct_code=' + $('#saleproduct_code').val() + '&memberId=' + '@ViewBag.memberId'
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                    } else {
+
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                    }
+                }
+                setTimeout(function () { $('#' + id).html(oldV); }, 500);
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         function mem_productProductCreateGet(memberId) {
             $.ajax({
                 type: 'get', url: '@Url.Action("Create", "products")' + '?memberId=' + memberId,

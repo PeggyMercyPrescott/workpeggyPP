@@ -1,0 +1,16 @@
+﻿@model PPcore.Models.saleproduct_standard
+
+<form id="saleproduct_standardForm" class="form-horizontal"><input asp-for="saleproduct_standard_code" /><input asp-for="saleproduct_standard_desc_eng" />
+<div class="form-group">
+    <label asp-for="saleproduct_standard_desc_thai" class="col-md-4 control-label"></label>
+    <div class="col-md-8">
+        <input asp-for="saleproduct_standard_desc_thai" class="form-control" />
+        <span id="saleproduct_standard_desc_thai_msg" class="text-danger" />
+    </div>
+</div>
+</form>
+<div class="form-group">
+    <div class="col-md-offset-4 col-md-8">
+        <button id="btnSaleProductStdCreate" class="btn btn-success" onclick="saleproduct_standardPost()">บันทึก</button>
+    </div>
+</div>
