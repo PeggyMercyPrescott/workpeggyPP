@@ -134,5 +134,23 @@ namespace PPcore.Controllers
             }
             return Json(new { result = "success", fileName = fileName });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string member_code, string saleproduct_code, string saleproduct_standard_code)
+        {
+            var msps = _context.mem_saleproduct_standard.SingleOrDefault(m => (m.member_code == member_code) && (m.saleproduct_code == saleproduct_code) && (m.saleproduct_standard_code == saleproduct_standard_code));
+            _context.Remove(msps);
+            await _context.SaveChangesAsync();
+
+            return Json(new { result = "success" });
+        }
+
+
+
+
+
+
+
+
     }
 }

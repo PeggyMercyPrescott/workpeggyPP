@@ -21,7 +21,27 @@ namespace PPcore.Controllers
             var saleproducts = _context.saleproduct.Where(sp => sp.x_status == "T" && sp.saleproduct_code.CompareTo(dFormat) < 0);
             foreach (var sp in saleproducts)
             {
-                //System.Diagnostics.Debug.WriteLine("Found saleproduct_code: {0}.", sp.saleproduct_code);
+                var mspps = _context.mem_saleproduct_plan.Where(mmspp => mmspp.saleproduct_code == sp.saleproduct_code).ToList();
+                foreach (var mspp in mspps)
+                {
+                    _context.mem_saleproduct_plan.Remove(mspp);
+                }
+                var mspss = _context.mem_saleproduct_standard.Where(mmsps => mmsps.saleproduct_code == sp.saleproduct_code).ToList();
+                foreach (var msps in mspss)
+                {
+                    var pi = _context.pic_image.SingleOrDefault(ppi => ppi.image_code == msps.ref_image);
+                    _context.pic_image.Remove(pi);
+                    _context.mem_saleproduct_standard.Remove(msps);
+                }
+                var mspis = _context.mem_saleproduct_image.Where(mmspi => mmspi.saleproduct_code == sp.saleproduct_code).ToList();
+                foreach(var mspi in mspis)
+                {
+                    var pi = _context.pic_image.SingleOrDefault(ppi => ppi.image_code == mspi.saleproduct_image_code);
+                    _context.pic_image.Remove(pi);
+                    _context.mem_saleproduct_image.Remove(mspi);
+                }
+
+
                 _context.saleproduct.Remove(sp);
             }
             //foreach (var sp in saleproducts)
@@ -212,14 +232,15 @@ namespace PPcore.Controllers
 
             var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(mspp => mspp.member_code == member.member_code && mspp.saleproduct_code == msp.saleproduct_code);
             var sum_estimate_qty = 0; var count_period = 0;
-            string lyear = "";
-            List<string> lyearList = new List<string>();
+
+            //string lyear = "";
+            //List<string> lyearList = new List<string>();
             
             foreach (var mspp in mem_saleproduct_plans)
             {
                 count_period++;
                 sum_estimate_qty += mspp.estimate_qty;
-                if (!mspp.launch_year.Equals(lyear)) { lyear = mspp.launch_year; lyearList.Add(lyear); }
+                //if (!mspp.launch_year.Equals(lyear)) { lyear = mspp.launch_year; lyearList.Add(lyear); }
             }
             mspI.aAmountPerYear = sum_estimate_qty.ToString();
             mspI.aAmountOfPeriod = count_period.ToString();
@@ -233,15 +254,15 @@ namespace PPcore.Controllers
             ViewBag.saleproduct_unit = new SelectList(_context.saleproduct_unit, "saleproduct_unit_code", "saleproduct_unit_desc_thai", msp.saleproduct_unit_code);
 
 
-            lyearList.Sort();
+            //lyearList.Sort();
 
-            List<SelectListItem> lyearSList = new List<SelectListItem>();
-            for(var i = 0; i < lyearList.LongCount(); i++)
-            {
-                lyearSList.Add(new SelectListItem() { Value = lyearList[i], Text = lyearList[i] });
-            }
-            lyearSList.Insert(0, (new SelectListItem() { Value = "0", Text = "<ทั้งหมด>" }));
-            ViewBag.aYear = new SelectList(lyearSList.AsEnumerable(), "Value", "Text", "0");
+            //List<SelectListItem> lyearSList = new List<SelectListItem>();
+            //for(var i = 0; i < lyearList.LongCount(); i++)
+            //{
+            //    lyearSList.Add(new SelectListItem() { Value = lyearList[i], Text = lyearList[i] });
+            //}
+            //lyearSList.Insert(0, (new SelectListItem() { Value = "0", Text = "<ทั้งหมด>" }));
+            //ViewBag.aYear = new SelectList(lyearSList.AsEnumerable(), "Value", "Text", "0");
 
             return View(mspI);
         }

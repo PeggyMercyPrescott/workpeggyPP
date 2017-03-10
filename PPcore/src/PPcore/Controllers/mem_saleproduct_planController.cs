@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +23,32 @@ namespace PPcore.Controllers
             ViewBag.memberId = memberId;
             ViewBag.spUnit = unit;
             var member = _context.member.Single(m => m.id == new Guid(memberId));
+
+            lyear = int.Parse(lyear) < 2500 ? lyear : (int.Parse(lyear) - 543).ToString();
+
             if (lyear != "-1") {
+
+                var am = _context.mem_saleproduct_plan.Where(m => m.member_code == member.member_code && m.saleproduct_code == saleproductCode).OrderBy(m => m.launch_year).ToList();
+
+                string pyear = ""; int pyearInt = 0;
+                List<string> lyearList = new List<string>();
+                foreach (var m in am)
+                {
+                    if (!m.launch_year.Equals(pyear)) { pyear = m.launch_year; pyearInt = int.Parse(pyear);  lyearList.Add(pyearInt>2500?pyear:(pyearInt+543).ToString()); }
+                }
+
+                //lyearList.Sort();
+
+                List<SelectListItem> lyearSList = new List<SelectListItem>();
+                for (var i = 0; i < lyearList.LongCount(); i++)
+                {
+                    lyearSList.Add(new SelectListItem() { Value = lyearList[i], Text = lyearList[i] });
+                }
+                lyearSList.Insert(0, (new SelectListItem() { Value = "0", Text = "<ทั้งหมด>" }));
+                var lyearl = int.Parse(lyear) > 2500 ? lyear : (int.Parse(lyear) + 543).ToString();
+                ViewBag.aYear = new SelectList(lyearSList.AsEnumerable(), "Value", "Text", lyearl);
+
+
                 List<mem_saleproduct_plan> mm;
                 if (lyear != "0")
                 {
@@ -45,6 +70,9 @@ namespace PPcore.Controllers
 
                 return View(mm);
             } else {
+                ViewBag.hAmountOfPeriod = 0;
+                ViewBag.hAmountPerYear = 0;
+                ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
                 return View(new List<mem_saleproduct_plan>());
             }
         }
