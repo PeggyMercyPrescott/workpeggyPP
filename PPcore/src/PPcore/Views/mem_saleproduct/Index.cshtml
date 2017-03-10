@@ -423,7 +423,7 @@
 
                 $.datepicker.regional['th'] = {
                     dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
-                    yearRange: "-100:+0", yearOffSet: 543, beforeShow: function () { if ($("#launch_date").val() == "") { $("#launch_date").datepicker("setDate", new Date()); } }
+                    yearRange: "-5:+20", yearOffSet: 543, beforeShow: function () { if ($("#launch_date").val() == "") { $("#launch_date").datepicker("setDate", new Date()); } }
                 };
                 $.datepicker.setDefaults($.datepicker.regional['th']);
                 $("#launch_date").datepicker($.datepicker.regional["th"]);
