@@ -45,7 +45,10 @@
     </div>
     <!-- /.panel-heading -->
     <div class="panel-body">
-        <div class="dataTable_wrapper" style="padding-right:10px;"><input id="aAmountOfPeriodHidden" hidden value="@ViewBag.hAmountOfPeriod" /><input id="aAmountPerYearHidden" hidden value="@ViewBag.hAmountPerYear" /><select id="aYearHidden" style="display:none" asp-items="@ViewBag.aYear"></select>
+        <div class="dataTable_wrapper" style="padding-right:10px;"><input id="aAmountAllHidden" hidden value="@ViewBag.sum_estimate_qty_all" />
+        <input id="aAmountOfPeriodHidden" hidden value="@ViewBag.hAmountOfPeriod" />
+        <input id="aAmountPerYearHidden" hidden value="@ViewBag.hAmountPerYear" />
+        <select id="aYearHidden" style="display:none" asp-items="@ViewBag.aYear"></select>
             <table class="table table-striped table-bordered table-hover dataTablesMod" id="dataTablesMemSaleProductPlanDetailsAsTableList">
                 <thead>
                     <tr>

@@ -268,7 +268,7 @@ namespace PPcore.Controllers
         }
     
         [HttpPost]
-        public async Task<IActionResult> Save(string memberId, string IsCreate, string saleproduct_code, string saleproduct_desc, string saleproduct_group_code, string saleproduct_type_code, string saleproduct_unit_code,
+        public IActionResult Save(string memberId, string IsCreate, string saleproduct_code, string saleproduct_desc, string saleproduct_group_code, string saleproduct_type_code, string saleproduct_unit_code,
             string retail_price, string wholesale_price, string wholesale_condition, string product_life, string capacity_per_day, string capacity_per_month,
             string advance_order_condition, string store_quantity, string distribution_channels, string contact_email, string contact_telephone, string contact_other,
             string delivery_post, string delivery_bus, string delivery_train, string delivery_other, string product_detail, string x_note
@@ -343,7 +343,7 @@ namespace PPcore.Controllers
 
 
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             //return Json(new { result = "success", rec_no = mpMax, mem_product_id = mp.id, product_group_desc = pgrp.product_group_desc, product_type_desc = ptyp.product_type_desc, product_desc = pd.product_desc });
 
             return Json(new { result = "success" });

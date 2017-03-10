@@ -27,15 +27,18 @@ namespace PPcore.Controllers
             lyear = int.Parse(lyear) < 2500 ? lyear : (int.Parse(lyear) - 543).ToString();
 
             if (lyear != "-1") {
-
+                var sum_estimate_qty_all = 0;
                 var am = _context.mem_saleproduct_plan.Where(m => m.member_code == member.member_code && m.saleproduct_code == saleproductCode).OrderBy(m => m.launch_year).ToList();
 
                 string pyear = ""; int pyearInt = 0;
                 List<string> lyearList = new List<string>();
                 foreach (var m in am)
                 {
+                    sum_estimate_qty_all += m.estimate_qty;
                     if (!m.launch_year.Equals(pyear)) { pyear = m.launch_year; pyearInt = int.Parse(pyear);  lyearList.Add(pyearInt>2500?pyear:(pyearInt+543).ToString()); }
                 }
+
+                ViewBag.sum_estimate_qty_all = sum_estimate_qty_all;
 
                 //lyearList.Sort();
 
@@ -72,6 +75,7 @@ namespace PPcore.Controllers
             } else {
                 ViewBag.hAmountOfPeriod = 0;
                 ViewBag.hAmountPerYear = 0;
+                ViewBag.sum_estimate_qty_all = 0;
                 ViewBag.aYear = new SelectList(new[] { new { Value = "0", Text = "<ทั้งหมด>" } }, "Value", "Text", "0");
                 return View(new List<mem_saleproduct_plan>());
             }

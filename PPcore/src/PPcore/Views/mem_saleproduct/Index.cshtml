@@ -203,7 +203,7 @@
                 var data = tableMemSaleProduct.row('.selected').data();
                 if (data) {
                     $.ajax({
-                        type: 'get', url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
+                        type: 'get', cache: false, url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
                     }).done(function (resp) {
                         $('#mem_saleproductCreateModalRenderBody').html(resp);
                         $('#saleproduct_group_code').off('change').on('change', function () {
@@ -366,7 +366,7 @@
 
         function loadTableMemProductPlan(pYear) {
             $.ajax({
-                type: 'get', url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + '@ViewBag.memberId' + '&saleproductCode=' + $('#saleproduct_code').val() + '&unit=' + $("#saleproduct_unit_code option:selected").text() + '&lyear=' + pYear,
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + '@ViewBag.memberId' + '&saleproductCode=' + $('#saleproduct_code').val() + '&unit=' + $("#saleproduct_unit_code option:selected").text() + '&lyear=' + pYear,
             }).done(function (resp) {
                 $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
                 var tableMemSaleProductPlan = setDataTables($('#dataTablesMemSaleProductPlanDetailsAsTableList'));
@@ -374,6 +374,8 @@
 
                 $('#aAmountOfPeriod').val($('#aAmountOfPeriodHidden').val());
                 $('#aAmountPerYear').val($('#aAmountPerYearHidden').val());
+                $('#aAmountAll').val($('#aAmountAllHidden').val());
+                
 
                 $('#btnEditMemSaleProductPlan').off('click').on('click', function () {
                     var saleproduct_code = $('#saleproduct_code').val();
@@ -461,7 +463,7 @@
 
         function saleproduct_standardDetailsAsTableList() {
             $.ajax({
-                type: 'get', url: '@Url.Action("DetailsAsTableList", "saleproduct_standard")',
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsTableList", "saleproduct_standard")',
             }).done(function (resp) {
                 $('#saleproduct_standardDetailsAsTableListModalRenderBody').html(resp);
                 var tableSaleProductStd = setDataTables($('#dataTablesSaleProductStdDetailsAsTableList'));
@@ -545,7 +547,7 @@
             var memberId = '@ViewBag.memberId';
             var saleproduct_code = $('#saleproduct_code').val();
             $.ajax({
-                type: 'get', url: '@Url.Action("DetailsAsJson", "mem_saleproduct_standard")' + '?memberId=' + memberId + "&saleproduct_code=" + saleproduct_code,
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsJson", "mem_saleproduct_standard")' + '?memberId=' + memberId + "&saleproduct_code=" + saleproduct_code,
             }).done(function (resp) {
                 if (resp != "") {
                     resp = JSON.parse(resp);
