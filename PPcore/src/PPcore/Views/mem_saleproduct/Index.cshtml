@@ -250,6 +250,7 @@
                         loadTableMemProductPlan(0);
 
                         mem_saleproduct_standardDetails();
+                        mem_saleproduct_imageDetails();
                     });
 
                     $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
@@ -282,8 +283,6 @@
                 $('#saleproduct_group_code').trigger("change");
 
                 loadTableMemProductPlan("-1");
-
-
 
             });
 
@@ -375,7 +374,7 @@
                 $('#aAmountOfPeriod').val($('#aAmountOfPeriodHidden').val());
                 $('#aAmountPerYear').val($('#aAmountPerYearHidden').val());
                 $('#aAmountAll').val($('#aAmountAllHidden').val());
-                
+
 
                 $('#btnEditMemSaleProductPlan').off('click').on('click', function () {
                     var saleproduct_code = $('#saleproduct_code').val();
@@ -626,8 +625,66 @@
             });
         }
 
+        function mem_saleproduct_imageUploadImage() {
+            var fInput = '#fileMemSaleProductUploadImage';
+            if ($(fInput)[0].files[0]) {
+                //$('#waitMemPhoto').show();
+                var formData = new FormData();
+                formData.append("fileImage", $(fInput)[0].files[0]);
+                formData.append("memberId", '@ViewBag.memberId'); formData.append("saleproduct_code", $('#saleproduct_code').val());
+                $.ajax({
+                    type: 'post', url: '@Url.Action("uploadImage", "mem_saleproduct_image")',
+                    data: formData, processData: false, contentType: false,
+                }).done(function (resp) {
+                    console.log(resp);
+                    var result = resp.result; var fileName = resp.fileName;
+                    mem_saleproduct_imageDetails();
+                });
+            }
 
+        }
 
+        function mem_saleproduct_imageDetails() {
+            var memberId = '@ViewBag.memberId';
+            var saleproduct_code = $('#saleproduct_code').val();
+            $.ajax({
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsJson", "mem_saleproduct_image")' + '?memberId=' + memberId + "&saleproduct_code=" + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#mem_saleproductUploadImagePanel').empty();
+                    for (var i = 0; i < resp.length; i++) {
+                        var imgblock = '<div id="' + resp[i].saleproduct_image_code + '" class="img-thumbnail" style="height:175px;width:175px;margin-top:10px;margin-left:15px;margin-right:15px;">';
+                        var idIsMark = "ismark" + resp[i].saleproduct_image_code; //var idImageCode = "ic" + resp[i].image_code;
+                        imgblock += '<div id="' + idIsMark + '" style="display:none">0</div><div id="imc" style="display:none">' + resp[i].saleproduct_image_code + '</div>';
+                        imgblock += '<div class="row" style="position:relative;">&nbsp;<br/>&nbsp;';
+                        var idMark = "mark" + resp[i].saleproduct_image_code;
+                        //imgblock += '<div class="col-xs-6" style="position:absolute;top:0px;left:10px;"><div class="photo-mark" id="' + idMark + '" aria-hidden="true" style="font-size:25px;" onclick="markPhoto(\'' + resp[i].saleproduct_standard_code + '\');"><i class="fa fa-square-o" aria-hidden="true"></i></div></div>';
+                        imgblock += '<div class="col-xs-6" style="position:absolute;top:-5px;left:150px;"><div class="photo-delete" aria-hidden="true" style="font-size:20px;" onclick="mem_saleproduct_imageDelete(\'' + resp[i].member_code + '\',\'' + resp[i].saleproduct_code + '\',\'' + resp[i].saleproduct_image_code + '\')"><i class="fa fa-times" aria-hidden="true"></i></div></div>';
+                        imgblock += '</div>';
+                        imgblock += '<img id="imgMSPI' + resp[i].saleproduct_image_code + '" class="img-responsive center-block" style="margin-top:-15px;height:130px;" src="' + '@Url.Action("image", "pic_image")' + '?id=' + resp[i].saleproduct_image_code + '" />';
+
+                        $('#mem_saleproductUploadImagePanel').append(imgblock);
+
+                    }
+                }
+            });
+        }
+
+        function mem_saleproduct_imageDelete(member_code, saleproduct_code, saleproduct_image_code) {
+
+            $.ajax({
+                type: 'post', url: '@Url.Action("Delete", "mem_saleproduct_image")' + '?saleproduct_image_code=' + saleproduct_image_code +
+                    '&saleproduct_code=' + saleproduct_code + '&member_code=' + member_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        mem_saleproduct_imageDetails();
+                    }
+
+                }
+            });
+        }
 
     </script>
 }

@@ -1,5 +1,8 @@
 ﻿@model PPcore.ViewModels.mem_saleproduct.mem_saleproductInputViewModel
 
+<div id="mem_saleproduct_standardFileInput" style="height:1px;"></div>
+<form id="formFileMemSaleProductUploadImage" enctype="multipart/form-data" style="height:1px;"><input id="fileMemSaleProductUploadImage" type="file" style="visibility:hidden" onchange="mem_saleproduct_imageUploadImage();" accept="image/*" /></form>
+
 <form id="mem_saleproductForm" class="form-horizontal"><input id="saleproduct_code" value="@ViewBag.saleproduct_code" hidden/>
     <input id="vbIsCreate" value="@ViewBag.IsCreate" hidden /><input id="vbMemberId" value="@ViewBag.memberId" hidden />
     <div class="form-group">
@@ -18,7 +21,6 @@
         </div>
         <label asp-for="aAmount" class="col-md-2 control-label">จำนวน</label>
         <div asp-for="aAmount" class="col-md-4">
-            @*<input id="aAmountAll" class="form-control" readonly value="@ViewBag.aAmount"/>*@
             <input id="aAmountAll" class="form-control" readonly  />
         </div>
     </div>
@@ -34,6 +36,25 @@
         <div class="col-md-4">
             <select id="saleproduct_unit_code" class="form-control" asp-items="@ViewBag.saleproduct_unit" style="border-color:orangered;"></select>
             <span id="saleproduct_unit_code_msg" class="text-danger" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">รูปภาพ</label>
+        <div class="col-md-10">
+            <div id="btnMemSaleProductUploadImage" class="btn btn-default btn-panel-yellow " onclick="fileMemSaleProductUploadImage.click();">&nbsp;<i class="fa fa-plus-circle" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div id="mem_saleproductUploadImageRenderBody" class="col-md-offset-2 col-md-10">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="mem_saleproductUploadImagePanel" class="well" style="padding-left:10px;padding-top:0px;max-height:200px;overflow-y:auto;"><br /></div>
+                </div>
+            </div>
+
+
         </div>
     </div>
 
@@ -232,21 +253,4 @@
     </div>
 
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </form>
-<div id="mem_saleproduct_standardFileInput"></div>
-

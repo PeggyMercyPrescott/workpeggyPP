@@ -18,7 +18,7 @@ namespace PPcore.Controllers
         {
             var d = DateTime.Now.AddDays(-1);
             var dFormat = "SP" + d.ToString("yyMMddHHmmssfffffff");
-            var saleproducts = _context.saleproduct.Where(sp => sp.x_status == "T" && sp.saleproduct_code.CompareTo(dFormat) < 0);
+            var saleproducts = _context.saleproduct.Where(ssp => ssp.x_status == "T" && ssp.saleproduct_code.CompareTo(dFormat) < 0).ToList();
             foreach (var sp in saleproducts)
             {
                 var mspps = _context.mem_saleproduct_plan.Where(mmspp => mmspp.saleproduct_code == sp.saleproduct_code).ToList();
