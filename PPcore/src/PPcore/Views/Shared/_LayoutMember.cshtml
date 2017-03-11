@@ -358,7 +358,7 @@
         }
         function setTabColor() {
             $.ajax({
-                type: 'get', url: '@Url.Action("ListTabNoData", "members", new { memberId = @ViewBag.memberId })',
+                type: 'get', cache: false, url: '@Url.Action("ListTabNoData", "members", new { memberId = @ViewBag.memberId })',
             }).done(function (resp) {
                 resp = JSON.parse(resp);
                 for (i = 0; i < resp.length; i++) {

@@ -279,6 +279,35 @@ background-color: #093D6A;
   height: 50px;
 }
 
+.panel-yellow {
+  border-color: #FFC000;
+}
+.panel-yellow > .panel-heading {
+  color: black;
+  background-color: #FFC000;
+  border-color: #FFC000;
+  height: 50px;
+}
+
+.panel-yellow-search {
+  border-color: #FFC000;
+}
+.panel-yellow-search > .panel-heading {
+  color: black;
+  background-color: #FFC000;
+  border-color: #FFC000;
+  height: 30px;
+}
+
+.panel-blue-search {
+  border-color: #093D6A;
+}
+.panel-blue-search > .panel-heading {
+  color: white;
+  background-color: #093D6A;
+  border-color: #093D6A;
+}
+
 .btn-panel-yellow {
   color: black;
   background-color: #FFC000;

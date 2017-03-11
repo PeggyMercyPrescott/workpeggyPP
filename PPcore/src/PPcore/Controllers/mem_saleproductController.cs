@@ -14,7 +14,7 @@ namespace PPcore.Controllers
     {
         private readonly PalangPanyaDBContext _context;
 
-        private void clearTempData()
+        private async void clearTempData()
         {
             var d = DateTime.Now.AddDays(-1);
             var dFormat = "SP" + d.ToString("yyMMddHHmmssfffffff");
@@ -48,7 +48,7 @@ namespace PPcore.Controllers
             //{
             //    _context.saleproduct.Remove(sp);
             //}
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         private void prepareViewBag(string member_code)

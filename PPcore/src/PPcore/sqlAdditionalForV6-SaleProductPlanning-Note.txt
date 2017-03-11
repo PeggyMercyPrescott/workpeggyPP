@@ -4,7 +4,6 @@
 4. table mem_saleproduct ชื่อ field product_unit เปลี่ยนเป็น saleproduct_unit_code 
 5. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field wholesale_condition จาก varbinary(100) เป็น nvarchar(150)
 6. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field product_life จาก varchar(50) เป็น nvarchar(50)
-
 7. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field capacity_per_day จาก varchar(50) เป็น nvarchar(50)
 8. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field capacity_per_month จาก varchar(50) เป็น nvarchar(50)
 9. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field advance_order_condition จาก varchar(150) เป็น nvarchar(150)
@@ -12,22 +11,16 @@
 11. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field contact_other จาก varchar(50) เป็น nvarchar(50)
 12. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field delivery_other จาก varchar(50) เป็น nvarchar(50)
 13. table mem_saleproduct เปลี่ยนประเภทข้อมูลของ field product_detail จาก varchar(500) เป็น nvarchar(500)            
-			
-
-   
-            
-6. table saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code 
-7. table saleproduct_standard ชื่อ field standard_desc_thai เปลี่ยนเป็น saleproduct_standard_desc_thai เปลี่ยนประเภทข้อมูลจาก varchar(100) เป็น nvarchar(100) 
-8. table saleproduct_standard ชื่อ field standard_desc_eng เปลี่ยนเป็น saleproduct_standard_desc_eng เปลี่ยนประเภทข้อมูลจาก varchar(100) เป็น nvarchar(100) 
-9. mem_saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code
-9. mem_saleproduct_standard ลบ field rec_no ออก
-
-10. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_code เพื่อให้ คีย์ เป็นชื่อเดียวกันกับ table อื่น
-11. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_desc_thai, saleproduct_unit_desc_eng เพื่อให้ไปในทางเดียวกัน
-12. table saleproduct_unit เปลี่ยนประเภทข้อมูลของ field saleproduct_unit_desc_thai จาก nvarchar(30) ไปเป็น nvarchar(30) 
-13. เพิ่ม table mem_saleproduct_image สำหรับเก็บ ref ไปยัง table pic_image ที่เก็บรูปภาพ
-
-xx. table mem_saleproduct_plan เพิ่ม trigger ในการทำ auto generate สำหรับ field period_no
+14. table saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code 
+15. table saleproduct_standard ชื่อ field standard_desc_thai เปลี่ยนเป็น saleproduct_standard_desc_thai เปลี่ยนประเภทข้อมูลจาก varchar(100) เป็น nvarchar(100) 
+16. table saleproduct_standard ชื่อ field standard_desc_eng เปลี่ยนเป็น saleproduct_standard_desc_eng เปลี่ยนประเภทข้อมูลจาก varchar(100) เป็น nvarchar(100) 
+17. mem_saleproduct_standard ชื่อ field standard_code เปลี่ยนเป็น saleproduct_standard_code
+18. mem_saleproduct_standard ลบ field rec_no ออก
+19. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_code เพื่อให้ คีย์ เป็นชื่อเดียวกันกับ table อื่น
+20. table saleproduct_unit เปลี่ยนชื่อ field saleproduct_unit_desc_thai, saleproduct_unit_desc_eng เพื่อให้ไปในทางเดียวกัน
+21. table saleproduct_unit เปลี่ยนประเภทข้อมูลของ field saleproduct_unit_desc_thai จาก nvarchar(30) ไปเป็น nvarchar(30) 
+22. เพิ่ม table mem_saleproduct_image สำหรับเก็บ ref ไปยัง table pic_image ที่เก็บรูปภาพ
+23. table mem_saleproduct_plan เพิ่ม trigger ในการทำ auto generate สำหรับ field period_no
 
 * เนื่องจากหน้าจอของ tab ผลิตภัณฑ์ ต้องการให้มีการเพิ่มข้อมูลก่อนที่จะทำการจัดเก็บได้ ดังนี้ 1.รูปภาพผลิตภัณฑ์ 2.ข้อมูลมาตรฐาน 3.รูปภาพมาตรฐาน 4.แผนประมาณการออกสู่ตลาด
 และเนื่องจากยังไม่มีการจัดเก็บ ก็จะยังไม่มี key ของ saleproduct จึงมีความจำเป็นต้องหาที่จัดเก็บชั่วคราว
