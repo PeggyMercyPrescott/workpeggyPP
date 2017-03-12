@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="pull-right" >
-                                        <div id="btnSaleProductStdDetailsAsTableList" class="btn btn-default btn-panel-yellow " onclick="saleproduct_standardDetailsAsTableList();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                        <div class="btn btn-default btn-panel-yellow " onclick="stdSearch();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
                                     </div>
                                 </div>
                             </div>
@@ -37,34 +37,42 @@
                                 </div>
                                 <hr />
                                 <div class="form-group">
-                                    <div class="row">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
                                         <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">กลุ่มผลิตภัณฑ์</label></div>
                                         <div class="col-md-7">
-                                            <select id="mem_saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group" ></select>
+                                            <select id="saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group" ></select>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="row">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
                                         <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">ประเภทผลิตภัณฑ์</label></div>
                                         <div class="col-md-7">
-                                            <select id="mem_saleproduct_type_code" class="form-control"></select>
+                                            <select id="saleproduct_type_code" class="form-control"></select>
                                         </div>
                                     </div>
                                 </div>
                                 <hr />
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">การรับรองมาตรฐาน</label></div>
-                                        <div class="col-md-7">
-                                            <select id="mem_saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group"></select>
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:3px;">การรับรองมาตรฐาน</label></div>
+                                        <div class="col-md-7" style="margin-top:0px;">
+                                            <label class="checkbox-inline text-left" onclick="stdAllClick()">
+                                                <input id="stdAll" type="checkbox" /><b>ทั้งหมด</b>
+                                            </label><br />
+                                            <div class="panel-body" style="height:150px;overflow:scroll;background-color:#FAFAFA;">
+                                                <div style="margin-top:-10px;margin-bottom:-15px;" id="stdBox">
+                                                    @Html.Raw(ViewBag.standard)
+                                                </div>
+                                            </div>
+                                            @*<select id="mem_saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group"></select>*@
                                         </div>
                                     </div>
                                 </div>
                                 <hr/>
                                 <div class="form-group">
-                                    <div class="row">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
                                         <div class="col-md-2 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;margin-right:-10px">ราคา</label></div>
                                         <div class="col-md-4">
                                             <input id="searchword" class="form-control" placeholder="จาก" autocomplete="off" />
@@ -78,46 +86,33 @@
                                 </div>
                                 <hr />
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">การขนส่ง</label></div>
-                                        <div class="col-md-7">
-                                            <input id="searchword" class="form-control" placeholder="ชื่อผลิตภัณฑ์" autocomplete="off" />
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;">การขนส่ง</label></div>
+                                        <div class="col-md-7" style="margin-top:-1px;">
+                                            <label class="checkbox-inline text-left" onclick="deliverAllClick()">
+                                                <input id="deliverAll" type="checkbox" /><b>ทั้งหมด</b>
+                                            </label><br />
+                                            <div class="panel-body" style="margin-top:-15px;" >
+                                                <div>
+                                                    <label class="checkbox-inline text-left">
+                                                        <input id="delivery_post" type="checkbox" />ไปรษณีย์
+                                                    </label><br/>
+                                                    <label class="checkbox-inline text-left">
+                                                        <input id="delivery_bus" type="checkbox" />รถทัวร์
+                                                    </label><br/>
+                                                    <label class="checkbox-inline text-left">
+                                                        <input id="delivery_train" type="checkbox" />รถไฟ
+                                                    </label><br />
+                                                    <label class="checkbox-inline" >
+                                                        <input id="delivery_other" type="checkbox" />อื่นๆ
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-11">
-                                            <label class="checkbox-inline">
-                                                <input id="delivery_post" type="checkbox"><label>mem_saleproduct.delivery_post</label>
-                                            </label>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label class="checkbox-inline">
-                                                <input id="delivery_bus" type="checkbox"><label>mem_saleproduct.delivery_bus</label>
-                                            </label>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label class="checkbox-inline">
-                                                <input id="delivery_train" type="checkbox"><label>mem_saleproduct.delivery_train</label>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-10">
-                                            <label class="checkbox-inline">
-                                                <input id="delivery_other" type="checkbox" onclick="delivery_otherTick();"><label>mem_saleproduct.delivery_other</label>
-                                            </label>
-                                            <input id="mem_saleproduct_delivery_other" class="form-control" readonly />
-                                        </div>
-
-
-                                    </div>
-                                </div>
 
                             </form>
 
@@ -126,7 +121,7 @@
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-6">
                                     <div class="pull-right">
-                                        <div id="btnSaleProductStdDetailsAsTableList" class="btn btn-default btn-panel-yellow " onclick="saleproduct_standardDetailsAsTableList();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                        <div class="btn btn-default btn-panel-yellow " onclick="stdSearch();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
                                     </div>
                                 </div>
                             </div>
@@ -136,8 +131,9 @@
                 </div>
 
                 <div class="col-md-9 col-sm-7">
-                    <div id="" class="well col-md-12">
-                        <br/><br/><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                    <div id="searchResult" class="well col-md-12">
+                        @*<br/><br/><br /><br /><br /><br /><br /><br /><br /><br /><br />*@
+
                     </div>
                 </div>
             </div>
@@ -218,114 +214,93 @@
     <script>
         $(document).ready(function () {
 
-
-        });
-        function changeUName() {
-            $('#btnChangeUName').html('&nbsp;<i class="fa fa-refresh fa-spin" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;');
-            if ($('#uname').val().trim()) {
+            $('#saleproduct_group_code').off('change').on('change', function () {
                 $.ajax({
-                    async: true,
-                    type: "POST",
-                    url: "@Url.Action("SettingsDisplayName", "Security")",
-                    data: {
-                        uname: $('#uname').val().trim(),
-                    },
-                success: function (data) {
-                    if (data.result != "success") {
-                        $('#a_label').text('ตรวจพบความผิดพลาด');
-                        $('#a_body').text('ตรวจพบความผิดพลาด กรุณาติดต่อผู้ดูแลระบบ');
-                        $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-                    }
-                    else
-                    {
-                        $('#unameBox').text(data.uname);
-                        $('#_displayname_').text(data.uname);
-                    }
-                    $('#uname').val('');
-                    $('#btnChangeUName').html('&nbsp;<i class="fa fa-save" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;');
-                }
-            });
-            } else {
-                $('#unameMsg').text('กรุณากรอกข้อมูล'); $('#unameMsg').show();
-            }
-        }
-        function changePwd() {
-            $('#btnChangePwd').html('&nbsp;<i class="fa fa-refresh fa-spin" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;');
-            var upwdold = $('#upwdold').val().trim(); var upwd = $('#upwd').val().trim(); var upwdrepeat = $('#upwdrepeat').val().trim();
-            if (!upwdold) { $('#upwdoldMsg').text('กรุณากรอกข้อมูล'); $('#upwdoldMsg').show(); }
-            if (!upwd) { $('#upwdMsg').text('กรุณากรอกข้อมูล'); $('#upwdMsg').show(); }
-            if (!upwdrepeat) { $('#upwdrepeatMsg').text('กรุณากรอกข้อมูล'); $('#upwdrepeatMsg').show(); }
-            if (upwdold && upwd && upwdrepeat) {
-                if (upwd != upwdrepeat) {
-                    $('#upwdMsg').text('กรุณาตรวจสอบรหัสผ่านอีกครั้ง'); $('#upwdMsg').show();
-                    $('#upwdrepeatMsg').text('กรุณาตรวจสอบรหัสผ่านอีกครั้ง'); $('#upwdrepeatMsg').show();
-                }
-                else
-                {
-                    $.ajax({
-                        async: true,
-                        type: "POST",
-                        url: "@Url.Action("SettingsChangePassword", "Security")",
-                        data: {
-                        upwdold: upwdold,
-                        upwdnew: upwd,
-                        },
-                        success: function (data) {
-                            if (data.result == "success")
-                            {
-                                $('#upwdold').val('');$('#upwd').val('');$('#upwdrepeat').val('');
-                                $('#a_label').text('ระบบได้ทำการเปลี่ยนรหัสผ่านเรียบร้อย');
-                                $('#a_body').html('<span style="color:green">ระบบได้ทำการเปลี่ยนรหัสผ่านเรียบร้อย</span>');
-                                $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-                            }
-                            else if (data.result == "wrong")
-                            {
-                                $('#a_label').text('รหัสผ่านของท่านไม่ถูกต้อง');
-                                $('#a_body').html('<span style="color:red">รหัสผ่านของท่านไม่ถูกต้อง</span>');
-                                $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-                            }
-                            else
-                            {
-                                $('#a_label').text('ตรวจพบความผิดพลาด');
-                                $('#a_body').html('<span style="color:red">ตรวจพบความผิดพลาด กรุณาติดต่อผู้ดูแลระบบ</span>');
-                                $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-                            }
-                        }
-                    });
-                }
-            }
-            $('#btnChangePwd').html('&nbsp;<i class="fa fa-save" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;');
-        }
-        function changeContact() {
-            $('#btnChangeContact').html('&nbsp;<i class="fa fa-refresh fa-spin" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;');
-            var email = $('#email').val().trim();
-            if (!email) { $('#emailMsg').text('กรุณากรอกข้อมูล'); $('#emailMsg').show(); }
-            if (email) {
-                $.ajax({
-                    async: true,
-                    type: "POST",
-                    url: "@Url.Action("SettingsChangeContact", "Security")",
-                    data: {
-                        email: email,
-                    },
-                    success: function (data) {
-                        if (data.result == "success")
-                        {
-                            $('#email').val(''); $('#emailBox').text('อีเมล: '+data.email);
-                            $('#a_label').text('ระบบได้ทำการเปลี่ยนข้อมูลการติดต่อเรียบร้อย');
-                            $('#a_body').html('<span style="color:green">ระบบได้ทำการเปลี่ยนข้อมูลการติดต่อเรียบร้อย</span>');
-                            $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-                        }
-                        else
-                        {
-                            $('#a_label').text('ตรวจพบความผิดพลาด');
-                            $('#a_body').html('<span style="color:red">ตรวจพบความผิดพลาด กรุณาติดต่อผู้ดูแลระบบ</span>');
-                            $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-                        }
+                    type: 'get', url: '@Url.Action("GetProductTypeAsSelect", "saleproducts")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                }).done(function (resp) {
+                    if (resp != "") {
+                        $('#saleproduct_type_code').empty();
+                        $('#saleproduct_type_code').append(resp);
+                        $('#saleproduct_type_code').trigger("change");
+                    } else {
+                        $('#saleproduct_type_code').empty();
                     }
                 });
+            });
+            $('#saleproduct_group_code').trigger("change");
+
+            $("#stdAll").prop('checked', true); stdAllClick();
+            $("#deliverAll").prop('checked', true); deliverAllClick();
+
+        });
+
+        function stdAllClick() {
+            if ($("#stdAll").prop('checked')) {
+                $("input[id*='std_']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            } else {
+                $("input[id*='std_']").each(function () {
+                    $(this).prop('checked', false);
+                });
             }
-            $('#btnChangeContact').html('&nbsp;<i class="fa fa-save" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;บันทึก&nbsp;&nbsp;&nbsp;');
         }
+        function deliverAllClick() {
+            if ($("#deliverAll").prop('checked')) {
+                $("input[id*='delivery']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            } else {
+                $("input[id*='delivery']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+        function stdSearch() {
+            var searchword = $("#searchword").val().trim();
+            $('#searchResult').empty();
+            $.ajax({
+                type: 'post', url: '@Url.Action("Search", "saleproducts")' + '?searchword=' + searchword, // + "&saleproduct_code=" + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp); 
+                    for (var i = 0; i < resp.length; i++) {
+                        var imgblock = '<div id="' + resp[i].saleproduct_code + '" class="img-thumbnail" style="height:265px;width:250px;margin-bottom:15px;margin-right:15px;">';
+                        var idIsMark = "ismark" + resp[i].saleproduct_code;
+                        imgblock += '<img id="imgPd' + resp[i].saleproduct_code + '" class="img-responsive center-block" style="margin-top:0px;height:200px;cursor:pointer;cursor:hand;" src="' + '@Url.Action("image", "pic_image")' + '?id=' + resp[i].image_code + '" />';
+
+                        var desc = "";
+                        if (resp[i].saleproduct_desc != "") {
+                            //if (resp[i].saleproduct_desc.length > 25) {
+                            //    desc = resp[i].saleproduct_desc.substring(0, 25) + '...';
+                            //} else { desc = resp[i].saleproduct_desc; }
+                            desc = resp[i].saleproduct_desc;
+                        } else { desc = "&nbsp;"; }
+                        var idDesc = "desc" + resp[i].saleproduct_code;
+                        imgblock += '<div id="' + idDesc + '" style="margin-top:5px;width:100%;text-align:center;font-weight:bold;" >' + desc + '</div>';
+
+                        var desc2 = "";
+                        if (resp[i].retail_price != "") {
+                            desc2 = resp[i].retail_price;
+                        } else { desc2 = "&nbsp;"; }
+                        var idDesc2 = "desc2" + resp[i].retail_price;
+                        imgblock += '<div id="' + idDesc2 + '" style="margin-top:5px;width:100%;text-align:center;font-weight:bold;" >ราคา ' + desc2 + ' บาท</div>';
+
+
+                        imgblock += '</div>';
+
+                        $('#searchResult').append(imgblock);
+                    }
+                }
+            });
+
+
+
+        }
+
+
+
+
+
     </script>
 }

@@ -75,12 +75,12 @@
                 <div class="form-group">
                     <label asp-for="mem_saleproduct.retail_price" class="col-md-3 control-label"></label>
                     <div class="col-md-3">
-                        <input asp-for="mem_saleproduct.retail_price" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+                        <input asp-for="mem_saleproduct.retail_price" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode == 46" />
                         <span id="retail_price_msg" class="text-danger" />
                     </div>
                     <label asp-for="mem_saleproduct.wholesale_price" class="col-md-3 control-label"></label>
                     <div class="col-md-3">
-                        <input asp-for="mem_saleproduct.wholesale_price" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" />
+                        <input asp-for="mem_saleproduct.wholesale_price" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.keyCode == 46" />
                         <span id="wholesale_price_msg" class="text-danger" />
                     </div>
                 </div>
