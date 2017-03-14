@@ -21,7 +21,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="pull-right" >
-                                        <div class="btn btn-default btn-panel-yellow " onclick="stdSearch();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                        <div class="btn btn-default btn-panel-yellow " onclick="SearchProduct();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
                                     </div>
                                 </div>
                             </div>
@@ -29,10 +29,13 @@
 
                         <div class="panel-body">
                             <form >
-                                <div class="form-group input-group">
+                                @*<div class="form-group input-group">
                                     <span class="input-group-addon">
                                         <i class="fa fa-search"></i>
                                     </span>
+                                    <input id="searchword" class="form-control" placeholder="ชื่อผลิตภัณฑ์" autocomplete="off" />
+                                </div>*@
+                                <div class="form-group">
                                     <input id="searchword" class="form-control" placeholder="ชื่อผลิตภัณฑ์" autocomplete="off" />
                                 </div>
                                 <hr />
@@ -75,11 +78,11 @@
                                     <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
                                         <div class="col-md-2 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;margin-right:-10px">ราคา</label></div>
                                         <div class="col-md-4">
-                                            <input id="searchword" class="form-control" placeholder="จาก" autocomplete="off" />
+                                            <input id="minPrice" class="form-control" placeholder="จาก" autocomplete="off" />
                                         </div>
                                         <div class="col-md-1 text-center"><label class="control-label" style="font-size:16px;margin-top:6px;">-</label></div>
                                         <div class="col-md-4">
-                                            <input id="searchword" class="form-control" placeholder="ถึง" autocomplete="off" />
+                                            <input id="maxPrice" class="form-control" placeholder="ถึง" autocomplete="off" />
                                         </div>
                                     </div>
 
@@ -94,16 +97,16 @@
                                             </label><br />
                                             <div class="panel-body" style="margin-top:-15px;" >
                                                 <div>
-                                                    <label class="checkbox-inline text-left">
+                                                    <label class="checkbox-inline text-left" onclick="deliverClick()">
                                                         <input id="delivery_post" type="checkbox" />ไปรษณีย์
                                                     </label><br/>
-                                                    <label class="checkbox-inline text-left">
+                                                    <label class="checkbox-inline text-left" onclick="deliverClick()">
                                                         <input id="delivery_bus" type="checkbox" />รถทัวร์
                                                     </label><br/>
-                                                    <label class="checkbox-inline text-left">
+                                                    <label class="checkbox-inline text-left" onclick="deliverClick()">
                                                         <input id="delivery_train" type="checkbox" />รถไฟ
                                                     </label><br />
-                                                    <label class="checkbox-inline" >
+                                                    <label class="checkbox-inline" onclick="deliverClick()">
                                                         <input id="delivery_other" type="checkbox" />อื่นๆ
                                                     </label>
                                                 </div>
@@ -121,7 +124,7 @@
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-6">
                                     <div class="pull-right">
-                                        <div class="btn btn-default btn-panel-yellow " onclick="stdSearch();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                        <div class="btn btn-default btn-panel-yellow " onclick="SearchProduct();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +135,7 @@
 
                 <div class="col-md-9 col-sm-7">
                     <div id="searchResult" class="well col-md-12">
-                        @*<br/><br/><br /><br /><br /><br /><br /><br /><br /><br /><br />*@
+                        <br/><br/><br /><br /><br /><br /><br /><br /><br /><br /><br />
 
                     </div>
                 </div>
@@ -161,53 +164,6 @@
 
 </div>
 
-<!-- Modal -->
-<div class="modal fade modalForm1" id="a_modal" tabindex="-1" role="dialog" aria-labelledby="a_label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div id="a_header" class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
-                <h4 class="modal-title" id="a_label" style="vertical-align:middle;"></h4>
-            </div>
-            <div class="modal-body container-fluid">
-                <div id="a_body"></div>
-                <br /><br />
-                <div class="pull-right" style="margin-top:-2px;">
-                    <div class="btn btn-default btn-panel-yellow" data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-
-</div>
-<!-- /Modal -->
-<!-- Modal confirm -->
-<div id="c_modal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="confirm_Label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div id="c_header" class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
-                <h4 class="modal-title" id="c_Label" style="vertical-align:middle;">ยืนยันการลบกลุ่มผู้ใช้</h4>
-            </div>
-            <div class="modal-body container-fluid">
-                <div>ยืนยันการลบกลุ่มผู้ใช้?</div>
-                <br />
-                <div>กลุ่มผู้ใช้: <span id="c_rolename" style="color:red"></span></div><br />
-                <hr />
-                <div class="row">
-                    <div class="col-md-4"><button id="btnConfirm" class="btn btn-panel-yellow pull-right" onclick="roleDelete();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ยืนยัน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button></div>
-                    <div class="col-md-4 col-md-offset-4">
-                        <button id="btnCancel" class="btn btn-default" data-dismiss="modal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ยกเลิก&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /Modal confirm -->
 
 @section Scripts {
     <script src="~/lib/bootstrap/js/modal.js"></script>
@@ -245,6 +201,14 @@
                 });
             }
         }
+        function stdClick() {
+            var countAll = 0; var countCheck = 0;
+            $("input[id*='std_']").each(function () {
+                countAll++;
+                if ($(this).prop('checked')) { countCheck++; }
+            });
+            if (countAll == countCheck) { $("#stdAll").prop('checked', true); } else { $("#stdAll").prop('checked', false); }
+        }
         function deliverAllClick() {
             if ($("#deliverAll").prop('checked')) {
                 $("input[id*='delivery']").each(function () {
@@ -256,11 +220,28 @@
                 });
             }
         }
-        function stdSearch() {
+        function deliverClick() {
+            var countAll = 0; var countCheck = 0;
+            $("input[id*='delivery']").each(function () {
+                countAll++;
+                if ($(this).prop('checked')) { countCheck++; }
+            });
+            if (countAll == countCheck) { $("#deliverAll").prop('checked', true); } else { $("#deliverAll").prop('checked', false); }
+        }
+        function SearchProduct() {
             var searchword = $("#searchword").val().trim();
             $('#searchResult').empty();
+            var std = "";
+            $("input[id*='std_']").each(function () {
+                if ($(this).prop('checked')) { std += $(this).attr('id').substring(4) + "|"; }
+            });
+            console.log(std);
             $.ajax({
-                type: 'post', url: '@Url.Action("Search", "saleproducts")' + '?searchword=' + searchword, // + "&saleproduct_code=" + saleproduct_code,
+                type: 'post', url: '@Url.Action("Search", "saleproducts")' + '?searchword=' + searchword + 
+                    "&saleproduct_group_code=" + $('#saleproduct_group_code').val() + "&saleproduct_type_code=" + $('#saleproduct_type_code').val() +
+                    "&minPrice=" + $('#minPrice').val() + "&maxPrice=" + $('#maxPrice').val() +
+                    "&delivery_post=" + $('#delivery_post').prop('checked') + "&delivery_bus=" + $('#delivery_bus').prop('checked') + "&delivery_train=" + $('#delivery_train').prop('checked') + "&delivery_other=" + $('#delivery_other').prop('checked') +
+                    "&std=" + std,
             }).done(function (resp) {
                 if (resp != "") {
                     resp = JSON.parse(resp); 

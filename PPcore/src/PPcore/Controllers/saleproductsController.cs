@@ -30,7 +30,7 @@ namespace PPcore.Controllers
             var cStd = "";
             foreach (var std in stds)
             {
-                cStd += "<label class='checkbox-inline text-left'><input id='std_"+std.saleproduct_standard_code+"' type='checkbox' />"+std.saleproduct_standard_desc_thai+"</label><br />";
+                cStd += "<label class='checkbox-inline text-left' onclick='stdClick();'><input id='std_" + std.saleproduct_standard_code+"' type='checkbox' />"+std.saleproduct_standard_desc_thai+"</label><br />";
             }
             ViewBag.standard = cStd;
 
@@ -38,51 +38,122 @@ namespace PPcore.Controllers
         }
 
         [HttpPost]
-        public IActionResult Search(string searchword)
+        public IActionResult Search(string searchword, string saleproduct_group_code, string saleproduct_type_code,
+            string minPrice, string maxPrice,
+            bool delivery_post, bool delivery_bus, bool delivery_train, bool delivery_other, string std
+            )
         {
-            List<saleproduct> sps;
-            if (String.IsNullOrEmpty(searchword)) {
-                sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y").OrderBy(ssp => ssp.saleproduct_desc).ToList();
-            } else {
-                sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y" && ssp.saleproduct_desc.Contains(searchword)).OrderBy(ssp => ssp.saleproduct_desc).ToList();
+
+            bool requireAdd = false;
+            decimal dMinPrice = 0; decimal dMaxPrice = 9999999;
+            if (!String.IsNullOrEmpty(minPrice))
+            {
+                dMinPrice = decimal.Parse(minPrice);
             }
-            
+            if (!String.IsNullOrEmpty(maxPrice))
+            {
+                dMaxPrice = decimal.Parse(maxPrice);
+            }
+            if (dMinPrice > dMaxPrice) { var temp = dMinPrice; dMinPrice = dMaxPrice; dMaxPrice = temp; }
+
+            string dpost = delivery_post ? "Y" : "N";
+            string dbus = delivery_bus? "Y" : "N";
+            string dtrain = delivery_train ? "Y" : "N";
+            string dother = delivery_other ? "Y" : "N";
+
+
+            IQueryable<saleproduct> sps = null;
+            if (String.IsNullOrEmpty(searchword)) {
+                sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y");
+            } else {
+                sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y" && ssp.saleproduct_desc.Contains(searchword)).OrderBy(ssp => ssp.saleproduct_desc);
+            }
+            if (saleproduct_group_code != "0") sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
+            if (saleproduct_type_code != "0") sps = sps.Where(ssp => ssp.saleproduct_type_code == saleproduct_type_code);
+
+            List<saleproduct> spss = sps.OrderBy(ssp => ssp.saleproduct_desc).ToList();
 
             List<PPcore.ViewModels.saleproduct.SearchResultViewModel> sr = new List<ViewModels.saleproduct.SearchResultViewModel>();
-
             if (sps != null)
             {
-                foreach (var sp in sps)
+                foreach (var sp in spss)
                 {
-                    var s = new PPcore.ViewModels.saleproduct.SearchResultViewModel();
-                    s.saleproduct_code = sp.saleproduct_code;
-                    s.saleproduct_desc = sp.saleproduct_desc;
-                    
+                    requireAdd = false;
+
                     var msp = _context.mem_saleproduct.SingleOrDefault(mmsp => mmsp.saleproduct_code == sp.saleproduct_code);
+                    if (msp.retail_price >= dMinPrice && msp.retail_price <= dMaxPrice) {
 
-                    var p = msp.retail_price;
-                    var n =  p - Math.Truncate(p);
-                    if (n > 0)
-                    {
-                        s.retail_price = String.Format("{0:n}", msp.retail_price);
-                    }
-                    else
-                    {
-                        s.retail_price = String.Format("{0:n0}", msp.retail_price);
+                        if (dbus == "Y" && dpost == "Y" && dtrain == "Y" && dother == "Y")
+                        {
+                            requireAdd = true;
+                        } else if (msp.delivery_bus == dbus && msp.delivery_post == dpost && msp.delivery_train == dtrain) {
+                            if ((dother == "Y" && !String.IsNullOrEmpty(msp.delivery_other)) || (dother == "N" && String.IsNullOrEmpty(msp.delivery_other))) {
+                                requireAdd = true;
+                            }
+                        }
+
+                        if (requireAdd)
+                        {
+                            requireAdd = false;
+                            if (!String.IsNullOrEmpty(std))
+                            {
+                                std = std.Remove(std.Length - 1);
+                                string[] aStd = std.Split('|');
+                                foreach (string s in aStd)
+                                {
+                                    var r = _context.mem_saleproduct_standard.SingleOrDefault(ss => ss.x_status == "Y" && ss.saleproduct_code == msp.saleproduct_code && ss.saleproduct_standard_code == s);
+                                    if (r != null)
+                                    {
+                                        requireAdd = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                requireAdd = true;
+                            }
+
+                        }
+
+
+                        if (requireAdd)
+                        {
+                            var s = new PPcore.ViewModels.saleproduct.SearchResultViewModel();
+                            s.saleproduct_code = sp.saleproduct_code;
+                            s.saleproduct_desc = sp.saleproduct_desc;
+
+                            var p = msp.retail_price;
+                            var n = p - Math.Truncate(p);
+                            if (n > 0)
+                            {
+                                s.retail_price = String.Format("{0:n}", msp.retail_price);
+                            }
+                            else
+                            {
+                                s.retail_price = String.Format("{0:n0}", msp.retail_price);
+                            }
+
+                            var msis = _context.mem_saleproduct_image.Where(mmsi => mmsi.saleproduct_code == sp.saleproduct_code).OrderBy(mmsi => mmsi.saleproduct_code).ToList();
+                            if (msis.Count() != 0)
+                            {
+                                var msi = msis.First();
+                                s.image_code = msi.saleproduct_image_code;
+                            }
+                            else
+                            {
+                                s.image_code = "MSTD6003090948370167483.jpg"; //std-blank.jpg
+                            }
+
+
+                            sr.Add(s);
+                        }
                     }
 
-                    var msis = _context.mem_saleproduct_image.Where(mmsi => mmsi.saleproduct_code == sp.saleproduct_code).OrderBy(mmsi => mmsi.saleproduct_code).ToList();
-                    if (msis.Count() != 0) {
-                        var msi = msis.First();
-                        s.image_code = msi.saleproduct_image_code;
-                    }
-                    else
-                    {
-                        s.image_code = "MSTD6003090948370167483.jpg"; //std-blank.jpg
-                    }
 
 
-                    sr.Add(s);
+
+
+
                 }
 
 
