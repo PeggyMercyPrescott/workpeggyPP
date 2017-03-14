@@ -14,13 +14,19 @@ namespace PPcore.Controllers
     {
         private readonly PalangPanyaDBContext _context;
 
-        private async void clearTempData()
+        private async Task<IActionResult> clearTempData()
         {
             var d = DateTime.Now.AddDays(-1);
             var dFormat = "SP" + d.ToString("yyMMddHHmmssfffffff");
             var saleproducts = _context.saleproduct.Where(ssp => ssp.x_status == "T" && ssp.saleproduct_code.CompareTo(dFormat) < 0).ToList();
             foreach (var sp in saleproducts)
             {
+                var mss = _context.mem_saleproduct.Where(mms => mms.saleproduct_code == sp.saleproduct_code).ToList();
+                foreach (var ms in mss)
+                {
+                    _context.mem_saleproduct.Remove(ms);
+                }
+
                 var mspps = _context.mem_saleproduct_plan.Where(mmspp => mmspp.saleproduct_code == sp.saleproduct_code).ToList();
                 foreach (var mspp in mspps)
                 {
@@ -49,6 +55,7 @@ namespace PPcore.Controllers
             //    _context.saleproduct.Remove(sp);
             //}
             await _context.SaveChangesAsync();
+            return null;
         }
 
         private void prepareViewBag(string member_code)
@@ -109,9 +116,9 @@ namespace PPcore.Controllers
 
         }
 
-        public IActionResult Create(string memberId)
+        public async Task<IActionResult> Create(string memberId)
         {
-            clearTempData();
+            await clearTempData();
 
             var member = _context.member.Single(m => m.id == new Guid(memberId));
 
