@@ -36,7 +36,7 @@ namespace PPcore.Controllers
                 foreach (var msps in mspss)
                 {
                     var pi = _context.pic_image.SingleOrDefault(ppi => ppi.image_code == msps.ref_image);
-                    _context.pic_image.Remove(pi);
+                    if (pi.image_code != "std-blank.jpg") { _context.pic_image.Remove(pi); }
                     _context.mem_saleproduct_standard.Remove(msps);
                 }
                 var mspis = _context.mem_saleproduct_image.Where(mmspi => mmspi.saleproduct_code == sp.saleproduct_code).ToList();
