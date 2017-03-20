@@ -345,10 +345,12 @@ namespace PPcore.Controllers
             }
 
 
-            
-
-
-
+            var mspp = _context.mem_saleproduct_plan.Where(mmspp => mmspp.saleproduct_code == sp.saleproduct_code && mmspp.x_status != "Y").ToList();
+            foreach(var m in mspp)
+            {
+                m.x_status = "Y";
+                _context.mem_saleproduct_plan.Update(m);
+            }
 
             _context.SaveChanges();
             //return Json(new { result = "success", rec_no = mpMax, mem_product_id = mp.id, product_group_desc = pgrp.product_group_desc, product_type_desc = ptyp.product_type_desc, product_desc = pd.product_desc });

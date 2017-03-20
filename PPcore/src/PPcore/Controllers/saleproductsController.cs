@@ -196,31 +196,98 @@ namespace PPcore.Controllers
             var sp = _context.saleproduct.SingleOrDefault(ssp => ssp.saleproduct_code == saleproduct_code);
             var spg = _context.product_group.SingleOrDefault(sspg => sspg.product_group_code == sp.saleproduct_group_code);
             var spt = _context.product_type.SingleOrDefault(sspt => sspt.product_group_code == sp.saleproduct_group_code && sspt.product_type_code == sp.saleproduct_type_code);
+            var msp = _context.mem_saleproduct.SingleOrDefault(mmsp => mmsp.saleproduct_code == sp.saleproduct_code);
 
             var d = new ViewModels.saleproduct.detailsViewModel();
             d.breadcrumb = "<li>"+spg.product_group_desc+"</li><li>"+spt.product_type_desc+"</li><li class='active'>"+sp.saleproduct_desc+"</li>";
 
+            d.total_quantity = String.Format("{0:n0}", _context.mem_saleproduct_plan.Where(m => m.saleproduct_code == sp.saleproduct_code && m.x_status == "Y").Sum(m => m.estimate_qty));
+
+            var rp = msp.retail_price;
+            var n = rp - Math.Truncate(rp);
+            if (n > 0)
+            {
+                d.retail_price = String.Format("{0:n}", msp.retail_price);
+            }
+            else
+            {
+                d.retail_price = String.Format("{0:n0}", msp.retail_price);
+            }
+
+            var wp = msp.wholesale_price;
+            n = wp - Math.Truncate(wp);
+            if (n > 0)
+            {
+                d.wholesale_price = String.Format("{0:n}", msp.wholesale_price);
+            }
+            else
+            {
+                d.wholesale_price = String.Format("{0:n0}", msp.wholesale_price);
+            }
+
+            d.wholesale_condition = !String.IsNullOrEmpty(msp.wholesale_condition)? msp.wholesale_condition:"-";
+
+            d.advance_order_condition = !String.IsNullOrEmpty(msp.advance_order_condition) ? msp.advance_order_condition : "-";
+            d.store_quantity = String.Format("{0:n0}", msp.store_quantity);
+
+            d.product_life = !String.IsNullOrEmpty(msp.product_life) ? msp.product_life : "-";
+            d.capacity_per_day = !String.IsNullOrEmpty(msp.capacity_per_day) ? msp.capacity_per_day : "-";
+            d.capacity_per_month = !String.IsNullOrEmpty(msp.capacity_per_month) ? msp.capacity_per_month : "-";
+
+            d.distribution_channels = !String.IsNullOrEmpty(msp.distribution_channels) ? msp.distribution_channels : "-";
+
+            var delivery = "";
+            if (!String.IsNullOrEmpty(msp.delivery_post) && msp.delivery_post == "Y")
+            {
+                delivery += "ไปรษณีย์, ";
+            }
+            if (!String.IsNullOrEmpty(msp.delivery_bus) && msp.delivery_bus == "Y")
+            {
+                delivery += "รถทัวร์, ";
+            }
+            if (!String.IsNullOrEmpty(msp.delivery_train) && msp.delivery_train == "Y")
+            {
+                delivery += "รถไฟ, ";
+            }
+            if (!String.IsNullOrEmpty(msp.delivery_other))
+            {
+                delivery += msp.delivery_other + ", ";
+            }
+
+            d.delivery = !String.IsNullOrEmpty(delivery)?delivery.Substring(0, delivery.Length - 2):"-";
+
+            d.contact_telephone = !String.IsNullOrEmpty(msp.contact_telephone) ? msp.contact_telephone : "-";
+            d.contact_email = !String.IsNullOrEmpty(msp.contact_email) ? msp.contact_email : "-";
+            d.contact_other = !String.IsNullOrEmpty(msp.contact_other) ? msp.contact_other : "-";
+
+            d.product_detail = !String.IsNullOrEmpty(msp.product_detail) ? msp.product_detail : "-";
+            d.x_note = !String.IsNullOrEmpty(msp.x_note) ? msp.x_note : "-";
+
+            var stdUl = "<ul>";
+            var msps = _context.mem_saleproduct_standard.Where(mmsps => mmsps.saleproduct_code == sp.saleproduct_code && mmsps.x_status == "Y").ToList();
+            foreach(var m in msps)
+            {
+                var s = _context.saleproduct_standard.SingleOrDefault(ss => ss.saleproduct_standard_code == m.saleproduct_standard_code);
+                stdUl += "<li>" + s.saleproduct_standard_desc_thai + "</li>";
+            }
+            stdUl += "</ul>";
+
+            d.standardUL = stdUl;
+
+            var spu = _context.saleproduct_unit.SingleOrDefault(sspu => sspu.saleproduct_unit_code == msp.saleproduct_unit_code);
+            d.saleproduct_unit = spu.saleproduct_unit_desc_thai;
+
+
+
             var mspi = _context.mem_saleproduct_image.Where(mmspi => mmspi.saleproduct_code == sp.saleproduct_code).OrderBy(mmspi => mmspi.saleproduct_image_code).ToList();
 
-            //List<ViewModels.saleproduct.fotoramaData> fList = new List<ViewModels.saleproduct.fotoramaData>();
-
-            d.images = ""; //string s = "";
-
-            //UrlHelper url;
-            //Uri requestUrl = url.RequestContext.HttpContext.Request.Url;
-
-            //string absoluteAction = string.Format("{0}://{1}{2}", requestUrl.Scheme, requestUrl.Authority, url.Action(action, controller));
+            d.images = ""; 
 
             if (mspi.Count() != 0)
             {
                 foreach (var m in mspi)
                 {
-                    //d.images += "<a href='"+ Url.Action("image", "pic_image")+"?id="+m.saleproduct_image_code+"'></a>";
-                    //d.images += "<img src='" + Url.Action("image", "pic_image", null, Request.url.scheme) + "?id=" + m.saleproduct_image_code + "'>";
                     d.images += m.saleproduct_image_code + "|";
-
-                    //s = Url.Action("image", "pic_image") + "?id=" + m.saleproduct_image_code;
-                    //fList.Add(new ViewModels.saleproduct.fotoramaData { img = s, thumb = s });
                 }
             }
             else
@@ -228,10 +295,10 @@ namespace PPcore.Controllers
                 d.images = "std-blank.jpg" + "|";
             }
 
-            //d.fotoramaDataList = fList;
+            d.saleproduct_desc = sp.saleproduct_desc;
+
             string pjson = JsonConvert.SerializeObject(d);
             return Json(pjson);
-
         }
 
         [HttpGet]
