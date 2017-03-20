@@ -155,7 +155,7 @@
                         </div>
 
                         <div class="pull-right">
-                            <div class="btn btn-default btn-panel-yellow " onclick="console.log('reserve');">&nbsp;&nbsp;&nbsp;จอง&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <div id="btnReserve" class="btn btn-default btn-panel-yellow ">&nbsp;&nbsp;&nbsp;จอง&nbsp;&nbsp;&nbsp;&nbsp;</div>
                         </div>
 
                         <div style="margin-left:100px;height:35px;">
@@ -351,6 +351,30 @@
 
 </div>
 
+<!-- Modal -->
+<div id="saleproduct_reservationCreateModal" class="modal fade modalForm3" tabindex="-1" role="dialog" aria-labelledby="saleproduct_reservationCreateModalLabel" aria-hidden="true">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="pull-left" style="margin-top:-5px;"><h4>ข้อมูลการจอง</h4></div>
+                <div class="pull-right" style="margin-top:0px;">
+                    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="reservePost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                </div>
+            </div>
+            <div class="modal-body container-fluid modalForm3Body">
+
+                <div id="saleproduct_reservationCreateModalRenderBody"></div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true" onclick="reserveClose();">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
 
 @section Scripts {
     <script src="~/lib/bootstrap/js/modal.js"></script>
@@ -535,7 +559,9 @@
                     $('#product_detail').html(resp.product_detail);
                     $('#x_note').html(resp.x_note);
 
-                    
+                    $('#btnReserve').off('click').on('click', function () {
+                        reserve(saleproduct_code);
+                    });
 
                     $("#searchResult").toggle("slide", { direction: "left" }, 500);
                     $("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
@@ -545,13 +571,26 @@
         }
 
         function hideDetails() {
-            //$("#detailsSaleProduct").toggle("slide");
-            //$('#detailsSaleProduct').animate({ width: 'toggle' });
-
             $("#searchResult").toggle("slide", { direction: "left" },500);
             $("#detailsSaleProduct").toggle("slide", { direction: "right" },500);
         }
 
+        function reserve(saleproduct_code) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "saleproduct_reservation")' + '?saleproduct_code=' + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    $("#saleproduct_reservationCreateModalRenderBody").empty();
+                    $("#saleproduct_reservationCreateModalRenderBody").html(resp);
+                }
+            });
+            $('#saleproduct_reservationCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+
+        function reserveClose() {
+            $('#saleproduct_reservationCreateModal').modal('hide');
+            //window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+        }
 
     </script>
 }

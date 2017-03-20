@@ -9,3 +9,29 @@ INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDa
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'C5A644A2-97B0-40E5-AA4D-E2AFE4CDF428', 631200, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2017-03-13 10:16:18');
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'C5A644A2-97B0-40E5-AA4D-E2AFE4CDF428', 631300, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2017-03-13 10:16:18');
 
+/*==============================================================*/
+/* Table: saleproduct_reservation                               */
+/*==============================================================*/
+
+CREATE TABLE saleproduct_reservation (
+	reservation_code		VARCHAR(30)		NOT NULL,
+	saleproduct_code		VARCHAR(30)		NOT NULL,
+	reservation_amount		INTEGER			NOT NULL,
+	reservation_status		CHAR(1)			NOT NULL,
+	down_payment			MONEY			NOT NULL,
+	is_retail_price			CHAR(1)			NOT NULL,
+	is_member				CHAR(1)			NOT NULL,
+	reserving_member_code	VARCHAR(30)		NOT NULL,
+	reservation_note		NVARCHAR(500)	NULL,
+	CreatedBy uniqueidentifier NOT NULL,
+	CreatedDate DATETIME NOT NULL,
+	EditedBy uniqueidentifier NOT NULL,
+	EditedDate DATETIME NOT NULL,
+	x_status char(1) null,
+	x_note nvarchar(50) null,
+	x_log nvarchar(500) null,
+	id uniqueidentifier NOT NULL DEFAULT (newid()),
+	rowversion	timestamp null,
+	constraint pk_saleproduct_reservation primary key (reservation_code)
+);
+GO

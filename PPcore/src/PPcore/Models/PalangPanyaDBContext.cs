@@ -188,6 +188,38 @@ namespace PPcore.Models
                 entity.Property(e => e.saleproduct_image_code).HasColumnType("varchar(30)");
             });
 
+            modelBuilder.Entity<saleproduct_reservation>(entity =>
+            {
+                entity.HasKey(e => new { e.reservation_code })
+                    .HasName("pk_saleproduct_reservation");
+
+                entity.Property(e => e.reservation_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.saleproduct_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.reservation_amount).HasColumnType("int");
+                entity.Property(e => e.reservation_status).HasColumnType("char(1)");
+                entity.Property(e => e.down_payment).HasColumnType("decimal");
+                entity.Property(e => e.is_retail_price).HasColumnType("char(1)");
+                entity.Property(e => e.is_member).HasColumnType("char(1)");
+                entity.Property(e => e.reserving_member_code).HasColumnType("varchar(30)");
+                entity.Property(e => e.reservation_note).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.CreatedBy).HasColumnType("uniqueidentifier");
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.EditedBy).HasColumnType("uniqueidentifier");
+                entity.Property(e => e.EditedDate).HasColumnType("datetime");
+
+                entity.Property(e => e.id).HasDefaultValueSql("newid()");
+
+                entity.Property(e => e.rowversion)
+                    .HasColumnType("timestamp")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.x_log).HasColumnType("nvarchar(500)");
+
+                entity.Property(e => e.x_note).HasColumnType("nvarchar(50)");
+
+                entity.Property(e => e.x_status).HasColumnType("char(1)");
+            });
 
             modelBuilder.Entity<product>(entity =>
             {
@@ -1278,6 +1310,7 @@ namespace PPcore.Models
         public virtual DbSet<saleproduct> saleproduct { get; set; }
         public virtual DbSet<saleproduct_standard> saleproduct_standard { get; set; }
         public virtual DbSet<saleproduct_unit> saleproduct_unit { get; set; }
+        public virtual DbSet<saleproduct_reservation> saleproduct_reservation { get; set; }
 
         public virtual DbSet<mem_saleproduct> mem_saleproduct { get; set; }
         public virtual DbSet<mem_saleproduct_standard> mem_saleproduct_standard { get; set; }
