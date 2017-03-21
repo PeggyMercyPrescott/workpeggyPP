@@ -124,7 +124,7 @@ namespace PPcore.Controllers
                 p.launch_date = ldate;
                 p.launch_year = ldate.Year.ToString();
                 p.estimate_qty = int.Parse(estimate_qty);
-
+                p.x_status = "Y";
                 _context.Add(p);
                 await _context.SaveChangesAsync();
 

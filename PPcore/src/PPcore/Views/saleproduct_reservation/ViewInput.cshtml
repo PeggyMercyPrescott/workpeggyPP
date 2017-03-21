@@ -12,8 +12,7 @@
     <div class="form-group">
         <label asp-for="saleproduct_desc" class="col-md-2 control-label"></label>
         <div class="col-md-10">
-            <input asp-for="saleproduct_desc" class="form-control" />
-            <span asp-validation-for="saleproduct_desc" class="text-danger" />
+            <input asp-for="saleproduct_desc" class="form-control" readonly />
         </div>
     </div>
 
@@ -76,9 +75,9 @@
         </div>
         <div class="col-md-3 col-md-offset-4 col-md-pull-4">
             <div class="input-group">
-                <input asp-for="reserving_member_code" class="form-control" readonly>
+                <input asp-for="reserving_member_code" class="form-control" >
                 <span class="input-group-btn">
-                    <button id="reserving_member_code_button" class="btn btn-default" type="button">
+                    <button id="reserving_member_code_button" class="btn btn-default" type="button" onclick="getMemberAddress();" >
                         <i class="fa fa-search"></i>
                     </button>
                 </span>

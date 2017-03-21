@@ -526,7 +526,7 @@
                         $('#saleproductImageIndicators').append('<li data-target="#saleproductImage" data-slide-to="' + i + '" ' + cActive + '></li>');
                         $('#saleproductImageInner').append('<div class="item ' + cActive2 + '"><img style="height:400px;width:auto;" class="img-responsive center-block" src="' + urlPath + '@Url.Action("image", "pic_image")' + "?id=" + iss[i] + '"></div>');
                     }
-                    
+
                     //console.log($('#saleproductImageIndicators').html());
                     //console.log($('#saleproductImageInner').html());
 
@@ -584,6 +584,8 @@
                 if (resp != "") {
                     $("#saleproduct_reservationCreateModalRenderBody").empty();
                     $("#saleproduct_reservationCreateModalRenderBody").html(resp);
+                    setEventDropdownProvince();
+                    $('#province_code').trigger("change"); $('#district_code').trigger("change"); $('#subdistrict_code').trigger("change");
                 }
             });
             $('#saleproduct_reservationCreateModal').modal({ backdrop: 'static', keyboard: false });
@@ -613,6 +615,134 @@
                 $('#buyingtype_retail_sum').html("&nbsp;");
                 $('#buyingtype_wholesale_sum').html("&nbsp;");
             }
+        }
+        function setEventDropdownProvince() {
+            $('#province_code').off("change").on("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_district")' + '?provinceCode=' + $('#province_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#district_code').empty();
+                        $("#district_code").prop("disabled", true);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#district_code").prop("disabled", false);
+                        $('#district_code').empty();
+                        $('#district_code').append(resp);
+                        $('#district_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#district_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_subdistrict")' + '?districtCode=' + $('#district_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#subdistrict_code").prop("disabled", false);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').append(resp);
+                        $('#subdistrict_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#subdistrict_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_list_zip")' + '?subdistrictCode=' + $('#subdistrict_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#zip_code').val('');
+                    } else {
+                        $('#zip_code').val(resp);
+                    }
+                });
+
+            });
+        }
+        function getMemberAddress() {
+            $.ajax({
+                type: 'get', url: '@Url.Action("getMemberAddress", "saleproduct_reservation")' + '?member_code=' + $('#reserving_member_code').val().trim(),
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#fname').val(resp.fname); $('#lname').val(resp.lname);
+                    $('#place_name').val(resp.place_name); $('#tel').val(resp.tel);
+                    $('#building').val(resp.building); $('#floor').val(resp.floor);
+
+                    $('#room').val(resp.room); $('#village').val(resp.village);
+                    $('#h_no').val(resp.h_no); $('#lot_no').val(resp.lot_no);
+                    $('#street').val(resp.street); $('#lane').val(resp.lane);
+
+                    $('#province_code').val(resp.province_code);
+                    $('#province_code').trigger("change");
+                    setTimeout(function () {
+                        $('#district_code').val(resp.district_code);
+                        $('#district_code').trigger("change");
+                        setTimeout(function () {
+                            $('#subdistrict_code').val(resp.subdistrict_code);
+                            setTimeout(function () {
+                                $('#zip_code').val(resp.zip_code);
+                            }, 300);
+                        }, 300);
+                    }, 300);
+                }
+            });
+
+        }
+        function reservePost() {
+            var reservation_amount = $('#reservation_amount').val();
+            var reservation_status = $('#reservation_status').val();
+            var buyingtype = $("input[name='buyingtype']:checked").val();
+            var is_retail_price = (buyingtype == "retail") ? "Y" : "N";
+            var down_payment = $('#down_payment').val().trim();
+            var reserveBy = $("input[name='reserveBy']:checked").val();
+            var is_member = (reserveBy == "ismember") ? "Y" : "N";
+            var reserving_member_code = $('#reserving_member_code').val().trim();
+
+            var fname = $('#fname').val(); var lname = $('#lname').val();
+            var place_name = $('#place_name').val();
+            var tel = $('#tel').val();
+            var building = $('#building').val();
+            var floor = $('#floor').val();
+            var room = $('#room').val();
+            var village = $('#village').val();
+            var h_no = $('#h_no').val();
+            var lot_no = $('#lot_no').val();
+            var street = $('#street').val();
+            var lane = $('#lane').val();
+            var province_code = $('#province_code').val();
+            var district_code = $('#district_code').val();
+            var subdistrict_code = $('#subdistrict_code').val();
+            var zip_code = $('#zip_code').val();
+
+            $.ajax({
+                type: 'post', url: '@Url.Action("Create", "saleproduct_reservation")' + '?reservation_code=' + $('#reservation_code').val().trim() +
+                '&saleproduct_code=' + $('#saleproduct_code').val().trim() + '&reservation_amount=' + reservation_amount +
+                '&reservation_status=' + reservation_status + '&is_retail_price=' + is_retail_price + '&down_payment=' + down_payment +
+                '&is_member=' + is_member + '&reserving_member_code=' + reserving_member_code + 
+                '&fname=' + fname + '&lname=' + lname + '&place_name=' + place_name + '&tel=' + tel + '&building=' + building +
+                '&floor=' + floor + '&room=' + room + '&village=' + village + '&h_no=' + h_no + '&lot_no=' + lot_no + 
+                '&street=' + street + '&lane=' + lane + '&province_code=' + province_code + '&district_code=' + district_code +
+                '&subdistrict_code=' + subdistrict_code + '&zip_code=' + zip_code + '&CreatedBy=' + $('#CreatedBy').val() + '&CreatedDate=' + $('#CreatedDate').val() +
+                '&reservation_note=' + $('#reservation_note').val().trim()
+                ,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp == "success") { }
+                }
+            });
+
         }
         function reserveClose() {
             $('#saleproduct_reservationCreateModal').modal('hide');

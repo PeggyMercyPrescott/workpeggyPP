@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace PPcore.Controllers
 {
@@ -44,10 +45,12 @@ namespace PPcore.Controllers
         public IActionResult Create(string saleproduct_code)
         {
             prepareViewBag(saleproduct_code);
-           
 
+            var sp = _context.saleproduct.SingleOrDefault(ssp => ssp.saleproduct_code == saleproduct_code);
 
             var iv = new PPcore.ViewModels.saleproduct_reservation.inputViewModel();
+            iv.reservation_code = "";
+            iv.saleproduct_desc = sp.saleproduct_desc;
             iv.CreatedDate = DateTime.Now;
             return View(iv);
         }
@@ -56,121 +59,51 @@ namespace PPcore.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ViewModels.saleproduct_reservation.inputViewModel iv)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(iv);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return Json("");
-        }
+            var r = new saleproduct_reservation();
+            r.reservation_code = "";
+            r.reservation_amount = int.Parse(iv.reservation_amount);
 
-
-        // GET: saleproduct_reservation
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.saleproduct_reservation.ToListAsync());
-        }
-
-        // GET: saleproduct_reservation/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var saleproduct_reservation = await _context.saleproduct_reservation.SingleOrDefaultAsync(m => m.reservation_code == id);
-            if (saleproduct_reservation == null)
-            {
-                return NotFound();
-            }
-
-            return View(saleproduct_reservation);
-        }
-
-        // GET: saleproduct_reservation/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var saleproduct_reservation = await _context.saleproduct_reservation.SingleOrDefaultAsync(m => m.reservation_code == id);
-            if (saleproduct_reservation == null)
-            {
-                return NotFound();
-            }
-            return View(saleproduct_reservation);
-        }
-
-        // POST: saleproduct_reservation/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("reservation_code,CreatedBy,CreatedDate,EditedBy,EditedDate,down_payment,id,is_member,is_retail_price,reservation_amount,reservation_note,reservation_status,reserving_member_code,rowversion,saleproduct_code,x_log,x_note,x_status")] saleproduct_reservation saleproduct_reservation)
-        {
-            if (id != saleproduct_reservation.reservation_code)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(saleproduct_reservation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!saleproduct_reservationExists(saleproduct_reservation.reservation_code))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(saleproduct_reservation);
-        }
-
-        // GET: saleproduct_reservation/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var saleproduct_reservation = await _context.saleproduct_reservation.SingleOrDefaultAsync(m => m.reservation_code == id);
-            if (saleproduct_reservation == null)
-            {
-                return NotFound();
-            }
-
-            return View(saleproduct_reservation);
-        }
-
-        // POST: saleproduct_reservation/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var saleproduct_reservation = await _context.saleproduct_reservation.SingleOrDefaultAsync(m => m.reservation_code == id);
-            _context.saleproduct_reservation.Remove(saleproduct_reservation);
+            _context.saleproduct_reservation.Add(r);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return Json("success");
         }
 
-        private bool saleproduct_reservationExists(string id)
+        public IActionResult getMemberAddress(string member_code)
         {
-            return _context.saleproduct_reservation.Any(e => e.reservation_code == id);
+            var m = _context.member.SingleOrDefault(mm => mm.member_code == member_code && mm.x_status == "Y");
+            if (m != null)
+            {
+                var iv = new ViewModels.saleproduct_reservation.inputViewModel();
+                iv.fname = m.fname;
+                iv.lname = m.lname;
+                iv.tel = m.tel;
+                iv.place_name = m.place_name;
+                iv.building = m.building;
+                iv.floor = m.floor;
+                iv.room = m.room;
+                iv.village = m.village;
+                iv.h_no = m.h_no;
+                iv.lot_no = m.lot_no;
+                iv.street = m.street;
+                iv.lane = m.lane;
+                iv.province_code = m.province_code;
+                iv.district_code = m.district_code;
+                iv.subdistrict_code = m.subdistrict_code;
+                iv.zip_code = m.zip_code;
+
+                string pjson = JsonConvert.SerializeObject(iv);
+                return Json(pjson);
+            }
+            else
+            {
+                return Json("");
+            }
+
         }
+
+
+        //public async Task<IActionResult> Edit(string id, [Bind("reservation_code,CreatedBy,CreatedDate,EditedBy,EditedDate,down_payment,id,is_member,is_retail_price,reservation_amount,reservation_note,reservation_status,reserving_member_code,rowversion,saleproduct_code,x_log,x_note,x_status")] saleproduct_reservation saleproduct_reservation)
+
+
     }
 }
