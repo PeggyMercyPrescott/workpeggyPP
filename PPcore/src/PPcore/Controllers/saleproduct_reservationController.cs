@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace PPcore.Controllers
 {
@@ -20,9 +21,17 @@ namespace PPcore.Controllers
 
         private void prepareViewBag(string saleproduct_code)
         {
+            var userId = HttpContext.Session.GetString("memberId");
+            ViewBag.userId = userId;
+            var mb = _context.member.SingleOrDefault(m => m.id == new Guid(userId));
+            ViewBag.userName = mb.mem_username + " <" + (mb.fname + " " + mb.lname).Trim() + ">";
+
             var msp = _context.mem_saleproduct.SingleOrDefault(sp => sp.saleproduct_code == saleproduct_code);
             var spu = _context.saleproduct_unit.SingleOrDefault(s => s.saleproduct_unit_code == msp.saleproduct_unit_code);
             ViewBag.saleproduct_unit = spu.saleproduct_unit_desc_thai;
+
+            ViewBag.retail_price = msp.retail_price;
+            ViewBag.wholesale_price = msp.wholesale_price;
 
             ViewBag.reservation_status_list = new SelectList(new[] { new { Value = "0", Text = "" }, new { Value = "1", Text = "รอยืนยัน" }, new { Value = "2", Text = "รอโอนเงินจอง" }, new { Value = "3", Text = "โอนเงินจองเรียบร้อยแล้ว" }, new { Value = "4", Text = "ส่งมอบเรียบร้อยแล้ว" } }, "Value", "Text", "0");
 
@@ -39,11 +48,22 @@ namespace PPcore.Controllers
 
 
             var iv = new PPcore.ViewModels.saleproduct_reservation.inputViewModel();
+            iv.CreatedDate = DateTime.Now;
             return View(iv);
         }
 
 
-
+        [HttpPost]
+        public async Task<IActionResult> Create(ViewModels.saleproduct_reservation.inputViewModel iv)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(iv);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return Json("");
+        }
 
 
         // GET: saleproduct_reservation
@@ -66,23 +86,6 @@ namespace PPcore.Controllers
                 return NotFound();
             }
 
-            return View(saleproduct_reservation);
-        }
-
-
-        // POST: saleproduct_reservation/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("reservation_code,CreatedBy,CreatedDate,EditedBy,EditedDate,down_payment,id,is_member,is_retail_price,reservation_amount,reservation_note,reservation_status,reserving_member_code,rowversion,saleproduct_code,x_log,x_note,x_status")] saleproduct_reservation saleproduct_reservation)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(saleproduct_reservation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
             return View(saleproduct_reservation);
         }
 

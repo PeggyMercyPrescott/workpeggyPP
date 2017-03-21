@@ -19,9 +19,12 @@
 
     <div class="form-group">
         <label asp-for="reservation_amount" class="col-md-2 control-label"></label>
-        <div class="col-md-4">
-            <div class="row"><input asp-for="reservation_amount" class="form-control" maxlength="7" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" /> @ViewBag.saleproduct_unit</div>
+        <div class="col-md-3">
+            <input asp-for="reservation_amount" class="form-control" maxlength="7" onkeypress="return reserveAmountKeyPress(event.charCode);" onkeyup="reserveAmountChange($('#reservation_amount').val());" /> 
             <span asp-validation-for="reservation_amount" class="text-danger" />
+        </div>
+        <div class="col-md-1">
+            <div style="margin-top:8px;margin-left:-20px;">@ViewBag.saleproduct_unit</div>
         </div>
         <label asp-for="reservation_status" class="col-md-2 control-label"></label>
         <div class="col-md-4">
@@ -31,49 +34,205 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="down_payment" class="col-md-2 control-label"></label>
+        <label class="col-md-2 control-label">ยอดเงินที่ต้องจ่าย</label><div style="display:none"><div id="retail_price">@ViewBag.retail_price</div><div id="wholesale_price">@ViewBag.wholesale_price</div></div>
         <div class="col-md-10">
-            <input asp-for="down_payment" class="form-control" />
+            <div class="radio">
+                <label>
+                    <input type="radio" name="buyingtype" id="buyingtype_retail" value="retail" checked>ราคาปลีก <label id="buyingtype_retail_sum">&nbsp;</label>
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="buyingtype" id="buyingtype_wholesale" value="wholesale">ราคาส่ง <label id="buyingtype_wholesale_sum">&nbsp;</label>
+                </label>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label asp-for="down_payment" class="col-md-2 control-label"></label>
+        <div class="col-md-3">
+            <input asp-for="down_payment" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57);"/>
             <span asp-validation-for="down_payment" class="text-danger" />
         </div>
-    </div>
-
-
-    @*<div class="form-group">
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-11">
-                <label class="checkbox-inline">
-                    <input asp-for="delivery_post_hidden" class="form-control" />
-                    <input id="delivery_post" type="checkbox"><label asp-for="mem_saleproduct.delivery_post"></label>
-                </label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label class="checkbox-inline">
-                    <input asp-for="delivery_bus_hidden" class="form-control" />
-                    <input id="delivery_bus" type="checkbox"><label asp-for="mem_saleproduct.delivery_bus"></label>
-                </label>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <label class="checkbox-inline">
-                    <input asp-for="delivery_train_hidden" class="form-control" />
-                    <input id="delivery_train" type="checkbox"><label asp-for="mem_saleproduct.delivery_train"></label>
-                </label>
-            </div>
+        <div class="col-md-1">
+            <div style="margin-top:8px;margin-left:-20px;">บาท</div>
         </div>
     </div>
+
     <div class="form-group">
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
-                <label class="checkbox-inline">
-                    <input asp-for="delivery_other_hidden" class="form-control" />
-                    <input id="delivery_other" type="checkbox" onclick="delivery_otherTick();"><label asp-for="mem_saleproduct.delivery_other"></label>
-                </label>
-                <input id="mem_saleproduct_delivery_other" class="form-control" readonly />
+        <label class="col-md-2 control-label">ข้อมูลผู้จอง</label>
+        <div class="col-md-2">
+            <label class="radio-inline">
+                <input type="radio" name="reserveBy" id="reserveBy_nonmember" value="isnonmember">บุคคลทั่วไป
+            </label>
+        </div>
+        <div class="col-md-1">
+            <label class="radio-inline">
+                <input type="radio" name="reserveBy" id="reserveBy_member" value="ismember" checked>สมาชิก
+            </label>
+        </div>
+        <div class="col-md-3 col-md-offset-4 col-md-pull-4">
+            <div class="input-group">
+                <input asp-for="reserving_member_code" class="form-control" readonly>
+                <span class="input-group-btn">
+                    <button id="reserving_member_code_button" class="btn btn-default" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
             </div>
 
+        </div>
+    </div>
+
+
+
+    <div class="col-md-2"></div>
+    <div class="panel panel-default col-md-10">
+        &nbsp;
+        <div class="form-group">
+            <label asp-for="fname" class="col-md-2 control-label"></label>
+            <div class="col-md-4">
+                <input asp-for="fname" class="form-control" onkeypress="return !(event.charCode >= 48 && event.charCode <= 57)" autocomplete="off" />
+                <span asp-validation-for="fname" class="text-danger" />
+            </div>
+            <label asp-for="lname" class="col-md-2 control-label"></label>
+            <div class="col-md-4">
+                <input asp-for="lname" class="form-control" onkeypress="return !(event.charCode >= 48 && event.charCode <= 57)" autocomplete="off" />
+                <span asp-validation-for="lname" class="text-danger" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="tel" class="col-md-2 control-label"></label>
+            <div class="col-md-4">
+                <input asp-for="tel" class="form-control" />
+                <span asp-validation-for="tel" class="text-danger" />
+            </div>
 
         </div>
-    </div>*@
+
+        <div class="form-group">
+            <label asp-for="place_name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="place_name" class="form-control" />
+                <span asp-validation-for="place_name" class="text-danger" />
+            </div>
+
+        </div>
+
+        <div class="form-group">
+                <div class="col-md-2 text-right"><label asp-for="building" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="building" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="building" class="text-danger" />
+                </div>
+                <div class="col-md-2 text-right"><label asp-for="floor" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="floor" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="floor" class="text-danger" />
+                </div>
+        </div>
+
+        <div class="form-group">
+
+                <div class="col-md-2 text-right"><label asp-for="room" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="room" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="room" class="text-danger" />
+                </div>
+                <div class="col-md-2 text-right"><label asp-for="village" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="village" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="village" class="text-danger" />
+                </div>
+
+        </div>
+
+        <div class="form-group">
+                <div class="col-md-2 text-right"><label asp-for="h_no" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="h_no" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="h_no" class="text-danger" />
+                </div>
+                <div class="col-md-2 text-right"><label asp-for="lot_no" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="lot_no" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="lot_no" class="text-danger" />
+                </div>
+        </div>
+
+        <div class="form-group">
+                <div class="col-md-2 text-right"><label asp-for="street" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="street" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="street" class="text-danger" />
+                </div>
+                <div class="col-md-2 text-right"><label asp-for="lane" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="lane" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="lane" class="text-danger" />
+                </div>
+        </div>
+
+        <div class="form-group">
+                <div class="col-md-2 text-right"><label asp-for="province_code" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <select asp-for="province_code" class="form-control" asp-items="@ViewBag.ini_province"></select>
+                </div>
+
+                <div class="col-md-2 text-right"><label asp-for="district_code" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <select id="district_code" name="district_code" class="form-control" asp-is-disabled="@ViewBag.IsDisabled"></select>
+                </div>
+        </div>
+
+        <div class="form-group">
+                <div class="col-md-2 text-right"><label asp-for="subdistrict_code" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <select asp-for="subdistrict_code" class="form-control" asp-is-disabled="@ViewBag.IsDisabled"></select>
+                </div>
+
+                <div class="col-md-2 text-right"><label asp-for="zip_code" class="control-label"></label></div>
+                <div class="col-md-4">
+                    <input asp-for="zip_code" class="form-control" onkeyup="setTextCAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <span asp-validation-for="zip_code" class="text-danger" />
+                </div>
+        </div>
+
+
+
+
+    </div>
+
+    <div class="well col-md-12">
+        <label control-label">ข้อมูลผู้สร้างรายการ</label>
+
+        <div class="form-group">
+
+            <div class="col-md-2 text-right"><label asp-for="CreatedBy" class="control-label"></label></div>
+            <div class="col-md-4">
+                <input class="form-control" readonly value="@ViewBag.userName" /><input asp-for="CreatedBy" class="form-control" value="@ViewBag.userId" />
+            </div>
+            <div class="col-md-3 text-right"><label asp-for="CreatedDate" class="control-label"></label></div>
+            <div class="col-md-3">
+                <input asp-for="CreatedDate" class="form-control" autocomplete="off" readonly/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="reservation_note" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="reservation_note" class="form-control" />
+                <span asp-validation-for="reservation_note" class="text-danger" />
+            </div>
+        </div>
+
+    </div>
+
+
 
 
 </form>

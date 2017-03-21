@@ -575,6 +575,8 @@
             $("#detailsSaleProduct").toggle("slide", { direction: "right" },500);
         }
 
+
+
         function reserve(saleproduct_code) {
             $.ajax({
                 type: 'get', url: '@Url.Action("Create", "saleproduct_reservation")' + '?saleproduct_code=' + saleproduct_code,
@@ -586,7 +588,32 @@
             });
             $('#saleproduct_reservationCreateModal').modal({ backdrop: 'static', keyboard: false });
         }
+        function reserveAmountKeyPress(charCode) {
+            if ((charCode >= 48 && charCode <= 57)) {
+                var a = $('#reservation_amount').val() + String.fromCharCode(charCode);
+                reserveAmountChange(a);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
+        Number.prototype.format = function (n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        };
+
+        function reserveAmountChange(a) {
+            if ((a != null) && (a != "") && (a != 0)) {
+                $('#buyingtype_retail_sum').html(($('#retail_price').html() * a).format(2).toString() + "  บาท");
+                $('#buyingtype_wholesale_sum').html(($('#wholesale_price').html() * a).format(2).toString() + " บาท");
+            } else {
+                $('#buyingtype_retail_sum').html("&nbsp;");
+                $('#buyingtype_wholesale_sum').html("&nbsp;");
+            }
+        }
         function reserveClose() {
             $('#saleproduct_reservationCreateModal').modal('hide');
             //window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";

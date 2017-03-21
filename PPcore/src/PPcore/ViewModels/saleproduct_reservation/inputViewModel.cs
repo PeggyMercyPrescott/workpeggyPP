@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,28 +19,26 @@ namespace PPcore.ViewModels.saleproduct_reservation
         public string saleproduct_desc { get; set; }
         [Display(Name = "จำนวนที่จอง")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
-        public int reservation_amount { get; set; }
+        public string reservation_amount { get; set; }
         [Display(Name = "สถานะ")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
         public string reservation_status { get; set; }
         [Display(Name = "จำนวนเงินที่จ่าย")]
         [Required(ErrorMessage = "กรุณากรอกข้อมูล")]
-        public decimal down_payment { get; set; }
+        public string down_payment { get; set; }
 
         public string is_retail_price { get; set; }
 
         public string is_member { get; set; }
 
+
+
         public string reserving_member_code { get; set; }
-
-
-
-
         [Display(Name = "ชื่อ")]
         public string fname { get; set; }
         [Display(Name = "นามสกุล")]
         public string lname { get; set; }
-        [Display(Name = "หมายเลขโทรศัพท์")]
+        [Display(Name = "เบอร์โทรศัพท์")]
         public string tel { get; set; }
 
 
@@ -73,13 +72,14 @@ namespace PPcore.ViewModels.saleproduct_reservation
         public string zip_code { get; set; }
 
 
-
+        [Display(Name = "หมายเหตุ")]
         public string reservation_note { get; set; }
 
-        [Display(Name = "สร้างโดย")]
+        [Display(Name = "จองโดย")]
+        [HiddenInput]
         public Guid CreatedBy { get; set; }
 
-        [Display(Name = "วันที่สร้าง")]
+        [Display(Name = "วันที่ทำรายการจอง")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd MMMM yyyy}")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime CreatedDate { get; set; }
