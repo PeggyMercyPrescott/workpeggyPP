@@ -82,7 +82,7 @@ namespace PPcore.ViewModels.saleproduct_reservation
         [Display(Name = "วันที่ทำรายการจอง")]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd MMMM yyyy}")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
-        public DateTime CreatedDate { get; set; }
+        public string CreatedDate { get; set; }
 
         [Display(Name = "แก้ไขโดย")]
         public Guid EditedBy { get; set; }

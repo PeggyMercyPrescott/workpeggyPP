@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace PPcore.Controllers
 {
@@ -49,9 +50,9 @@ namespace PPcore.Controllers
             var sp = _context.saleproduct.SingleOrDefault(ssp => ssp.saleproduct_code == saleproduct_code);
 
             var iv = new PPcore.ViewModels.saleproduct_reservation.inputViewModel();
-            iv.reservation_code = "";
+            iv.reservation_code = "";iv.saleproduct_code = sp.saleproduct_code;
             iv.saleproduct_desc = sp.saleproduct_desc;
-            iv.CreatedDate = DateTime.Now;
+            iv.CreatedDate = String.Format("{0:dd-MM-yyyy}", DateTime.Now);
             return View(iv);
         }
 
@@ -60,9 +61,46 @@ namespace PPcore.Controllers
         public async Task<IActionResult> Create(ViewModels.saleproduct_reservation.inputViewModel iv)
         {
             var r = new saleproduct_reservation();
-            r.reservation_code = "";
+            r.reservation_code = "R"+DateTime.Now.ToString("yyMMddhhmmssfffffff");
+            r.saleproduct_code = iv.saleproduct_code;
             r.reservation_amount = int.Parse(iv.reservation_amount);
+            r.reservation_status = iv.reservation_status;
+            r.is_retail_price = iv.is_retail_price;
+            r.down_payment = decimal.Parse(iv.down_payment);
+            r.is_member = iv.is_member;
+            r.reserving_member_code = iv.reserving_member_code;
+            r.fname = iv.fname;
+            r.lname = iv.lname;
+            r.tel = iv.tel;
+            r.place_name = iv.place_name;
+            r.building = iv.building;
+            r.floor = iv.floor;
+            r.room = iv.room;
+            r.village = iv.village;
+            r.h_no = iv.h_no;
+            r.lot_no = iv.lot_no;
+            r.street = iv.street;
+            r.lane = iv.lane;
+            r.province_code = iv.province_code;
+            r.district_code = iv.district_code;
+            r.subdistrict_code = iv.subdistrict_code;
+            r.zip_code = iv.zip_code;
+            r.CreatedBy = iv.CreatedBy;
 
+            //string cdate = iv.CreatedDate.ToString();
+            //var cday = cdate.Substring(0, 2);
+            //var cmonth = cdate.Substring(3, 2);
+            //var cyearint = int.Parse(cdate.Substring(6, 4));
+            //var cyear = cyearint > 2500 ? (cyearint - 543).ToString() : cyearint.ToString();
+            //DateTime d = Convert.ToDateTime("03/22/2017");
+            //DateTime d = Convert.ToDateTime(cmonth + "/" + cday + "/" + cyear);
+
+            r.CreatedDate = DateTime.Now;
+            r.reservation_note = iv.reservation_note;
+            r.EditedBy = iv.CreatedBy;
+            r.EditedDate = DateTime.Now;
+
+            r.x_status = "Y";
             _context.saleproduct_reservation.Add(r);
             await _context.SaveChangesAsync();
             return Json("success");

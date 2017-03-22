@@ -8,7 +8,6 @@ namespace PPcore.Models
 {
     public partial class saleproduct_reservation
     {
-        [HiddenInput]
         public string reservation_code { get; set; }
 
         public string saleproduct_code { get; set; }
@@ -27,20 +26,28 @@ namespace PPcore.Models
 
         public string reservation_note { get; set; }
 
-        [Display(Name = "สร้างโดย")]
+
+        public string fname { get; set; }
+        public string lname { get; set; }
+        public string tel { get; set; }
+        public string place_name { get; set; }
+        public string building { get; set; }
+        public string room { get; set; }
+        public string h_no { get; set; }
+        public string street { get; set; }
+        public string subdistrict_code { get; set; }
+        public string province_code { get; set; }
+        public string floor { get; set; }
+        public string village { get; set; }
+        public string lot_no { get; set; }
+        public string lane { get; set; }
+        public string district_code { get; set; }
+        public string zip_code { get; set; }
+
+
         public Guid CreatedBy { get; set; }
-
-        [Display(Name = "วันที่สร้าง")]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd MMMM yyyy}")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime CreatedDate { get; set; }
-
-        [Display(Name = "แก้ไขโดย")]
         public Guid EditedBy { get; set; }
-
-        [Display(Name = "วันที่แก้ไข")]
-        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd MMMM yyyy}")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime EditedDate { get; set; }
 
 
@@ -49,7 +56,6 @@ namespace PPcore.Models
         public string x_log { get; set; }
         public Guid id { get; set; }
 
-        [HiddenInput]
         public byte[] rowversion { get; set; }
     }
 }

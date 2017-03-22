@@ -203,6 +203,24 @@ namespace PPcore.Models
                 entity.Property(e => e.reserving_member_code).HasColumnType("varchar(30)");
                 entity.Property(e => e.reservation_note).HasColumnType("nvarchar(500)");
 
+                entity.Property(e => e.village).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.building).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.district_code).HasColumnType("char(8)");
+                entity.Property(e => e.floor).HasColumnType("nvarchar(20)");
+                entity.Property(e => e.fname).HasColumnType("nvarchar(100)");
+                entity.Property(e => e.lname).HasColumnType("nvarchar(100)");
+                entity.Property(e => e.h_no).HasColumnType("nvarchar(20)");
+                entity.Property(e => e.lane).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.lot_no).HasColumnType("nvarchar(20)");
+                entity.Property(e => e.place_name).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.province_code).HasColumnType("char(8)");
+                entity.Property(e => e.room).HasColumnType("nvarchar(20)");
+                entity.Property(e => e.street).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.subdistrict_code).HasColumnType("char(8)");
+                entity.Property(e => e.tel).HasColumnType("nvarchar(50)");
+                entity.Property(e => e.zip_code).HasColumnType("char(5)");
+
+
                 entity.Property(e => e.CreatedBy).HasColumnType("uniqueidentifier");
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.EditedBy).HasColumnType("uniqueidentifier");
