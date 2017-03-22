@@ -52,7 +52,7 @@ namespace PPcore.Controllers
         [HttpGet]
         public IActionResult DetailsAsTable()
         {
-            var ss = _context.saleproduct_reservation.Where(sr => sr.x_status == "Y").OrderBy(sr => sr.reservation_code).ToList();
+            var ss = _context.saleproduct_reservation.Where(sr => sr.x_status == "Y").OrderByDescending(sr => sr.reservation_code).ToList();
 
             List<ViewModels.saleproduct_reservation.detailViewModel> dd = new List<ViewModels.saleproduct_reservation.detailViewModel>();
             foreach(var s in ss)

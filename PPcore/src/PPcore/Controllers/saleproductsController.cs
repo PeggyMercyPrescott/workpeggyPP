@@ -9,6 +9,7 @@ using PPcore.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Globalization;
+using System.Threading;
 
 namespace PPcore.Controllers
 {
@@ -331,18 +332,6 @@ namespace PPcore.Controllers
         [HttpGet]
         public IActionResult Calendar()
         {
-            var pg = _context.product_group.Where(g => g.x_status == "Y").Select(g => new { Value = g.product_group_code, Text = g.product_group_desc }).ToList();
-            pg.Insert(0, (new { Value = "0", Text = "<ทั้งหมด>" }));
-            ViewBag.product_group = new SelectList(pg.AsEnumerable(), "Value", "Text", "0");
-
-            var stds = _context.saleproduct_standard.Where(ss => ss.x_status == "Y").OrderBy(ss => ss.saleproduct_standard_desc_thai);
-            var cStd = "";
-            foreach (var std in stds)
-            {
-                cStd += "<label class='checkbox-inline text-left' onclick='stdClick();'><input id='std_" + std.saleproduct_standard_code + "' type='checkbox' />" + std.saleproduct_standard_desc_thai + "</label><br />";
-            }
-            ViewBag.standard = cStd;
-
             return View();
         }
 
@@ -350,14 +339,21 @@ namespace PPcore.Controllers
         {
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             cstart *= 1000; cend *= 1000;
-            DateTime dstart = dtDateTime.AddMilliseconds(cstart);
-            DateTime dend = dtDateTime.AddMilliseconds(cend);
+            DateTime tdate = dtDateTime.AddMilliseconds(cstart);
+            DateTime dstart = new DateTime(tdate.Year, tdate.Month, tdate.Day);
+            tdate = dtDateTime.AddMilliseconds(cend);
+            DateTime dend = new DateTime(tdate.Year, tdate.Month, tdate.Day);
 
+            //var culture = CultureInfo.InvariantCulture;  //CultureInfo.CreateSpecificCulture("en-US");
+            //CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
+            //var culture = Thread.CurrentThread.CurrentCulture;
             var culture = CultureInfo.CreateSpecificCulture("en-US");
+
             List<calEvent> ces = new List<calEvent>();
             for (var day = dstart; day.Date <= dend; day = day.AddDays(1))
             {
-                var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate >= day && s.CreatedDate < day.AddDays(1)).Count();
+                //var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate >= day && s.CreatedDate < day.AddDays(1)).Count();
+                var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate.ToShortDateString() == day.ToShortDateString()).Count();
                 if (c != 0)
                 {
                     calEvent ce = new calEvent();
@@ -373,8 +369,78 @@ namespace PPcore.Controllers
             return Json(pjson);
         }
 
+        public IActionResult DetailsSaleProductByReservationAsTable(long rdate)
+        {
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            //rdate *= 1000;
+            DateTime tdate = dtDateTime.AddMilliseconds(rdate);
+            DateTime drdate = new DateTime(tdate.Year, tdate.Month, tdate.Day);
+
+            var culture = Thread.CurrentThread.CurrentCulture;
+            ViewBag.displaydate = drdate.ToString("dd MMMM yyyy", culture);
+
+            //var sprs = _context.saleproduct_reservation.Where(sspr => sspr.x_status == "Y" && sspr.CreatedDate >= drdate && sspr.CreatedDate < drdate.AddDays(1)).OrderBy(sspr => sspr.saleproduct_code).ToList();
+            var sprs = _context.saleproduct_reservation.Where(sspr => sspr.x_status == "Y" && sspr.CreatedDate.ToShortDateString() == drdate.ToShortDateString()).OrderBy(sspr => sspr.saleproduct_code).ToList();
+            List<ViewModels.saleproduct.detailsReservationViewModel> drs1 = new List<ViewModels.saleproduct.detailsReservationViewModel>();
+            if (sprs != null && sprs.Count() != 0)
+            {
+                foreach(var spr in sprs)
+                {
+                    var dr = new ViewModels.saleproduct.detailsReservationViewModel();
+                    dr.saleproduct_code = spr.saleproduct_code;
+                    dr.reservation_amount = spr.reservation_amount;
+                    drs1.Add(dr);
+                }
+            }
+
+            List<ViewModels.saleproduct.detailsReservationViewModel> drs = new List<ViewModels.saleproduct.detailsReservationViewModel>();
+            if (drs1 != null && drs1.Count() != 0)
+            {
+                var sp_code = ""; var sum_reserve = 0;
+                foreach(var dr1 in drs1)
+                {
+                    
+                    if (sp_code != dr1.saleproduct_code) {
+                        if (sp_code != "")
+                        {
+                            var dr = new ViewModels.saleproduct.detailsReservationViewModel();
+                            dr.saleproduct_code = sp_code;
+                            dr.reservation_amount = sum_reserve;
+                            drs.Add(dr);
+                        }
+                        sp_code = dr1.saleproduct_code;
+                        sum_reserve = dr1.reservation_amount;
+                    }
+                    else
+                    {
+                        sum_reserve += dr1.reservation_amount;
+                    }
+                }
+                var drr = new ViewModels.saleproduct.detailsReservationViewModel();
+                drr.saleproduct_code = sp_code;
+                drr.reservation_amount = sum_reserve;
+                drs.Add(drr);
+            }
+
+            if (drs != null && drs.Count() != 0) {
+                foreach(var dr in drs) {
+                    var sp = _context.saleproduct.SingleOrDefault(ssp => ssp.saleproduct_code == dr.saleproduct_code);
+                    dr.saleproduct_desc = sp.saleproduct_desc;
+                    var msp = _context.mem_saleproduct.SingleOrDefault(mmsp => mmsp.saleproduct_code == dr.saleproduct_code);
+                    dr.store_quantity = msp.store_quantity;
+                    dr.left_in_stock = dr.store_quantity - dr.reservation_amount;
+                    var u = _context.saleproduct_unit.SingleOrDefault(sspu => sspu.saleproduct_unit_code == msp.saleproduct_unit_code);
+                    dr.saleproduct_unit = u.saleproduct_unit_desc_thai;
+
+                }
+            }
+
+            return View(drs);
+        }
+
         private class calEvent
         {
+            public string id { get; set; }
             public string title { get; set; }
             public string start { get; set; }
             public string end { get; set; }

@@ -13,8 +13,17 @@
     <div class="row">
         <div class="col-md-6"><div id='calendar'></div></div>
         <div class="col-md-6">
-            <div id="tableReserve">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h4 id="displaydate"></h4></div>
+                <div class="panel-body">
+                    <div class="dataTable_wrapper" style="padding-right:10px;" id="a_details_as_table">
 
+
+
+                    </div>
+
+                    
+                </div>
             </div>
 
         </div>
@@ -25,17 +34,6 @@
 
 </div>
 
-
-
-
-
-
-        <div>
-
-
-
-
-        </div>
     </div>
 
 
@@ -84,7 +82,7 @@
                         success: function (resp) {
                             var events = [];
                             if (resp != "") {
-                                resp = JSON.parse(resp); console.log(resp);
+                                resp = JSON.parse(resp);
                                 for (var i = 0; i < resp.length; i++) {
                                     events.push({
                                         title: resp[i].title,
@@ -97,25 +95,36 @@
                     });
                 },
                 eventClick: function (calEvent, jsEvent, view) {
-                    getTableReserve(calEvent.start);
+                    console.log("event " + calEvent.start);
+                    getTableReserve(calEvent.start); 
                     $(this).css('color', 'red');
                 }
             });
-
-            getTableReserve(today.unix());
+            var today = new Date();
+            var tday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            getTableReserve(new Date().getTime());
         });
 
-        function getTableReserve(start) {
-//            <div class="panel panel-default" >
-//    <div class="panel-heading">
-//        <h4>วันที่ 22-03-2017 </h4>
-//    </div>
-//    <div class="panel-body">
-
-
-//    </div>
-//</div>
-
+        function getTableReserve(rdate) {
+            //var drdate = new Date(rdate);
+            //$('#displaydate').html(drdate);
+            $.ajax({
+                type: 'get', cache: false, url: '@Url.Action("DetailsSaleProductByReservationAsTable", "saleproducts")' + '?rdate=' + rdate,
+            }).done(function (resp) {
+                $('#a_details_as_table').html(resp);
+                var w = [
+                    { "targets": [0], "width": "15", "className": "dt-center" },
+                    { "targets": [1], "visible": false, "searchable": false },
+                    { "targets": [3], "className": "dt-center" },
+                    { "targets": [4], "className": "dt-center" },
+                    { "targets": [5], "className": "dt-center" },
+                    { "targets": [6], "className": "dt-center" },
+                    { "targets": [7], "className": "dt-center" },
+                ];
+                var table = setTable_default($('#a_table'), w);
+                table.$('tr:first').click();
+                $('#displaydate').html($('#showdate').html());
+            });
         }
 
 
