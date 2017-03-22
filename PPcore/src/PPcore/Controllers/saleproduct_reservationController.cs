@@ -20,7 +20,7 @@ namespace PPcore.Controllers
         {
             _context = context;    
         }
-
+         
         private void prepareViewBag(string saleproduct_code)
         {
             var userId = HttpContext.Session.GetString("memberId");
@@ -41,6 +41,76 @@ namespace PPcore.Controllers
             ip.Insert(0, (new { Value = "0", Text = "" }));
             ViewBag.ini_province = new SelectList(ip.AsEnumerable(), "Value", "Text", "0");
 
+        }
+
+        public IActionResult Index()
+        {
+            ViewBag.countRecords = _context.saleproduct_reservation.Where(sr => sr.x_status=="Y").Count();
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult DetailsAsTable()
+        {
+            var ss = _context.saleproduct_reservation.Where(sr => sr.x_status == "Y").OrderBy(sr => sr.reservation_code).ToList();
+
+            List<ViewModels.saleproduct_reservation.detailViewModel> dd = new List<ViewModels.saleproduct_reservation.detailViewModel>();
+            foreach(var s in ss)
+            {
+                var d = new ViewModels.saleproduct_reservation.detailViewModel();
+                d.reservation_code = s.reservation_code;
+                d.id = s.id;
+                d.CreatedDate = String.Format("{0:dd-MM-yyyy}", s.CreatedDate);
+                var sp = _context.saleproduct.SingleOrDefault(ssp => ssp.saleproduct_code == s.saleproduct_code);
+                d.saleproduct_desc = sp.saleproduct_desc;
+                d.reserving_member_code = s.reserving_member_code;
+                d.fname = s.fname;
+                d.lname = s.lname;
+                d.tel = s.tel;
+                d.reservation_amount = s.reservation_amount.ToString();
+
+                var mem_saleproduct_plans = _context.mem_saleproduct_plan.Where(spp => spp.saleproduct_code == s.saleproduct_code && spp.x_status == "Y");
+                var sum_estimate_qty = 0; var count_period = 0;
+                foreach (var ms in mem_saleproduct_plans)
+                {
+                    count_period++;
+                    sum_estimate_qty += ms.estimate_qty;
+                }
+                d.sum_estimate_qty = sum_estimate_qty;
+                //amountOfPeriod = count_period;
+
+                var msp = _context.mem_saleproduct.SingleOrDefault(mmsp => mmsp.saleproduct_code == s.saleproduct_code);
+                d.store_quantity = msp.store_quantity;
+
+                var spu = _context.saleproduct_unit.SingleOrDefault(sspu => sspu.saleproduct_unit_code == msp.saleproduct_unit_code);
+                d.saleproduct_unit = spu.saleproduct_unit_desc_thai;
+
+                var status = s.reservation_status;
+                if (!string.IsNullOrEmpty(status))
+                {
+                    if (status == "1")
+                    {
+                        d.reservation_status = "รอยืนยัน";
+                    } else if (status == "2")
+                    {
+                        d.reservation_status = "รอโอนเงินจอง";
+                    } else if (status == "3")
+                    {
+                        d.reservation_status = "โอนเงินจองเรียบร้อยแล้ว";
+                    } else if (status == "4") {
+                        d.reservation_status = "ส่งมอบเรียบร้อยแล้ว";
+                    } else {
+                        d.reservation_status = status;
+                    }
+                }
+                else
+                {
+                    d.reservation_status = "";
+                }
+                dd.Add(d);
+            }
+
+            return View(dd);
         }
 
         public IActionResult Create(string saleproduct_code)
