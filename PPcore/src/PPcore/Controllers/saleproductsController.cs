@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Routing;
+using System.Globalization;
 
 namespace PPcore.Controllers
 {
@@ -328,7 +329,7 @@ namespace PPcore.Controllers
         }
 
         [HttpGet]
-        public IActionResult DeliveryPlan()
+        public IActionResult Calendar()
         {
             var pg = _context.product_group.Where(g => g.x_status == "Y").Select(g => new { Value = g.product_group_code, Text = g.product_group_desc }).ToList();
             pg.Insert(0, (new { Value = "0", Text = "<ทั้งหมด>" }));
@@ -345,22 +346,39 @@ namespace PPcore.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult Reserve()
+        public IActionResult getCalendarEvents(long cstart, long cend)
         {
-            var pg = _context.product_group.Where(g => g.x_status == "Y").Select(g => new { Value = g.product_group_code, Text = g.product_group_desc }).ToList();
-            pg.Insert(0, (new { Value = "0", Text = "<ทั้งหมด>" }));
-            ViewBag.product_group = new SelectList(pg.AsEnumerable(), "Value", "Text", "0");
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            cstart *= 1000; cend *= 1000;
+            DateTime dstart = dtDateTime.AddMilliseconds(cstart);
+            DateTime dend = dtDateTime.AddMilliseconds(cend);
 
-            var stds = _context.saleproduct_standard.Where(ss => ss.x_status == "Y").OrderBy(ss => ss.saleproduct_standard_desc_thai);
-            var cStd = "";
-            foreach (var std in stds)
+            var culture = CultureInfo.CreateSpecificCulture("en-US");
+            List<calEvent> ces = new List<calEvent>();
+            for (var day = dstart; day.Date <= dend; day = day.AddDays(1))
             {
-                cStd += "<label class='checkbox-inline text-left' onclick='stdClick();'><input id='std_" + std.saleproduct_standard_code + "' type='checkbox' />" + std.saleproduct_standard_desc_thai + "</label><br />";
+                var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate >= day && s.CreatedDate < day.AddDays(1)).Count();
+                if (c != 0)
+                {
+                    calEvent ce = new calEvent();
+                    ce.title = c + " รายการ";
+                    ce.start = day.ToString("yyyy-MM-dd", culture);
+                    ce.end = day.ToString("yyyy-MM-dd", culture); //String.Format("{0:yyyy-MM-dd}", day);
+                    ce.url = "#";
+                    ces.Add(ce);
+                }
             }
-            ViewBag.standard = cStd;
 
-            return View();
+            string pjson = JsonConvert.SerializeObject(ces);
+            return Json(pjson);
+        }
+
+        private class calEvent
+        {
+            public string title { get; set; }
+            public string start { get; set; }
+            public string end { get; set; }
+            public string url { get; set; }
         }
 
     }

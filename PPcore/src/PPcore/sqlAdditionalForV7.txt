@@ -1,7 +1,7 @@
 ﻿
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuDisplay], [MenuController], [MenuAction], [MenuUrl]) VALUES (631000, 1, 1, 0, N'ผลิตภัณฑ์', N'<i class=''fa fa-caret-down''></i>&nbsp;&nbsp;ผลิตภัณฑ์', NULL, NULL, NULL);
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuDisplay], [MenuController], [MenuAction], [MenuUrl]) VALUES (631100, 2, 0, 0, N'ผลิตภัณฑ์', N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ผลิตภัณฑ์', 'saleproducts', 'Search', NULL);
-INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuDisplay], [MenuController], [MenuAction], [MenuUrl]) VALUES (631200, 2, 0, 0, N'ปฏิทินแผนการจำหน่าย', N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ปฏิทินแผนการจำหน่าย', 'saleproducts', 'DeliveryPlan', NULL);
+INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuDisplay], [MenuController], [MenuAction], [MenuUrl]) VALUES (631200, 2, 0, 0, N'ปฏิทินแผนการจำหน่าย', N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ปฏิทินแผนการจำหน่าย', 'saleproducts', 'Calendar', NULL);
 INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuDisplay], [MenuController], [MenuAction], [MenuUrl]) VALUES (631300, 2, 0, 0, N'ข้อมูลการจองผลิตผล', N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ข้อมูลการจองผลิตผล', 'saleproduct_reservation', 'Index', NULL);
 
 INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'C5A644A2-97B0-40E5-AA4D-E2AFE4CDF428', 631000, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2017-03-13 10:16:18');
