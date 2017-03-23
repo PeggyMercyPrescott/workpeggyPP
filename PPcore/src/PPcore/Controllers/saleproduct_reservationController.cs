@@ -176,6 +176,88 @@ namespace PPcore.Controllers
             return Json("success");
         }
 
+        public IActionResult Edit(string id)
+        {
+            var r = _context.saleproduct_reservation.SingleOrDefault(ssr => ssr.id == new Guid(id));
+
+            string saleproduct_code = r.saleproduct_code;
+
+            prepareViewBag(saleproduct_code);
+
+            var sp = _context.saleproduct.SingleOrDefault(ssp => ssp.saleproduct_code == saleproduct_code);
+
+            var iv = new PPcore.ViewModels.saleproduct_reservation.inputViewModel();
+            iv.reservation_code = r.reservation_code; iv.saleproduct_code = sp.saleproduct_code;
+            iv.saleproduct_desc = sp.saleproduct_desc;
+            iv.reservation_amount = String.Format("{0:n0}", r.reservation_amount);
+            iv.reservation_status = r.reservation_status;
+            iv.is_retail_price = r.is_retail_price; ViewBag.is_retail = r.is_retail_price;
+            decimal de = r.down_payment;
+            var n = de - Math.Truncate(de);
+            if (n > 0)
+            {
+                iv.down_payment = String.Format("{0:n}", r.down_payment);
+            }
+            else
+            {
+                iv.down_payment = String.Format("{0:n0}", r.down_payment);
+            }
+            iv.is_member = r.is_member; ViewBag.is_member = r.is_member;
+            iv.reserving_member_code = r.reserving_member_code;
+            iv.fname = r.fname; iv.lname = r.lname; iv.tel = r.tel; iv.place_name = r.place_name;
+            iv.building = r.building; iv.floor = r.floor; iv.room = r.room; iv.village = r.village;
+            iv.h_no = r.h_no; iv.lot_no = r.lot_no; iv.street = r.street; iv.lane = r.lane;
+            iv.province_code = r.province_code; iv.district_code = r.district_code; iv.subdistrict_code = r.subdistrict_code; iv.zip_code = r.zip_code;
+            iv.CreatedBy = r.CreatedBy;
+
+            var mb = _context.member.SingleOrDefault(m => m.id == r.CreatedBy);
+            ViewBag.userName = mb.mem_username + " <" + (mb.fname + " " + mb.lname).Trim() + ">";
+
+            iv.CreatedDate = String.Format("{0:dd-MM-yyyy}", r.CreatedDate);
+            iv.reservation_note = r.reservation_note;
+            return View(iv);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ViewModels.saleproduct_reservation.inputViewModel iv)
+        {
+            var r = _context.saleproduct_reservation.SingleOrDefault(rr => rr.reservation_code == iv.reservation_code);
+            if (r != null)
+            {
+                r.reservation_amount = int.Parse(iv.reservation_amount);
+                r.reservation_status = iv.reservation_status;
+                r.is_retail_price = iv.is_retail_price;
+                r.down_payment = decimal.Parse(iv.down_payment);
+                r.is_member = iv.is_member;
+                r.reserving_member_code = iv.reserving_member_code;
+                r.fname = iv.fname;
+                r.lname = iv.lname;
+                r.tel = iv.tel;
+                r.place_name = iv.place_name;
+                r.building = iv.building;
+                r.floor = iv.floor;
+                r.room = iv.room;
+                r.village = iv.village;
+                r.h_no = iv.h_no;
+                r.lot_no = iv.lot_no;
+                r.street = iv.street;
+                r.lane = iv.lane;
+                r.province_code = iv.province_code;
+                r.district_code = iv.district_code;
+                r.subdistrict_code = iv.subdistrict_code;
+                r.zip_code = iv.zip_code;
+                r.reservation_note = iv.reservation_note;
+                r.EditedBy = iv.EditedBy;
+                r.EditedDate = DateTime.Now;
+
+                _context.saleproduct_reservation.Update(r);
+                await _context.SaveChangesAsync();
+            }
+
+            return Json("success");
+        }
+
         public IActionResult getMemberAddress(string member_code)
         {
             var m = _context.member.SingleOrDefault(mm => mm.member_code == member_code && mm.x_status == "Y");

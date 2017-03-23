@@ -6,8 +6,6 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input asp-for="rowversion" />
     <input asp-for="reservation_code" /><input asp-for="saleproduct_code" />
-    
-    @*<input id="saleproduct_code" value="@ViewBag.saleproduct_code" hidden />*@
 
     <div class="form-group">
         <label asp-for="saleproduct_desc" class="col-md-2 control-label"></label>
@@ -20,20 +18,21 @@
         <label asp-for="reservation_amount" class="col-md-2 control-label"></label>
         <div class="col-md-3">
             <input asp-for="reservation_amount" class="form-control" maxlength="7" onkeypress="return reserveAmountKeyPress(event.charCode);" onkeyup="reserveAmountChange($('#reservation_amount').val());" /> 
-            <span asp-validation-for="reservation_amount" class="text-danger" />
+            <span id="reservation_amount_msg" class="text-danger" />
         </div>
         <div class="col-md-1">
             <div style="margin-top:8px;margin-left:-20px;">@ViewBag.saleproduct_unit</div>
         </div>
         <label asp-for="reservation_status" class="col-md-2 control-label"></label>
         <div class="col-md-4">
-            <select asp-for="reservation_status" class="form-control" asp-items="@ViewBag.reservation_status_list"></select>
+            <select asp-for="reservation_status" class="form-control" asp-items="@ViewBag.reservation_status_list" style="border-color:red"></select>
+            <span id="reservation_status_msg" class="text-danger" />
         </div>
 
     </div>
 
     <div class="form-group">
-        <label class="col-md-2 control-label">ยอดเงินที่ต้องจ่าย</label><div style="display:none"><div id="retail_price">@ViewBag.retail_price</div><div id="wholesale_price">@ViewBag.wholesale_price</div></div>
+        <label class="col-md-2 control-label">ยอดเงินที่ต้องจ่าย</label><div style="display:none"><div id="retail_price">@ViewBag.retail_price</div><div id="wholesale_price">@ViewBag.wholesale_price</div><div id="is_retail">@ViewBag.is_retail</div></div>
         <div class="col-md-10">
             <div class="radio">
                 <label>
@@ -54,7 +53,7 @@
         <label asp-for="down_payment" class="col-md-2 control-label"></label>
         <div class="col-md-3">
             <input asp-for="down_payment" class="form-control" onkeypress="return (event.charCode >= 48 && event.charCode <= 57);"/>
-            <span asp-validation-for="down_payment" class="text-danger" />
+            <span id="down_payment_msg" class="text-danger" />
         </div>
         <div class="col-md-1">
             <div style="margin-top:8px;margin-left:-20px;">บาท</div>
@@ -62,7 +61,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-md-2 control-label">ข้อมูลผู้จอง</label>
+        <label class="col-md-2 control-label">ข้อมูลผู้จอง</label><div id="is_member" style="display:none">@ViewBag.is_member</div>
         <div class="col-md-2">
             <label class="radio-inline">
                 <input type="radio" name="reserveBy" id="reserveBy_nonmember" value="isnonmember">บุคคลทั่วไป
@@ -125,12 +124,12 @@
         <div class="form-group">
                 <div class="col-md-2 text-right"><label asp-for="building" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="building" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="building" class="form-control"  autocomplete="off" />
                     <span asp-validation-for="building" class="text-danger" />
                 </div>
                 <div class="col-md-2 text-right"><label asp-for="floor" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="floor" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="floor" class="form-control"  autocomplete="off" />
                     <span asp-validation-for="floor" class="text-danger" />
                 </div>
         </div>
@@ -139,12 +138,12 @@
 
                 <div class="col-md-2 text-right"><label asp-for="room" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="room" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="room" class="form-control" autocomplete="off" />
                     <span asp-validation-for="room" class="text-danger" />
                 </div>
                 <div class="col-md-2 text-right"><label asp-for="village" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="village" class="form-control" onkeyup="setTextAAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="village" class="form-control" autocomplete="off" />
                     <span asp-validation-for="village" class="text-danger" />
                 </div>
 
@@ -153,12 +152,12 @@
         <div class="form-group">
                 <div class="col-md-2 text-right"><label asp-for="h_no" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="h_no" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="h_no" class="form-control" autocomplete="off" />
                     <span asp-validation-for="h_no" class="text-danger" />
                 </div>
                 <div class="col-md-2 text-right"><label asp-for="lot_no" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="lot_no" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="lot_no" class="form-control" autocomplete="off" />
                     <span asp-validation-for="lot_no" class="text-danger" />
                 </div>
         </div>
@@ -166,12 +165,12 @@
         <div class="form-group">
                 <div class="col-md-2 text-right"><label asp-for="street" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="street" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="street" class="form-control" autocomplete="off" />
                     <span asp-validation-for="street" class="text-danger" />
                 </div>
                 <div class="col-md-2 text-right"><label asp-for="lane" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="lane" class="form-control" onkeyup="setTextBAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="lane" class="form-control" autocomplete="off" />
                     <span asp-validation-for="lane" class="text-danger" />
                 </div>
         </div>
@@ -184,19 +183,19 @@
 
                 <div class="col-md-2 text-right"><label asp-for="district_code" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <select id="district_code" name="district_code" class="form-control" asp-is-disabled="@ViewBag.IsDisabled"></select>
+                    <select id="district_code" name="district_code" class="form-control" ></select>
                 </div>
         </div>
 
         <div class="form-group">
                 <div class="col-md-2 text-right"><label asp-for="subdistrict_code" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <select asp-for="subdistrict_code" class="form-control" asp-is-disabled="@ViewBag.IsDisabled"></select>
+                    <select asp-for="subdistrict_code" class="form-control" ></select>
                 </div>
 
                 <div class="col-md-2 text-right"><label asp-for="zip_code" class="control-label"></label></div>
                 <div class="col-md-4">
-                    <input asp-for="zip_code" class="form-control" onkeyup="setTextCAddress()" autocomplete="off" asp-is-disabled="@ViewBag.IsDisabled" />
+                    <input asp-for="zip_code" class="form-control" autocomplete="off"  />
                     <span asp-validation-for="zip_code" class="text-danger" />
                 </div>
         </div>

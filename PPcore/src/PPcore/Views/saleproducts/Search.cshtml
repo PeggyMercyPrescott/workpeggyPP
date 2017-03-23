@@ -726,28 +726,44 @@
             var subdistrict_code = $('#subdistrict_code').val();
             var zip_code = $('#zip_code').val();
 
-            $.ajax({
-                type: 'post', url: '@Url.Action("Create", "saleproduct_reservation")' + '?reservation_code=' + $('#reservation_code').val().trim() +
-                '&saleproduct_code=' + $('#saleproduct_code').val().trim() + '&reservation_amount=' + reservation_amount +
-                '&reservation_status=' + reservation_status + '&is_retail_price=' + is_retail_price + '&down_payment=' + down_payment +
-                '&is_member=' + is_member + '&reserving_member_code=' + reserving_member_code + 
-                '&fname=' + fname + '&lname=' + lname + '&place_name=' + place_name + '&tel=' + tel + '&building=' + building +
-                '&floor=' + floor + '&room=' + room + '&village=' + village + '&h_no=' + h_no + '&lot_no=' + lot_no + 
-                '&street=' + street + '&lane=' + lane + '&province_code=' + province_code + '&district_code=' + district_code +
-                '&subdistrict_code=' + subdistrict_code + '&zip_code=' + zip_code + '&CreatedBy=' + $('#CreatedBy').val() + '&CreatedDate=' + $('#CreatedDate').val() +
-                '&reservation_note=' + $('#reservation_note').val().trim()
-                ,
-            }).done(function (resp) {
-                if (resp != "") {
-                    if (resp == "success") { reserveClose(); }
-                }
-            });
-
+            if (saleproduct_reservation_form_valid()) {
+                $.ajax({
+                    type: 'post', url: '@Url.Action("Create", "saleproduct_reservation")' + '?reservation_code=' + $('#reservation_code').val().trim() +
+                    '&saleproduct_code=' + $('#saleproduct_code').val().trim() + '&reservation_amount=' + reservation_amount +
+                    '&reservation_status=' + reservation_status + '&is_retail_price=' + is_retail_price + '&down_payment=' + down_payment +
+                    '&is_member=' + is_member + '&reserving_member_code=' + reserving_member_code +
+                    '&fname=' + fname + '&lname=' + lname + '&place_name=' + place_name + '&tel=' + tel + '&building=' + building +
+                    '&floor=' + floor + '&room=' + room + '&village=' + village + '&h_no=' + h_no + '&lot_no=' + lot_no +
+                    '&street=' + street + '&lane=' + lane + '&province_code=' + province_code + '&district_code=' + district_code +
+                    '&subdistrict_code=' + subdistrict_code + '&zip_code=' + zip_code + '&CreatedBy=' + $('#CreatedBy').val() + '&CreatedDate=' + $('#CreatedDate').val() +
+                    '&reservation_note=' + $('#reservation_note').val().trim()
+                    ,
+                }).done(function (resp) {
+                    if (resp != "") {
+                        if (resp == "success") { reserveClose(); }
+                    }
+                });
+            }
         }
         function reserveClose() {
             $('#saleproduct_reservationCreateModal').modal('hide');
             //window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
         }
+        function saleproduct_reservation_form_valid() {
+            var result = false;
+            $("#reservation_amount_msg").text(''); 
+            $("#reservation_status_msg").text(''); 
+            $("#down_payment_msg").text('');
 
+            if ($("#reservation_amount").val() && $("#reservation_status").val() != "0" && $('#down_payment').val()) {
+                result = true;
+            } else {
+                result = false;
+                if (!$("#reservation_amount").val()) { $("#reservation_amount_msg").text('กรุณากรอกข้อมูล'); }
+                if ($("#reservation_status").val() == 0) { $("#reservation_status_msg").text('กรุณาเลือกสถานะ'); }
+                if ($("#down_payment").val() == 0) { $("#down_payment_msg").text('กรุณากรอกข้อมูล'); }
+            }
+            return result;
+        }
     </script>
 }

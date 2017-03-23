@@ -33,22 +33,27 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade modalForm1" id="a_modal" tabindex="-1" role="dialog" aria-labelledby="a_label" aria-hidden="true">
-    <div class="modal-dialog">
+<div id="saleproduct_reservationEditModal" class="modal fade modalForm3" tabindex="-1" role="dialog" aria-labelledby="saleproduct_reservationEditModalLabel" aria-hidden="true">
+    <div class="modal-lg">
         <div class="modal-content">
-            <div id="a_header" class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
-                <h4 class="modal-title" id="a_label" style="vertical-align:middle;"></h4>
+            <div class="modal-header">
+                <div class="pull-left" style="margin-top:-5px;"><h4>ข้อมูลการจอง</h4></div>
+                <div class="pull-right" style="margin-top:0px;">
+                    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="reserveEditPost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                </div>
             </div>
-            <div class="modal-body container-fluid">
-                @*@{ await Html.RenderPartialAsync("Create", new course_group()); }*@
-            </div>
+            <div class="modal-body container-fluid modalForm3Body">
 
+                <div id="saleproduct_reservationEditModalRenderBody"></div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true" onclick="reserveClose();">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
         </div>
-
     </div>
-
-
 </div>
 <!-- /Modal -->
 
@@ -57,41 +62,6 @@
     <script>
         $(document).ready(function () {
             a_details_as_table();
-
-            @*$('#btnCreate').off('click').on('click', function () {
-                $('#a_label').text('ข้อมูลกลุ่มหลักสูตร');
-                $('#a_submit').html('บันทึก');
-                $("#a_submit").off("click").on("click", function (e) {
-                    e.preventDefault();
-                    if ($("#a_form").valid()) {
-                        $.ajax({
-                            async: false,
-                            type: "POST",
-                            url: "@Url.Action("Create", "course_group")",
-                            data: {
-                                cgroup_code: $("#cgroup_code").val(),
-                                cgroup_desc: $("#cgroup_desc").val(),
-                                x_status: $("#x_status").val()
-                            },
-                            success: function (data) {
-                                a_details_as_table();
-                                $("#cgroup_code").val('');
-                                $("#cgroup_desc").val('');
-                                $("#a_form").clearValidation();
-                            }
-                        });
-                    }
-                });
-                $("#cgroup_code").val('');
-                $("#cgroup_desc").val('');
-                $("#a_form").clearValidation();
-                $('#a_modal').modal({ backdrop: 'static', keyboard: false });
-            });
-            $('#btnEdit').on('click', function () {
-                var table = $('#a_table').DataTable();
-                var datarow = table.row('.selected').data();
-                window.location.href = "@Url.Action("Edit", "course_group")" + "/" + datarow[1];
-            });*@
         });
         function a_details_as_table() {
             $.ajax({
@@ -99,7 +69,7 @@
             }).done(function (resp) {
                 $('#a_details_as_table').html(resp);
                 var w = [
-                    { "targets": [0], "width": "15", "className": "dt-center" },
+                    { "targets": [0], "className": "dt-center" },
                     { "targets": [1], "visible": false, "searchable": false },
                     { "targets": [2], "className": "dt-center" },
                     { "targets": [3], "className": "dt-center" },
@@ -114,6 +84,205 @@
                 var table = setTable_default($('#a_table'), w);
                 table.$('tr:first').click();
             });
+        }
+        function detailsClick(id) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Edit", "saleproduct_reservation")' + '?id=' + id,
+            }).done(function (resp) {
+                if (resp != "") {
+                    $("#saleproduct_reservationEditModalRenderBody").empty();
+                    $("#saleproduct_reservationEditModalRenderBody").html(resp);
+
+                    if ($('#is_retail').text() == "Y") {
+                        $("input[id='buyingtype_retail']").prop('checked', true);
+                    } else {
+                        $("input[id='buyingtype_wholesale']").prop('checked', true);
+                    }
+
+                    if ($('#is_member').text() == "Y") {
+                        $("input[id='reserveBy_member']").prop('checked', true);
+                    } else {
+                        $("input[id='reserveBy_nonmember']").prop('checked', true);
+                    }
+
+                    setEventDropdownProvince();
+                    $('#province_code').trigger("change"); $('#district_code').trigger("change"); $('#subdistrict_code').trigger("change");
+                }
+            });
+            $('#saleproduct_reservationEditModal').modal({ backdrop: 'static', keyboard: false });
+        }
+        function reserveAmountKeyPress(charCode) {
+            if ((charCode >= 48 && charCode <= 57)) {
+                var a = $('#reservation_amount').val() + String.fromCharCode(charCode);
+                reserveAmountChange(a);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        Number.prototype.format = function (n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        };
+
+        function reserveAmountChange(a) {
+            if ((a != null) && (a != "") && (a != 0)) {
+                $('#buyingtype_retail_sum').html(($('#retail_price').html() * a).format(2).toString() + "  บาท");
+                $('#buyingtype_wholesale_sum').html(($('#wholesale_price').html() * a).format(2).toString() + " บาท");
+            } else {
+                $('#buyingtype_retail_sum').html("&nbsp;");
+                $('#buyingtype_wholesale_sum').html("&nbsp;");
+            }
+        }
+        function setEventDropdownProvince() {
+            $('#province_code').off("change").on("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_district")' + '?provinceCode=' + $('#province_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#district_code').empty();
+                        $("#district_code").prop("disabled", true);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#district_code").prop("disabled", false);
+                        $('#district_code').empty();
+                        $('#district_code').append(resp);
+                        $('#district_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#district_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_subdistrict")' + '?districtCode=' + $('#district_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#subdistrict_code").prop("disabled", false);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').append(resp);
+                        $('#subdistrict_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#subdistrict_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_list_zip")' + '?subdistrictCode=' + $('#subdistrict_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#zip_code').val('');
+                    } else {
+                        $('#zip_code').val(resp);
+                    }
+                });
+
+            });
+        }
+        function getMemberAddress() {
+            $.ajax({
+                type: 'get', url: '@Url.Action("getMemberAddress", "saleproduct_reservation")' + '?member_code=' + $('#reserving_member_code').val().trim(),
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#fname').val(resp.fname); $('#lname').val(resp.lname);
+                    $('#place_name').val(resp.place_name); $('#tel').val(resp.tel);
+                    $('#building').val(resp.building); $('#floor').val(resp.floor);
+
+                    $('#room').val(resp.room); $('#village').val(resp.village);
+                    $('#h_no').val(resp.h_no); $('#lot_no').val(resp.lot_no);
+                    $('#street').val(resp.street); $('#lane').val(resp.lane);
+
+                    $('#province_code').val(resp.province_code);
+                    $('#province_code').trigger("change");
+                    setTimeout(function () {
+                        $('#district_code').val(resp.district_code);
+                        $('#district_code').trigger("change");
+                        setTimeout(function () {
+                            $('#subdistrict_code').val(resp.subdistrict_code);
+                            setTimeout(function () {
+                                $('#zip_code').val(resp.zip_code);
+                            }, 300);
+                        }, 300);
+                    }, 300);
+                }
+            });
+
+        }
+        function reserveEditPost() {
+            var reservation_amount = $('#reservation_amount').val();
+            var reservation_status = $('#reservation_status').val();
+            var buyingtype = $("input[name='buyingtype']:checked").val();
+            var is_retail_price = (buyingtype == "retail") ? "Y" : "N";
+            var down_payment = $('#down_payment').val().trim();
+            var reserveBy = $("input[name='reserveBy']:checked").val();
+            var is_member = (reserveBy == "ismember") ? "Y" : "N";
+            var reserving_member_code = $('#reserving_member_code').val().trim();
+
+            var fname = $('#fname').val(); var lname = $('#lname').val();
+            var place_name = $('#place_name').val();
+            var tel = $('#tel').val();
+            var building = $('#building').val();
+            var floor = $('#floor').val();
+            var room = $('#room').val();
+            var village = $('#village').val();
+            var h_no = $('#h_no').val();
+            var lot_no = $('#lot_no').val();
+            var street = $('#street').val();
+            var lane = $('#lane').val();
+            var province_code = $('#province_code').val();
+            var district_code = $('#district_code').val();
+            var subdistrict_code = $('#subdistrict_code').val();
+            var zip_code = $('#zip_code').val();
+
+            if (saleproduct_reservation_form_valid()) {
+                $.ajax({
+                    type: 'post', url: '@Url.Action("Edit", "saleproduct_reservation")' + '?reservation_code=' + $('#reservation_code').val().trim() +
+                    '&saleproduct_code=' + $('#saleproduct_code').val().trim() + '&reservation_amount=' + reservation_amount +
+                    '&reservation_status=' + reservation_status + '&is_retail_price=' + is_retail_price + '&down_payment=' + down_payment +
+                    '&is_member=' + is_member + '&reserving_member_code=' + reserving_member_code +
+                    '&fname=' + fname + '&lname=' + lname + '&place_name=' + place_name + '&tel=' + tel + '&building=' + building +
+                    '&floor=' + floor + '&room=' + room + '&village=' + village + '&h_no=' + h_no + '&lot_no=' + lot_no +
+                    '&street=' + street + '&lane=' + lane + '&province_code=' + province_code + '&district_code=' + district_code +
+                    '&subdistrict_code=' + subdistrict_code + '&zip_code=' + zip_code + '&EditBy=' + $('#CreatedBy').val() +
+                    '&reservation_note=' + $('#reservation_note').val().trim()
+                    ,
+                }).done(function (resp) {
+                    if (resp != "") {
+                        if (resp == "success") { reserveClose(); }
+                    }
+                });
+            }
+        }
+        function reserveClose() {
+            $('#saleproduct_reservationEditModal').modal('hide');
+            window.location.href = "@Url.Action("Index", "saleproduct_reservation")";
+        }
+        function saleproduct_reservation_form_valid() {
+            var result = false;
+            $("#reservation_amount_msg").text('');
+            $("#reservation_status_msg").text('');
+            $("#down_payment_msg").text('');
+
+            if ($("#reservation_amount").val() && $("#reservation_status").val() != "0" && $('#down_payment').val()) {
+                result = true;
+            } else {
+                result = false;
+                if (!$("#reservation_amount").val()) { $("#reservation_amount_msg").text('กรุณากรอกข้อมูล'); }
+                if ($("#reservation_status").val() == 0) { $("#reservation_status_msg").text('กรุณาเลือกสถานะ'); }
+                if ($("#down_payment").val() == 0) { $("#down_payment_msg").text('กรุณากรอกข้อมูล'); }
+            }
+            return result;
         }
     </script>
 }
