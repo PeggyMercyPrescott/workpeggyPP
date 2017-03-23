@@ -12,19 +12,11 @@
 <div class="panel-body">
     <div id="calendarInfo" >
         <div class="row">
-            <div class="col-md-6"><div id='calendar'></div></div>
+            <div class="col-md-6"><div id='calendar'></div><div id="calendarUnixDateSelected" style="display:none"></div></div>
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading"><h4 id="displaydate"></h4></div>
                     <div class="panel-body">
-                        
-                        <div >
-                            <div class="box">
-                                <div class="box-inner">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eu sem tempor, varius quam at, luctus dui. Mauris magna metus, dapibus nec turpis vel, semper malesuada ante. Vestibulum id metus ac nisl bibendum scelerisque non non purus. Suspendisse varius nibh non aliquet sagittis. In tincidunt orci sit amet elementum vestibulum. Vivamus fermentum in arcu in aliquam. Quisque aliquam porta odio in fringilla. Vivamus nisl leo, blandit at bibendum eu, tristique eget risus. Integer aliquet quam ut elit suscipit, id interdum neque porttitor. Integer faucibus ligula.</div>
-                            </div>
-
-                        </div>
-
                         <div class="dataTable_wrapper" style="padding-right:10px;" id="a_details_as_table">
 
 
@@ -43,9 +35,8 @@
 
     </div>
 
-
     <!-- detailsSaleProduct -->
-    <div id="detailsSaleProduct" class="col-md-12" style="display:none;position:absolute;margin-left:-20px;">
+    <div id="detailsSaleProduct" class="col-md-12 col-sm-12 col-xs-12" style="display:none;position:absolute;margin-left:-31px;margin-top:-65px;">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="pull-left">
@@ -231,6 +222,31 @@
 
 </div>
 
+<!-- Modal -->
+<div id="saleproduct_reservationCreateModal" class="modal fade modalForm3" tabindex="-1" role="dialog" aria-labelledby="saleproduct_reservationCreateModalLabel" aria-hidden="true">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="pull-left" style="margin-top:-5px;"><h4>ข้อมูลการจอง</h4></div>
+                <div class="pull-right" style="margin-top:0px;">
+                    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="reservePost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                </div>
+            </div>
+            <div class="modal-body container-fluid modalForm3Body">
+
+                <div id="saleproduct_reservationCreateModalRenderBody"></div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true" onclick="reserveClose();">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
 
 @section Scripts {
 
@@ -241,26 +257,6 @@
 <script src="~/lib/fullcalendar/dist/lang/th.js"></script>
 
 <script src="~/lib/bootstrap/js/carousel.js"></script>
-
-<style type="text/css">
-        .box {
-            float: right;
-            overflow: hidden;
-            background: #f0e68c;
-            position: absolute;
-    right: 0px;
-    top: 0px;
-    z-index:2;
-        }
-        /* Add padding and border to inner content
-    for better animation effect */
-        .box-inner {
-            width: 400px;
-            height:300px;
-            padding: 10px;
-            border: 1px solid #a29415;
-        }
-</style>
 
 <style>
     #calendar {
@@ -313,7 +309,7 @@
                     });
                 },
                 eventClick: function (calEvent, jsEvent, view) {
-                    getTableReserve(calEvent.start); 
+                    getTableReserve(calEvent.start);
                     //$(this).css('color', 'red');
                 }
             });
@@ -323,6 +319,9 @@
         });
 
         function getTableReserve(rdate) {
+            $('#calendarUnixDateSelected').text(rdate);   
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('refetchEvents');
             //var drdate = new Date(rdate);
             //$('#displaydate').html(drdate);
             $.ajax({
@@ -342,16 +341,6 @@
                 table.$('tr:first').click();
                 $('#displaydate').html($('#showdate').html());
             });
-        }
-
-        function detailsClick(saleproduct_code) {
-            //$("#calendarInfo").toggle("slide", { direction: "left" }, 500);
-            //$("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
-            //$(".box").show();
-            $(".box").animate({
-                width: "toggle"
-            });
-
         }
         function showDetails(saleproduct_code) {
             $.ajax({
@@ -410,7 +399,7 @@
                         reserve(saleproduct_code);
                     });
 
-                    $("#searchResult").toggle("slide", { direction: "left" }, 500);
+                    $("#calendarInfo").toggle("slide", { direction: "left" }, 500);
                     $("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
                 }
             });
@@ -418,10 +407,200 @@
         }
 
         function hideDetails() {
-            $("#searchResult").toggle("slide", { direction: "left" }, 500);
+            getTableReserve(new Date().getTime());
+            $("#calendarInfo").toggle("slide", { direction: "left" }, 500);
             $("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
+            //window.location.href = "@Url.Action("Calendar", "saleproducts")";
         }
 
+
+        function reserve(saleproduct_code) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "saleproduct_reservation")' + '?saleproduct_code=' + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    $("#saleproduct_reservationCreateModalRenderBody").empty();
+                    $("#saleproduct_reservationCreateModalRenderBody").html(resp);
+                    setEventDropdownProvince();
+                    $('#province_code').trigger("change"); $('#district_code').trigger("change"); $('#subdistrict_code').trigger("change");
+                }
+            });
+            $('#saleproduct_reservationCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+        function reserveAmountKeyPress(charCode) {
+            if ((charCode >= 48 && charCode <= 57)) {
+                var a = $('#reservation_amount').val() + String.fromCharCode(charCode);
+                reserveAmountChange(a);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        Number.prototype.format = function (n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        };
+
+        function reserveAmountChange(a) {
+            if ((a != null) && (a != "") && (a != 0)) {
+                $('#buyingtype_retail_sum').html(($('#retail_price').html() * a).format(2).toString() + "  บาท");
+                $('#buyingtype_wholesale_sum').html(($('#wholesale_price').html() * a).format(2).toString() + " บาท");
+            } else {
+                $('#buyingtype_retail_sum').html("&nbsp;");
+                $('#buyingtype_wholesale_sum').html("&nbsp;");
+            }
+        }
+        function setEventDropdownProvince() {
+            $('#province_code').off("change").on("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_district")' + '?provinceCode=' + $('#province_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#district_code').empty();
+                        $("#district_code").prop("disabled", true);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#district_code").prop("disabled", false);
+                        $('#district_code').empty();
+                        $('#district_code').append(resp);
+                        $('#district_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#district_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_subdistrict")' + '?districtCode=' + $('#district_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#subdistrict_code").prop("disabled", false);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').append(resp);
+                        $('#subdistrict_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#subdistrict_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_list_zip")' + '?subdistrictCode=' + $('#subdistrict_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#zip_code').val('');
+                    } else {
+                        $('#zip_code').val(resp);
+                    }
+                });
+
+            });
+        }
+        function getMemberAddress() {
+            $.ajax({
+                type: 'get', url: '@Url.Action("getMemberAddress", "saleproduct_reservation")' + '?member_code=' + $('#reserving_member_code').val().trim(),
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#fname').val(resp.fname); $('#lname').val(resp.lname);
+                    $('#place_name').val(resp.place_name); $('#tel').val(resp.tel);
+                    $('#building').val(resp.building); $('#floor').val(resp.floor);
+
+                    $('#room').val(resp.room); $('#village').val(resp.village);
+                    $('#h_no').val(resp.h_no); $('#lot_no').val(resp.lot_no);
+                    $('#street').val(resp.street); $('#lane').val(resp.lane);
+
+                    $('#province_code').val(resp.province_code);
+                    $('#province_code').trigger("change");
+                    setTimeout(function () {
+                        $('#district_code').val(resp.district_code);
+                        $('#district_code').trigger("change");
+                        setTimeout(function () {
+                            $('#subdistrict_code').val(resp.subdistrict_code);
+                            setTimeout(function () {
+                                $('#zip_code').val(resp.zip_code);
+                            }, 300);
+                        }, 300);
+                    }, 300);
+                }
+            });
+
+        }
+        function reservePost() {
+            var reservation_amount = $('#reservation_amount').val();
+            var reservation_status = $('#reservation_status').val();
+            var buyingtype = $("input[name='buyingtype']:checked").val();
+            var is_retail_price = (buyingtype == "retail") ? "Y" : "N";
+            var down_payment = $('#down_payment').val().trim();
+            var reserveBy = $("input[name='reserveBy']:checked").val();
+            var is_member = (reserveBy == "ismember") ? "Y" : "N";
+            var reserving_member_code = $('#reserving_member_code').val().trim();
+
+            var fname = $('#fname').val(); var lname = $('#lname').val();
+            var place_name = $('#place_name').val();
+            var tel = $('#tel').val();
+            var building = $('#building').val();
+            var floor = $('#floor').val();
+            var room = $('#room').val();
+            var village = $('#village').val();
+            var h_no = $('#h_no').val();
+            var lot_no = $('#lot_no').val();
+            var street = $('#street').val();
+            var lane = $('#lane').val();
+            var province_code = $('#province_code').val();
+            var district_code = $('#district_code').val();
+            var subdistrict_code = $('#subdistrict_code').val();
+            var zip_code = $('#zip_code').val();
+
+            if (saleproduct_reservation_form_valid()) {
+                $.ajax({
+                    type: 'post', url: '@Url.Action("Create", "saleproduct_reservation")' + '?reservation_code=' + $('#reservation_code').val().trim() +
+                    '&saleproduct_code=' + $('#saleproduct_code').val().trim() + '&reservation_amount=' + reservation_amount +
+                    '&reservation_status=' + reservation_status + '&is_retail_price=' + is_retail_price + '&down_payment=' + down_payment +
+                    '&is_member=' + is_member + '&reserving_member_code=' + reserving_member_code +
+                    '&fname=' + fname + '&lname=' + lname + '&place_name=' + place_name + '&tel=' + tel + '&building=' + building +
+                    '&floor=' + floor + '&room=' + room + '&village=' + village + '&h_no=' + h_no + '&lot_no=' + lot_no +
+                    '&street=' + street + '&lane=' + lane + '&province_code=' + province_code + '&district_code=' + district_code +
+                    '&subdistrict_code=' + subdistrict_code + '&zip_code=' + zip_code + '&CreatedBy=' + $('#CreatedBy').val() + '&CreatedDate=' + $('#CreatedDate').val() +
+                    '&reservation_note=' + $('#reservation_note').val().trim()
+                    ,
+                }).done(function (resp) {
+                    if (resp != "") {
+                        if (resp == "success") { reserveClose(); }
+                    }
+                });
+            }
+        }
+        function reserveClose() {
+            $('#saleproduct_reservationCreateModal').modal('hide');
+            //window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+        }
+        function saleproduct_reservation_form_valid() {
+            var result = false;
+            $("#reservation_amount_msg").text('');
+            $("#reservation_status_msg").text('');
+            $("#down_payment_msg").text('');
+
+            if ($("#reservation_amount").val() && $("#reservation_status").val() != "0" && $('#down_payment').val()) {
+                result = true;
+            } else {
+                result = false;
+                if (!$("#reservation_amount").val()) { $("#reservation_amount_msg").text('กรุณากรอกข้อมูล'); }
+                if ($("#reservation_status").val() == 0) { $("#reservation_status_msg").text('กรุณาเลือกสถานะ'); }
+                if ($("#down_payment").val() == 0) { $("#down_payment_msg").text('กรุณากรอกข้อมูล'); }
+            }
+            return result;
+        }
 
     </script>
 }

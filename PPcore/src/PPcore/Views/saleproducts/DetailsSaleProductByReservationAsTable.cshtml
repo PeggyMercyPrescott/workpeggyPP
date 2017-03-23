@@ -32,7 +32,7 @@
                 <td>@Html.DisplayFor(modelItem => item.left_in_stock)</td>
                 <td>@Html.DisplayFor(modelItem => item.saleproduct_unit)</td>
                 <td id="cell-@Html.DisplayFor(modelItem => item.saleproduct_code)">
-                <button class="btn btn-xs btn-panel-yellow" type="button" onclick="detailsClick('@Html.DisplayFor(modelItem => item.saleproduct_code)');">รายละเอียด</button>
+                <button class="btn btn-xs btn-panel-yellow" type="button" onclick="showDetails('@Html.DisplayFor(modelItem => item.saleproduct_code)');">รายละเอียด</button>
                 </td>
 
             </tr>
