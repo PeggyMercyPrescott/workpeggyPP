@@ -79,6 +79,7 @@ namespace PPcore.Controllers
             List<PPcore.ViewModels.saleproduct.SearchResultViewModel> sr = new List<ViewModels.saleproduct.SearchResultViewModel>();
             if (sps != null)
             {
+                var countAllStd = _context.saleproduct_standard.Count();
                 foreach (var sp in spss)
                 {
                     requireAdd = false;
@@ -106,11 +107,11 @@ namespace PPcore.Controllers
                         if (requireAdd)
                         {
                             requireAdd = false;
-                            if (!String.IsNullOrEmpty(std))
+                            var stdT = std;
+                            if (!String.IsNullOrEmpty(stdT))
                             {
-                                std = std.Remove(std.Length - 1);
-                                string[] aStd = std.Split('|');
-                                var countAllStd = _context.saleproduct_standard.Count();
+                                stdT = stdT.Remove(stdT.Length - 1);
+                                string[] aStd = stdT.Split('|');
                                 var countSelectStd = aStd.Count();
                                 if (countAllStd != countSelectStd)
                                 {
