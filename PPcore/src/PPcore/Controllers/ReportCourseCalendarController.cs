@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PPcore.Models;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace PPcore.Controllers
 {
@@ -18,133 +20,46 @@ namespace PPcore.Controllers
             _context = context;    
         }
 
-        // GET: ReportCourseCalendar
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.project_course.ToListAsync());
-        }
-
-        // GET: ReportCourseCalendar/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project_course = await _context.project_course.SingleOrDefaultAsync(m => m.course_code == id);
-            if (project_course == null)
-            {
-                return NotFound();
-            }
-
-            return View(project_course);
-        }
-
-        // GET: ReportCourseCalendar/Create
-        public IActionResult Create()
+        public IActionResult Index()
         {
             return View();
         }
 
-        // POST: ReportCourseCalendar/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("course_code,active_member_join,budget,cgroup_code,charge_head,course_approve_date,course_begin,course_date,course_desc,course_end,ctype_code,id,passed_member,passed_score,project_code,project_manager,ref_doc,support_head,target_member_join,x_log,x_note,x_status")] project_course project_course)
+        public IActionResult getCalendarEvents(long cstart, long cend)
         {
-            if (ModelState.IsValid)
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            cstart *= 1000; cend *= 1000;
+            DateTime tdate = dtDateTime.AddMilliseconds(cstart);
+            DateTime dstart = new DateTime(tdate.Year, tdate.Month, tdate.Day);
+            tdate = dtDateTime.AddMilliseconds(cend);
+            DateTime dend = new DateTime(tdate.Year, tdate.Month, tdate.Day);
+
+            var culture = CultureInfo.CreateSpecificCulture("en-US");
+
+            var pcs = _context.project_course.Where(cc => cc.x_status == "Y" && cc.course_begin <= dend && (cc.course_end >= dstart || cc.course_end == null)).ToList();
+            List<calEvent> ces = new List<calEvent>();
+            foreach(var pc in pcs)
             {
-                _context.Add(project_course);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                calEvent ce = new calEvent();
+                ce.title = pc.course_desc;
+                ce.start = String.Format(culture,"{0:yyyy-MM-dd}", pc.course_begin );
+                ce.end = String.Format(culture,"{0:yyyy-MM-dd}", pc.course_end);
+                ce.url = "#";
+                ces.Add(ce);
             }
-            return View(project_course);
+
+            string pjson = JsonConvert.SerializeObject(ces);
+            return Json(pjson);
         }
 
-        // GET: ReportCourseCalendar/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        private class calEvent
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project_course = await _context.project_course.SingleOrDefaultAsync(m => m.course_code == id);
-            if (project_course == null)
-            {
-                return NotFound();
-            }
-            return View(project_course);
+            public string id { get; set; }
+            public string title { get; set; }
+            public string start { get; set; }
+            public string end { get; set; }
+            public string url { get; set; }
         }
 
-        // POST: ReportCourseCalendar/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("course_code,active_member_join,budget,cgroup_code,charge_head,course_approve_date,course_begin,course_date,course_desc,course_end,ctype_code,id,passed_member,passed_score,project_code,project_manager,ref_doc,support_head,target_member_join,x_log,x_note,x_status")] project_course project_course)
-        {
-            if (id != project_course.course_code)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(project_course);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!project_courseExists(project_course.course_code))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(project_course);
-        }
-
-        // GET: ReportCourseCalendar/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project_course = await _context.project_course.SingleOrDefaultAsync(m => m.course_code == id);
-            if (project_course == null)
-            {
-                return NotFound();
-            }
-
-            return View(project_course);
-        }
-
-        // POST: ReportCourseCalendar/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var project_course = await _context.project_course.SingleOrDefaultAsync(m => m.course_code == id);
-            _context.project_course.Remove(project_course);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        private bool project_courseExists(string id)
-        {
-            return _context.project_course.Any(e => e.course_code == id);
-        }
     }
 }

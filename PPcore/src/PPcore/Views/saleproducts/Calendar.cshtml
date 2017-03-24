@@ -12,7 +12,31 @@
 <div class="panel-body">
     <div id="calendarInfo" >
         <div class="row">
-            <div class="col-md-6"><div id='calendar'></div><div id="calendarUnixDateSelected" style="display:none"></div></div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+
+                    <div class="form-group">
+                        <div class="panel-body">
+                            <div class="row" style="margin-top:10px;">
+                                <div class="col-md-3 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">กลุ่มผลิตภัณฑ์</label></div>
+                                <div class="col-md-3">
+                                    <select id="saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group"></select>
+                                </div>
+                                <div class="col-md-3 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">ประเภทผลิตภัณฑ์</label></div>
+                                <div class="col-md-3">
+                                    <select id="saleproduct_type_code" class="form-control"></select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            
+            <div id='calendar'></div>
+            
+            <div id="calendarUnixDateSelected" style="display:none"></div><div id="calYearThai" style="display:none"></div></div>
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading"><h4 id="displaydate"></h4></div>
@@ -190,7 +214,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">รายละเอียดสินค้า</div>
                     <div class="panel-body" id="product_detail">
-                        ทดสอบ
+                        -
                     </div>
                 </div>
 
@@ -278,7 +302,6 @@
 
     <script>
         $(document).ready(function () {
-            $(".box").hide();
             var today = new Date();
             $('#calendar').attr('style', '');
 
@@ -286,6 +309,7 @@
                 defaultDate: today,
                 editable: false,
                 eventLimit: true,
+                titleFormat: 'MMMM',
                 events: function (start, end, timezone, callback) {
                     $.ajax({
                         url: '@Url.Action("getCalendarEvents", "saleproducts")',
@@ -294,6 +318,7 @@
                             cend: end.unix()
                         },
                         success: function (resp) {
+                            $('#calYearThai').text(start._d.getFullYear() + 543);
                             var events = [];
                             if (resp != "") {
                                 resp = JSON.parse(resp);
@@ -311,7 +336,14 @@
                 eventClick: function (calEvent, jsEvent, view) {
                     getTableReserve(calEvent.start);
                     //$(this).css('color', 'red');
-                }
+                },
+                viewRender: function (view, element) {
+                    window.setTimeout(function () {
+                        var c = $("#calendar").find('.fc-toolbar > div > h2');
+                        var t = c.text();
+                        c.empty().append("<div>" + t + " " + $('#calYearThai').text() + "</div>");
+                    }, 200);
+                },
             });
             var today = new Date();
             var tday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
