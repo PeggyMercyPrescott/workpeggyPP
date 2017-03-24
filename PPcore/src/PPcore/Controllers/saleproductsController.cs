@@ -353,7 +353,7 @@ namespace PPcore.Controllers
             IQueryable<saleproduct> sps = null;
             sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y");
             
-            if (saleproduct_group_code != "0") sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
+            if (saleproduct_group_code != "0" && !String.IsNullOrEmpty(saleproduct_group_code)) sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
             if (saleproduct_type_code != "0" && !String.IsNullOrEmpty(saleproduct_type_code)) sps = sps.Where(ssp => ssp.saleproduct_type_code == saleproduct_type_code);
             var spss = sps.Select(ssp => ssp.saleproduct_code).ToList();
 
@@ -392,8 +392,14 @@ namespace PPcore.Controllers
             IQueryable<saleproduct> sps = null;
             sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y");
 
-            if (saleproduct_group_code != "0") sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
-            if (saleproduct_type_code != "0" && !String.IsNullOrEmpty(saleproduct_type_code)) sps = sps.Where(ssp => ssp.saleproduct_type_code == saleproduct_type_code);
+            if (!String.IsNullOrEmpty(saleproduct_group_code) && saleproduct_group_code != "0")
+            {
+                sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
+            }
+            if (!String.IsNullOrEmpty(saleproduct_type_code) && saleproduct_type_code != "0" && saleproduct_type_code != "null")
+            {
+                sps = sps.Where(ssp => ssp.saleproduct_type_code == saleproduct_type_code);
+            }
             var spss = sps.Select(ssp => ssp.saleproduct_code).ToList();
 
             var culture = Thread.CurrentThread.CurrentCulture;
