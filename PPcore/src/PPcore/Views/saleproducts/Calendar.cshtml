@@ -13,7 +13,7 @@
     <div id="calendarInfo" >
         <div class="row">
             <div class="col-md-6">
-                <div class="panel panel-default">
+                @*<div class="panel panel-default" style="background-color:#F3F3F3">
 
                     <div class="form-group">
                         <div class="panel-body">
@@ -32,7 +32,7 @@
 
                     </div>
 
-                </div>
+                </div>*@
             
             <div id='calendar'></div>
             
@@ -302,6 +302,21 @@
 
     <script>
         $(document).ready(function () {
+            $('#saleproduct_group_code').off('change').on('change', function () {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("GetProductTypeAsSelect", "saleproducts")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                }).done(function (resp) {
+                    if (resp != "") {
+                        $('#saleproduct_type_code').empty();
+                        $('#saleproduct_type_code').append(resp);
+                        $('#saleproduct_type_code').trigger("change");
+                    } else {
+                        $('#saleproduct_type_code').empty();
+                    }
+                });
+            });
+            $('#saleproduct_group_code').trigger("change");
+
             var today = new Date();
             $('#calendar').attr('style', '');
 
@@ -315,7 +330,9 @@
                         url: '@Url.Action("getCalendarEvents", "saleproducts")',
                         data: {
                             cstart: start.unix(),
-                            cend: end.unix()
+                            cend: end.unix(),
+                            //saleproduct_group_code: $('#saleproduct_group_code').val(),
+                            //saleproduct_type_code: $('#saleproduct_type_code').val()
                         },
                         success: function (resp) {
                             $('#calYearThai').text(start._d.getFullYear() + 543);

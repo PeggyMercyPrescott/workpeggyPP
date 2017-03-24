@@ -332,10 +332,14 @@ namespace PPcore.Controllers
         [HttpGet]
         public IActionResult Calendar()
         {
+            var pg = _context.product_group.Where(g => g.x_status == "Y").Select(g => new { Value = g.product_group_code, Text = g.product_group_desc }).ToList();
+            pg.Insert(0, (new { Value = "0", Text = "<ทั้งหมด>" }));
+            ViewBag.product_group = new SelectList(pg.AsEnumerable(), "Value", "Text", "0");
+
             return View();
         }
 
-        public IActionResult getCalendarEvents(long cstart, long cend)
+        public IActionResult getCalendarEvents(long cstart, long cend, string saleproduct_group_code, string saleproduct_type_code)
         {
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             cstart *= 1000; cend *= 1000;
