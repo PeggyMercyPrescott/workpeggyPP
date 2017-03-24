@@ -42,8 +42,9 @@ namespace PPcore.Controllers
             {
                 calEvent ce = new calEvent();
                 ce.title = pc.course_desc;
-                ce.start = String.Format(culture,"{0:yyyy-MM-dd}", pc.course_begin );
-                ce.end = String.Format(culture,"{0:yyyy-MM-dd}", pc.course_end);
+                ce.start = String.Format(culture,"{0:yyyy-MM-dd}", pc.course_begin);
+                DateTime dcend = (pc.course_end.HasValue)?((DateTime)pc.course_end).AddDays(1):((DateTime)pc.course_begin);
+                ce.end = dcend.ToString("yyyy-MM-dd", culture);
                 ce.url = "#";
                 ces.Add(ce);
             }

@@ -349,16 +349,24 @@ namespace PPcore.Controllers
             tdate = dtDateTime.AddMilliseconds(cend);
             DateTime dend = new DateTime(tdate.Year, tdate.Month, tdate.Day);
 
+
+            IQueryable<saleproduct> sps = null;
+            sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y");
+            
+            if (saleproduct_group_code != "0") sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
+            if (saleproduct_type_code != "0" && !String.IsNullOrEmpty(saleproduct_type_code)) sps = sps.Where(ssp => ssp.saleproduct_type_code == saleproduct_type_code);
+            var spss = sps.Select(ssp => ssp.saleproduct_code).ToList();
+
             //var culture = CultureInfo.InvariantCulture;  //CultureInfo.CreateSpecificCulture("en-US");
             //CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
             //var culture = Thread.CurrentThread.CurrentCulture;
             var culture = CultureInfo.CreateSpecificCulture("en-US");
-
+            
             List<calEvent> ces = new List<calEvent>();
             for (var day = dstart; day.Date <= dend; day = day.AddDays(1))
             {
                 //var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate >= day && s.CreatedDate < day.AddDays(1)).Count();
-                var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate.ToShortDateString() == day.ToShortDateString()).Count();
+                var c = _context.saleproduct_reservation.Where(s => s.x_status == "Y" && s.CreatedDate.ToShortDateString() == day.ToShortDateString() && spss.Contains(s.saleproduct_code)).Count();
                 if (c != 0)
                 {
                     calEvent ce = new calEvent();
@@ -374,18 +382,25 @@ namespace PPcore.Controllers
             return Json(pjson);
         }
 
-        public IActionResult DetailsSaleProductByReservationAsTable(long rdate)
+        public IActionResult DetailsSaleProductByReservationAsTable(long rdate, string saleproduct_group_code, string saleproduct_type_code)
         {
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             //rdate *= 1000;
             DateTime tdate = dtDateTime.AddMilliseconds(rdate);
             DateTime drdate = new DateTime(tdate.Year, tdate.Month, tdate.Day);
 
+            IQueryable<saleproduct> sps = null;
+            sps = _context.saleproduct.Where(ssp => ssp.x_status == "Y");
+
+            if (saleproduct_group_code != "0") sps = sps.Where(ssp => ssp.saleproduct_group_code == saleproduct_group_code);
+            if (saleproduct_type_code != "0" && !String.IsNullOrEmpty(saleproduct_type_code)) sps = sps.Where(ssp => ssp.saleproduct_type_code == saleproduct_type_code);
+            var spss = sps.Select(ssp => ssp.saleproduct_code).ToList();
+
             var culture = Thread.CurrentThread.CurrentCulture;
             ViewBag.displaydate = drdate.ToString("dd MMMM yyyy", culture);
 
             //var sprs = _context.saleproduct_reservation.Where(sspr => sspr.x_status == "Y" && sspr.CreatedDate >= drdate && sspr.CreatedDate < drdate.AddDays(1)).OrderBy(sspr => sspr.saleproduct_code).ToList();
-            var sprs = _context.saleproduct_reservation.Where(sspr => sspr.x_status == "Y" && sspr.CreatedDate.ToShortDateString() == drdate.ToShortDateString()).OrderBy(sspr => sspr.saleproduct_code).ToList();
+            var sprs = _context.saleproduct_reservation.Where(sspr => sspr.x_status == "Y" && sspr.CreatedDate.ToShortDateString() == drdate.ToShortDateString() && spss.Contains(sspr.saleproduct_code)).OrderBy(sspr => sspr.saleproduct_code).ToList();
             List<ViewModels.saleproduct.detailsReservationViewModel> drs1 = new List<ViewModels.saleproduct.detailsReservationViewModel>();
             if (sprs != null && sprs.Count() != 0)
             {

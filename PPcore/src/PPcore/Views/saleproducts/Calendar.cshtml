@@ -13,18 +13,23 @@
     <div id="calendarInfo" >
         <div class="row">
             <div class="col-md-6">
-                @*<div class="panel panel-default" style="background-color:#F3F3F3">
+                <div class="panel panel-default" style="background-color:#F3F3F3">
 
                     <div class="form-group">
                         <div class="panel-body">
                             <div class="row" style="margin-top:10px;">
-                                <div class="col-md-3 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">กลุ่มผลิตภัณฑ์</label></div>
+                                <div class="col-md-2 text-right" style="padding-right:0px;"><label class="control-label" style="font-size:13px;margin-top:8px;">กลุ่มผลิตภัณฑ์</label></div>
                                 <div class="col-md-3">
                                     <select id="saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group"></select>
                                 </div>
-                                <div class="col-md-3 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">ประเภทผลิตภัณฑ์</label></div>
+                                <div class="col-md-2 text-right" style="padding-left:0px;padding-right:0px;"><label class="control-label" style="font-size:13px;margin-top:8px;">ประเภทผลิตภัณฑ์</label></div>
                                 <div class="col-md-3">
                                     <select id="saleproduct_type_code" class="form-control"></select>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="pull-right">
+                                        <div class="btn btn-default btn-panel-yellow " onclick="SearchClick();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -32,7 +37,7 @@
 
                     </div>
 
-                </div>*@
+                </div>
             
             <div id='calendar'></div>
             
@@ -313,9 +318,14 @@
                     } else {
                         $('#saleproduct_type_code').empty();
                     }
+                    //SearchClick();
                 });
             });
             $('#saleproduct_group_code').trigger("change");
+
+            $('#saleproduct_type_code').off('change').on('change', function () {
+                //SearchClick();
+            });
 
             var today = new Date();
             $('#calendar').attr('style', '');
@@ -331,8 +341,8 @@
                         data: {
                             cstart: start.unix(),
                             cend: end.unix(),
-                            //saleproduct_group_code: $('#saleproduct_group_code').val(),
-                            //saleproduct_type_code: $('#saleproduct_type_code').val()
+                            saleproduct_group_code: $('#saleproduct_group_code').val(),
+                            saleproduct_type_code: $('#saleproduct_type_code').val()
                         },
                         success: function (resp) {
                             $('#calYearThai').text(start._d.getFullYear() + 543);
@@ -366,15 +376,18 @@
             var tday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
             getTableReserve(new Date().getTime());
         });
-
-        function getTableReserve(rdate) {
-            $('#calendarUnixDateSelected').text(rdate);   
+        function SearchClick() {
             $('#calendar').fullCalendar('removeEvents');
             $('#calendar').fullCalendar('refetchEvents');
+            getTableReserve(new Date().getTime());
+        }
+        function getTableReserve(rdate) {
+            $('#calendarUnixDateSelected').text(rdate);
             //var drdate = new Date(rdate);
             //$('#displaydate').html(drdate);
             $.ajax({
-                type: 'get', cache: false, url: '@Url.Action("DetailsSaleProductByReservationAsTable", "saleproducts")' + '?rdate=' + rdate,
+                type: 'get', cache: false, url: '@Url.Action("DetailsSaleProductByReservationAsTable", "saleproducts")' + '?rdate=' + rdate + 
+                    '&saleproduct_group_code=' + $('#saleproduct_group_code').val() + '&saleproduct_type_code=' + $('#saleproduct_type_code').val(),
             }).done(function (resp) {
                 $('#a_details_as_table').html(resp);
                 var w = [
@@ -456,6 +469,8 @@
         }
 
         function hideDetails() {
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('refetchEvents');
             getTableReserve(new Date().getTime());
             $("#calendarInfo").toggle("slide", { direction: "left" }, 500);
             $("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
