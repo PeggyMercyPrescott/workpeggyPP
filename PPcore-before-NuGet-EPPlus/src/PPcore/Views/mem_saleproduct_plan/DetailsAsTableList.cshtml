@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "";
+}
+@model IEnumerable<PPcore.Models.mem_saleproduct_plan>
+
+<form class="form-horizontal">
+<div class="form-group">
+    <label class="col-md-6 txt-color-blue">ประมาณการออกสู่ตลาด</label>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label">ปี</label>
+    <div class="col-md-4">
+        <select id="aYear" class="form-control" asp-items="@ViewBag.aYear" ></select>
+    </div>
+    <label class="col-md-2 control-label">จำนวนงวด</label>
+    <div class="col-md-4">
+        <input id="aAmountOfPeriod" class="form-control" readonly />
+    </div>
+</div>
+<div class="form-group">
+    <label  class="col-md-2 control-label">จำนวนรวม</label>
+    <div class="col-md-4">
+        <input id="aAmountPerYear" class="form-control" readonly />
+    </div>
+    <label class="col-md-2 control-label">หน่วย</label>
+    <div class="col-md-4">
+        <input id="aUnit" class="form-control" readonly />
+    </div>
+</div>
+
+</form>
+
+<div class="panel panel-blue">
+    <div class="panel-heading">
+        <div class="pull-left" style="margin-top:3px;">
+            วันที่ประมาณการออกสู่ตลาด
+        </div>
+        @if (ViewBag.IsMember != 1)
+        {
+            <div class="pull-right" style="margin-top:-2px;">
+                <div id="btnCreateMemSaleProductPlan" class="btn btn-default btn-panel-yellow" onclick="mem_saleproduct_planCreate('@ViewBag.memberId')">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <div id="btnEditMemSaleProductPlan" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;แก้ไข&nbsp;&nbsp;</div>
+            </div>
+        }
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="dataTable_wrapper" style="padding-right:10px;"><input id="aAmountAllHidden" hidden value="@ViewBag.sum_estimate_qty_all" />
+        <input id="aAmountOfPeriodHidden" hidden value="@ViewBag.hAmountOfPeriod" />
+        <input id="aAmountPerYearHidden" hidden value="@ViewBag.hAmountPerYear" />
+        <select id="aYearHidden" style="display:none" asp-items="@ViewBag.aYear"></select>
+            <table class="table table-striped table-bordered table-hover dataTablesMod" id="dataTablesMemSaleProductPlanDetailsAsTableList">
+                <thead>
+                    <tr>
+                        <th style="width:50px;" class="text-center">@Html.DisplayNameFor(model => model.period_no)</th>
+                        <th style="display:none" >@Html.DisplayNameFor(model => model.id)</th>
+                        <th style="width:180px;" class="text-center">@Html.DisplayNameFor(model => model.launch_date)</th>
+                        <th class="text-center">@Html.DisplayNameFor(model => model.estimate_qty)</th>
+                        <th style="width:70px;" class="text-center">หน่วย</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.period_no)</td>
+                            <td>@Html.DisplayFor(modelItem => item.id)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.launch_date)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.estimate_qty)</td>
+                            <td class="text-center">@ViewBag.spUnit</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+</div>

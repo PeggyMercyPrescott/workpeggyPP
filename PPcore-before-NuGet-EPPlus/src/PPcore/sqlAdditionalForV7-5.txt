@@ -1,0 +1,5 @@
+﻿
+INSERT INTO [dbo].[SecurityMenus] ([MenuId], [Level], [HaveChild], [IsRightAlign], [MenuName], [MenuController], [MenuAction], [MenuUrl], [MenuDisplay]) VALUES (401090, 2, 0, 0, N'ตารางอบรม', N'ReportCourseCalendar', N'Index', NULL, N'<i class=''fa fa-caret-right''></i>&nbsp;&nbsp;ตารางอบรม')
+
+INSERT INTO [dbo].[SecurityRoleMenus] ([RoleId], [MenuId], [EditedBy], [EditedDate]) VALUES (N'C5A644A2-97B0-40E5-AA4D-E2AFE4CDF428', 401090, N'b493c72b-39dd-4c79-adab-5cbfa88a982e', N'2016-09-02 14:16:08')
+

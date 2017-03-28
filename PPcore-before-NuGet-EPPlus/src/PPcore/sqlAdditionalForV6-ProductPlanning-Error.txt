@@ -1,0 +1,60 @@
+﻿Msg 2715, Level 16, State 6, Line 78
+Column, parameter, or variable #13: Cannot find data type vavrchar.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 144
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 161
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.member_code', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 180
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.product_code', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 199
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.grow_area', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 218
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.product_unit', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 237
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.store_quantity', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 256
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.retail_price', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 275
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.wholesale_price', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 294
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.wholesale_condition', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 313
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.product_life', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 332
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.capacity_per_day', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 351
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.capacity_per_month', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 370
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.advance_order_condition', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 389
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.distribution_channels', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 408
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.contact_telephone', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 427
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.contact_email', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 446
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.contact_other', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 465
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.delivery_post', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 484
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.delivery_bus', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 503
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.delivery_train', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 522
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.delivery_other', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 541
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.product_detail', or the object does not exist.
+Msg 15135, Level 16, State 8, Procedure sp_addextendedproperty, Line 560
+Object is invalid. Extended properties are not permitted on 'dbo.mem_product.id', or the object does not exist.
+Msg 4902, Level 16, State 1, Line 1103
+Cannot find the object "mem_product" because it does not exist or you do not have permissions.
+Msg 4902, Level 16, State 1, Line 1108
+Cannot find the object "mem_product" because it does not exist or you do not have permissions.
+Msg 1767, Level 16, State 0, Line 1113
+Foreign key 'fk_mem_prod_reference_mem_prod' references invalid table 'mem_product'.
+Msg 1750, Level 16, State 1, Line 1113
+Could not create constraint or index. See previous errors.
+Msg 1767, Level 16, State 0, Line 1123
+Foreign key 'fk_mem_prod_reference_mem_prod' references invalid table 'mem_product'.
+Msg 1750, Level 16, State 1, Line 1123
+Could not create constraint or index. See previous errors.

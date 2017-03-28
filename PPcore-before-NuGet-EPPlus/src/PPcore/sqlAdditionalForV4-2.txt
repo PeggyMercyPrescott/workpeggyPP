@@ -1,0 +1,2 @@
+﻿
+ALTER TABLE member ADD mlevel_change_date DATETIME NULL;
