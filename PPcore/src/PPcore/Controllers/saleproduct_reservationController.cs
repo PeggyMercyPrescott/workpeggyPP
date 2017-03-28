@@ -45,6 +45,9 @@ namespace PPcore.Controllers
 
         public IActionResult Index()
         {
+            var roleId = HttpContext.Session.GetString("roleId");
+            if (!roleId.Equals("c5a644a2-97b0-40e5-aa4d-e2afe4cdf428")) { ViewBag.IsAdmin = false; } else { ViewBag.IsAdmin = true; }
+
             ViewBag.countRecords = _context.saleproduct_reservation.Where(sr => sr.x_status=="Y").Count();
             return View();
         }

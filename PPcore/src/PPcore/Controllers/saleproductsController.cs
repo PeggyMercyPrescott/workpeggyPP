@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Routing;
 using System.Globalization;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
 
 namespace PPcore.Controllers
 {
@@ -25,6 +26,9 @@ namespace PPcore.Controllers
         [HttpGet]
         public IActionResult Search()
         {
+            var roleId = HttpContext.Session.GetString("roleId");
+            if (!roleId.Equals("c5a644a2-97b0-40e5-aa4d-e2afe4cdf428")) { ViewBag.IsAdmin = false; } else { ViewBag.IsAdmin = true; }
+            
             var pg = _context.product_group.Where(g => g.x_status == "Y").Select(g => new { Value = g.product_group_code, Text = g.product_group_desc }).ToList();
             pg.Insert(0, (new { Value = "0", Text = "<ทั้งหมด>" }));
             ViewBag.product_group = new SelectList(pg.AsEnumerable(), "Value", "Text", "0");
@@ -333,6 +337,9 @@ namespace PPcore.Controllers
         [HttpGet]
         public IActionResult Calendar()
         {
+            var roleId = HttpContext.Session.GetString("roleId");
+            if (!roleId.Equals("c5a644a2-97b0-40e5-aa4d-e2afe4cdf428")) { ViewBag.IsAdmin = false; } else { ViewBag.IsAdmin = true; }
+
             var pg = _context.product_group.Where(g => g.x_status == "Y").Select(g => new { Value = g.product_group_code, Text = g.product_group_desc }).ToList();
             pg.Insert(0, (new { Value = "0", Text = "<ทั้งหมด>" }));
             ViewBag.product_group = new SelectList(pg.AsEnumerable(), "Value", "Text", "0");

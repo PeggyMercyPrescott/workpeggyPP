@@ -72,9 +72,13 @@
                     <div class="btn btn-default btn-panel-yellow " onclick="hideDetails()">&nbsp;<i class="fa fa-mail-reply" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;กลับ&nbsp;&nbsp;&nbsp;&nbsp;</div>
                 </div>
 
-                <div class="pull-right">
-                    <div id="btnReserve" class="btn btn-default btn-panel-yellow ">&nbsp;&nbsp;&nbsp;จอง&nbsp;&nbsp;&nbsp;&nbsp;</div>
-                </div>
+@if (ViewBag.IsAdmin)
+{
+    <div class="pull-right">
+        <div id="btnReserve" class="btn btn-default btn-panel-yellow ">&nbsp;&nbsp;&nbsp;จอง&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    </div>
+}
+
 
                 <div style="margin-left:100px;height:35px;">
                     <ol class="breadcrumb" id="breadcrumbGroup"></ol>
