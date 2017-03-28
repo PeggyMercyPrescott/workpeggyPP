@@ -240,11 +240,11 @@ namespace PPcore.Controllers
                     worksheet.SetValue(row, 3, p.title);
                     worksheet.SetValue(row, 4, p.fname + " " + p.lname);
                     worksheet.SetValue(row, 5, p.age);
-                    worksheet.SetValue(row, 6, p.cid_card);
-                    worksheet.SetValue(row, 7, p.texta_address + " " + p.textb_address + " " + p.textc_address);
-                    worksheet.SetValue(row, 8, p.mobile);
-                    worksheet.SetValue(row, 9, p.tel);
-                    worksheet.SetValue(row, 10, p.email);
+                    //worksheet.SetValue(row, 6, p.cid_card);
+                    worksheet.SetValue(row, 6, p.texta_address + " " + p.textb_address + " " + p.textc_address);
+                    worksheet.SetValue(row, 7, p.mobile);
+                    worksheet.SetValue(row, 8, p.tel);
+                    worksheet.SetValue(row, 9, p.email);
                 }
 
                 ms = new MemoryStream(package.GetAsByteArray());
