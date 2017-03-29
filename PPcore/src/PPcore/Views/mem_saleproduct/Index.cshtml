@@ -22,7 +22,7 @@
             กดปุ่มเพิ่ม ถ้าต้องการใส่มากกว่า 1 รายการ&nbsp;&nbsp;&nbsp;
             <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_saleproductCreate('@ViewBag.memberId');">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
             <div id="btnEdit" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;แก้ไข&nbsp;&nbsp;</div>
-            @*<div id="btnDetails" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูล</div>*@
+            <div id="btnDetails" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูล</div>
         </div>
     </div>
     <!-- /.panel-heading -->
@@ -78,7 +78,7 @@
                 <i class="fa fa-list" style="color:sandybrown"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </div>*@
                 <div class="pull-right" style="margin-top:0px;">
-                    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="mem_saleproductPost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                    <div id="mem_salproduct_saveButton" class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="mem_saleproductPost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
                 </div>
             </div>
             <div class="modal-body container-fluid modalForm3Body">
@@ -191,8 +191,14 @@
 
 
             if ("@ViewBag.isViewOnly" == "1") {
-                $('#btnBar').hide();
+                //$('#btnBar').hide();
+                $('#btnCreate').hide();
+                $('#btnEdit').hide();
             }
+            //} else {
+            //    $('#btnCreate').show();
+            //    $('#btnEdit').show();
+            //}
 
 
 
@@ -206,6 +212,7 @@
                         type: 'get', cache: false, url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
                     }).done(function (resp) {
                         $('#mem_saleproductCreateModalRenderBody').html(resp);
+                        $('#mem_salproduct_saveButton').show();
                         $('#saleproduct_group_code').off('change').on('change', function () {
                             $.ajax({
                                 type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
@@ -257,7 +264,74 @@
                 }
             });
 
+            $('#btnDetails').off('click').on('click', function () {
+                var data = tableMemSaleProduct.row('.selected').data();
+                if (data) {
+                    $.ajax({
+                        type: 'get', cache: false, url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
+                    }).done(function (resp) {
+                        $('#mem_saleproductCreateModalRenderBody').html(resp);
 
+                        $('#saleproduct_group_code').off('change').on('change', function () {
+                            $.ajax({
+                                type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                            }).done(function (resp) {
+                                if (resp != "") {
+                                    $('#saleproduct_type_code').empty();
+                                    $('#saleproduct_type_code').append(resp);
+                                    $('#saleproduct_type_code').trigger("change");
+                                } else {
+                                    $('#saleproduct_type_code').empty();
+                                }
+                            });
+                        });
+                        $('#saleproduct_group_code').trigger("change");
+                        setTimeout(function () {
+                            $("#saleproduct_type_code").val($("#saleproduct_type_code_hidden").val());
+                        }, 300);
+
+                        if ($("#delivery_post_hidden").val() == "Y") {
+                            $('#delivery_post').prop('checked', true);
+                        } else {
+                            $('#delivery_post').prop('checked', false);
+                        }
+                        if ($("#delivery_bus_hidden").val() == "Y") {
+                            $('#delivery_bus').prop('checked', true);
+                        } else {
+                            $('#delivery_bus').prop('checked', false);
+                        }
+                        if ($("#delivery_train_hidden").val() == "Y") {
+                            $('#delivery_train').prop('checked', true);
+                        } else {
+                            $('#delivery_train').prop('checked', false);
+                        }
+                        if ($("#delivery_other_hidden").val().trim() != "") {
+                            $("#mem_saleproduct_delivery_other").val($("#delivery_other_hidden").val().trim());
+                            $('#delivery_other').prop('checked', true); delivery_otherTick();
+                        } else {
+                            $('#delivery_other').prop('checked', false); delivery_otherTick();
+                        }
+                        $("#mem_saleproduct_product_detail").val($("#product_detail_hidden").val().trim());
+
+                        loadTableMemProductPlan(0);
+
+                        mem_saleproduct_standardDetails();
+                        mem_saleproduct_imageDetails();
+
+                        $('#mem_salproduct_saveButton').hide();
+                        setTimeout(function () {
+                            $('#btnMemSaleProductUploadImage').hide();
+                            $('#btnSaleProductStdDetailsAsTableList').hide();
+                            $('#btnCreateMemSaleProductPlan').hide();
+                            $('#btnEditMemSaleProductPlan').hide();
+                            $('.photo-delete').hide();
+                        }, 300);
+
+                    });
+
+                    $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
+                }
+            });
 
 
         });
@@ -339,7 +413,11 @@
                     if (resp != "") {
                         if (resp.result == "success") {
                             $('#mem_saleproductCreateModal').modal('hide');
-                            window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+                            if ("@ViewBag.isViewOnly" == "1") {
+                                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})" + "&v=1";
+                            } else {
+                                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+                            }
                         }
                     }
                 });
@@ -360,7 +438,11 @@
         }
 
         function mem_saleproductClose() {
-            window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+            if ("@ViewBag.isViewOnly" == "1") {
+                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})" + "&v=1";
+            } else {
+                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+            }
         }
 
         function loadTableMemProductPlan(pYear) {
