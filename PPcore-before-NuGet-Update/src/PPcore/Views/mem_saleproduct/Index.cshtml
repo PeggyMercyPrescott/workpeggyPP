@@ -1,0 +1,774 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutMember.cshtml";
+}
+@model IEnumerable<PPcore.ViewModels.mem_saleproduct.mem_saleproductViewModel>
+
+@{
+    ViewBag.ButtonUpperRightType = "hidden";
+    if (ViewBag.isViewOnly == 1)
+    {
+        ViewBag.panelBarMenu = "Details"; ViewBag.Title = "ดูรายละเอียดข้อมูลสมาชิก";
+    }
+    else
+    {
+        ViewBag.Title = "แก้ไข รายละเอียดข้อมูลสมาชิก";
+    }
+}
+
+<div class="panel panel-blue">
+    <div class="panel-heading">
+        <div class="pull-left" style="padding-top:5px;">แสดงข้อมูลทั้งหมด</div>
+        <div id="btnBar" class="pull-right" style="margin-top:-2px;">
+            <label id="labelAddText" style="font-weight: normal !important;">กดปุ่มเพิ่ม ถ้าต้องการใส่มากกว่า 1 รายการ&nbsp;&nbsp;&nbsp;</label>
+            <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_saleproductCreate('@ViewBag.memberId');">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div id="btnEdit" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;แก้ไข&nbsp;&nbsp;</div>
+            <div id="btnDetails" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูล</div>
+        </div>
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="dataTable_wrapper" style="padding-right:10px;">
+            <table class="table table-striped table-bordered table-hover dataTablesMod" id="dataTablesSimple">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width:50px;">ลำดับ</th>
+                        <th style="display:none">@Html.DisplayNameFor(model => model.mem_saleproduct.id)</th>
+                        <th>@Html.DisplayNameFor(model => model.saleproduct.saleproduct_desc)</th>
+                        <th style="width:200px;">@Html.DisplayNameFor(model => model.saleproduct_group_desc)</th>
+                        <th style="width:200px;">@Html.DisplayNameFor(model => model.saleproduct_type_desc)</th>
+                        <th style="width:50px;" class="text-center">@Html.DisplayNameFor(model => model.amount)</th>
+                        <th style="width:50px;" class="text-center">@Html.DisplayNameFor(model => model.unit)</th>
+                        <th style="width:70px;" class="text-center">@Html.DisplayNameFor(model => model.amountOfPeriod)</th>
+                        <th style="width:20px;" class="text-center">สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var countOrder = 0;}
+                    @foreach (var item in Model)
+                    {
+                        countOrder++;
+                        <tr>
+                            <td class="text-center">@countOrder</td>
+                            <td style="display:none">@Html.DisplayFor(modelItem => item.mem_saleproduct.id)</td>
+                            <td>@Html.DisplayFor(modelItem => item.saleproduct.saleproduct_desc)</td>
+                            <td>@Html.DisplayFor(modelItem => item.saleproduct_group_desc)</td>
+                            <td>@Html.DisplayFor(modelItem => item.saleproduct_type_desc)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.amount)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.unit)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.amountOfPeriod)</td>
+                            <td class="text-center">@Html.DisplayFor(modelItem => item.mem_saleproduct.x_status)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="mem_saleproductCreateModal" class="modal fade modalForm3" tabindex="-1" role="dialog" aria-labelledby="mem_saleproductCreateModalLabel" aria-hidden="true">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<div class="pull-left" style="margin-top:0px;">
+                <i class="fa fa-list" style="color:sandybrown"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </div>*@
+                <div class="pull-right" style="margin-top:0px;">
+                    <div id="mem_salproduct_saveButton" class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="mem_saleproductPost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                </div>
+            </div>
+            <div class="modal-body container-fluid modalForm3Body">
+                
+
+                <div id="mem_saleproductCreateModalRenderBody"></div>
+
+                <div id="mem_saleproduct_planDetailsAsTableListModalRenderBody"></div>
+
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true" onclick="mem_saleproductClose();">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+<!-- Modal -->
+<div id="mem_saleproduct_planCreateModal" class="modal fade modalForm1" tabindex="-3" role="dialog" aria-labelledby="mem_saleproduct_planCreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="mem_saleproduct_planCreateModalHeader" class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px" onclick="closeMemSaleProductPlanCreateModal();">&times;</button>*@
+
+                <button type="button" class="close" aria-hidden="true" style="vertical-align:middle;top:15px" onclick="$('#mem_saleproduct_planCreateModal').modal('hide');" >&times;</button>
+                <h4 id="mem_saleproduct_planCreateModalLabel" class="modal-title" style="vertical-align:middle;">วันที่ประมาณการออกสู่ตลาด</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="mem_saleproduct_planCreateModalRenderBody">
+                    @*@{ await Html.RenderPartialAsync("ViewInput", new product()); }*@
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+<!-- Modal -->
+<div id="saleproduct_standardDetailsAsTableListModal" class="modal fade modalForm2" tabindex="-1" role="dialog" aria-labelledby="saleproduct_standardDetailsAsTableListModalLabel" aria-hidden="true">
+    <div class="modal-lg" style="width:650px;margin-left:10%;">
+        <div class="modal-content">
+            <div class="modal-body container-fluid">
+                <div id="saleproduct_standardDetailsAsTableListModalRenderBody"></div>
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+<!-- Modal -->
+<div id="saleproduct_standardCreateModal" class="modal fade modalForm1" tabindex="-1" role="dialog" aria-labelledby="saleproduct_standardCreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="saleproduct_standardCreateModalHeader" class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="vertical-align:middle;top:15px">&times;</button>
+                <h4 id="saleproduct_standardCreateModalLabel" class="modal-title" style="vertical-align:middle;">ข้อมูลมาตรฐาน</h4>
+            </div>
+            <div class="modal-body container-fluid">
+                <div id="saleproduct_standardCreateModalRenderBody">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@section Scripts {
+    <script src="~/lib/bootstrap/js/modal.js"></script>
+    <script>
+        $(document).ready(function () {
+            var tableMemSaleProduct = setDataTablesSimple();
+            tableMemSaleProduct.$('tr:first').click();
+
+
+
+
+
+            if ("@ViewBag.isViewOnly" == "1") {
+                //$('#btnBar').hide();
+                $('#labelAddText').hide();
+                $('#btnCreate').hide();
+                $('#btnEdit').hide();
+            }
+            //} else {
+            //    $('#btnCreate').show();
+            //    $('#btnEdit').show();
+            //}
+
+
+
+
+
+
+            $('#btnEdit').off('click').on('click', function () {
+                var data = tableMemSaleProduct.row('.selected').data();
+                if (data) {
+                    $.ajax({
+                        type: 'get', cache: false, url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
+                    }).done(function (resp) {
+                        $('#mem_saleproductCreateModalRenderBody').html(resp);
+                        $('#mem_salproduct_saveButton').show();
+                        $('#saleproduct_group_code').off('change').on('change', function () {
+                            $.ajax({
+                                type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                            }).done(function (resp) {
+                                if (resp != "") {
+                                    $('#saleproduct_type_code').empty();
+                                    $('#saleproduct_type_code').append(resp);
+                                    $('#saleproduct_type_code').trigger("change");
+                                } else {
+                                    $('#saleproduct_type_code').empty();
+                                }
+                            });
+                        });
+                        $('#saleproduct_group_code').trigger("change");
+                        setTimeout(function () {
+                            $("#saleproduct_type_code").val($("#saleproduct_type_code_hidden").val());
+                        }, 300);
+
+                        if ($("#delivery_post_hidden").val() == "Y") {
+                            $('#delivery_post').prop('checked', true);
+                        } else {
+                            $('#delivery_post').prop('checked', false);
+                        }
+                        if ($("#delivery_bus_hidden").val() == "Y") {
+                            $('#delivery_bus').prop('checked', true);
+                        } else {
+                            $('#delivery_bus').prop('checked', false);
+                        }
+                        if ($("#delivery_train_hidden").val() == "Y") {
+                            $('#delivery_train').prop('checked', true);
+                        } else {
+                            $('#delivery_train').prop('checked', false);
+                        }
+                        if ($("#delivery_other_hidden").val().trim() != "") {
+                            $("#mem_saleproduct_delivery_other").val($("#delivery_other_hidden").val().trim());
+                            $('#delivery_other').prop('checked', true); delivery_otherTick();
+                        } else {
+                            $('#delivery_other').prop('checked', false); delivery_otherTick();
+                        }
+                        $("#mem_saleproduct_product_detail").val($("#product_detail_hidden").val().trim());
+
+                        loadTableMemProductPlan(0);
+
+                        mem_saleproduct_standardDetails();
+                        mem_saleproduct_imageDetails();
+                    });
+
+                    $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
+                }
+            });
+
+            $('#btnDetails').off('click').on('click', function () {
+                var data = tableMemSaleProduct.row('.selected').data();
+                if (data) {
+                    $.ajax({
+                        type: 'get', cache: false, url: '@Url.Action("Edit", "mem_saleproduct")' + '?memberId=' + '@ViewBag.memberId' + '&mem_saleproduct_id=' + data[1],
+                    }).done(function (resp) {
+                        $('#mem_saleproductCreateModalRenderBody').html(resp);
+
+                        $('#saleproduct_group_code').off('change').on('change', function () {
+                            $.ajax({
+                                type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                            }).done(function (resp) {
+                                if (resp != "") {
+                                    $('#saleproduct_type_code').empty();
+                                    $('#saleproduct_type_code').append(resp);
+                                    $('#saleproduct_type_code').trigger("change");
+                                } else {
+                                    $('#saleproduct_type_code').empty();
+                                }
+                            });
+                        });
+                        $('#saleproduct_group_code').trigger("change");
+                        setTimeout(function () {
+                            $("#saleproduct_type_code").val($("#saleproduct_type_code_hidden").val());
+                        }, 300);
+
+                        if ($("#delivery_post_hidden").val() == "Y") {
+                            $('#delivery_post').prop('checked', true);
+                        } else {
+                            $('#delivery_post').prop('checked', false);
+                        }
+                        if ($("#delivery_bus_hidden").val() == "Y") {
+                            $('#delivery_bus').prop('checked', true);
+                        } else {
+                            $('#delivery_bus').prop('checked', false);
+                        }
+                        if ($("#delivery_train_hidden").val() == "Y") {
+                            $('#delivery_train').prop('checked', true);
+                        } else {
+                            $('#delivery_train').prop('checked', false);
+                        }
+                        if ($("#delivery_other_hidden").val().trim() != "") {
+                            $("#mem_saleproduct_delivery_other").val($("#delivery_other_hidden").val().trim());
+                            $('#delivery_other').prop('checked', true); delivery_otherTick();
+                        } else {
+                            $('#delivery_other').prop('checked', false); delivery_otherTick();
+                        }
+                        $("#mem_saleproduct_product_detail").val($("#product_detail_hidden").val().trim());
+
+                        loadTableMemProductPlan(0);
+
+                        mem_saleproduct_standardDetails();
+                        mem_saleproduct_imageDetails();
+
+                        $('#mem_salproduct_saveButton').hide();
+                        setTimeout(function () {
+                            $('#btnMemSaleProductUploadImage').hide();
+                            $('#btnSaleProductStdDetailsAsTableList').hide();
+                            $('#btnCreateMemSaleProductPlan').hide();
+                            $('#btnEditMemSaleProductPlan').hide();
+                            $('.photo-delete').hide();
+                        }, 300);
+
+                    });
+
+                    $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
+                }
+            });
+
+
+        });
+
+        function mem_saleproductCreate(memberId) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "mem_saleproduct")' + '?memberId=' + memberId,
+            }).done(function (resp) {
+                $('#mem_saleproductCreateModalRenderBody').html(resp);
+                $('#saleproduct_group_code').off('change').on('change', function () {
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("SelectBy", "product_type")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                    }).done(function (resp) {
+                        if (resp != "") {
+                            $('#saleproduct_type_code').empty();
+                            $('#saleproduct_type_code').append(resp);
+                            $('#saleproduct_type_code').trigger("change");
+                        } else {
+                            $('#saleproduct_type_code').empty();
+                        }
+                    });
+                });
+                $('#saleproduct_group_code').trigger("change");
+
+                loadTableMemProductPlan("-1");
+
+            });
+
+            $('#mem_saleproductCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+
+        function mem_saleproductPost() {
+            var memberId = $('#vbMemberId').val();
+            var IsCreate = $('#vbIsCreate').val();
+            var saleproduct_code = $('#saleproduct_code').val();
+            var saleproduct_desc = $('#saleproduct_saleproduct_desc').val().trim();
+            var saleproduct_group_code = $('#saleproduct_group_code').val();
+            var saleproduct_type_code = $('#saleproduct_type_code').val();
+            var saleproduct_unit_code = $('#saleproduct_unit_code').val();
+
+            var retail_price = $('#mem_saleproduct_retail_price').val().trim();
+            var wholesale_price = $('#mem_saleproduct_wholesale_price').val().trim();
+            var wholesale_condition = $('#mem_saleproduct_wholesale_condition').val().trim();
+            var product_life = $('#mem_saleproduct_product_life').val().trim();
+            var capacity_per_day = $('#mem_saleproduct_capacity_per_day').val().trim();
+            var capacity_per_month = $('#mem_saleproduct_capacity_per_month').val().trim();
+            var advance_order_condition = $('#mem_saleproduct_advance_order_condition').val().trim();
+            var store_quantity = $('#aStoreQuantity').val().trim();
+            var distribution_channels = $('#mem_saleproduct_distribution_channels').val().trim();
+            var contact_email = $('#mem_saleproduct_contact_email').val().trim();
+            var contact_telephone = $('#mem_saleproduct_contact_telephone').val().trim();
+            var contact_other = $('#mem_saleproduct_contact_other').val().trim();
+
+            var delivery_post; if ($('#delivery_post').prop("checked") == true) { delivery_post = 'Y'; } else { delivery_post = 'N'; }
+            var delivery_bus; if ($('#delivery_bus').prop("checked") == true) { delivery_bus = 'Y'; } else { delivery_bus = 'N'; }
+            var delivery_train; if ($('#delivery_train').prop("checked") == true) { delivery_train = 'Y'; } else { delivery_train = 'N'; }
+            var delivery_other = $('#mem_saleproduct_delivery_other').val().trim();
+
+            var product_detail = $('#mem_saleproduct_product_detail').val().trim();
+            var x_note = $('#mem_saleproduct_x_note').val().trim();
+
+            if (saleproduct_desc == "") { $('#saleproduct_desc_msg').text('กรุณากรอกข้อมูล'); }
+            if (retail_price == "") { $('#retail_price_msg').text('กรุณากรอกข้อมูล'); }
+            if (wholesale_price == "") { $('#wholesale_price_msg').text('กรุณากรอกข้อมูล'); }
+            if (store_quantity == "") { $('#store_quantity_msg').text('กรุณากรอกข้อมูล'); }
+
+            if ((saleproduct_desc != '') && (retail_price != '') && (wholesale_price != '') && (store_quantity != '')) {
+                $.ajax({
+                    type: 'post', url: '@Url.Action("Save", "mem_saleproduct")' + '?memberId=' + memberId + '&IsCreate=' + IsCreate + '&saleproduct_code=' + saleproduct_code + '&saleproduct_desc=' + saleproduct_desc +
+                        '&saleproduct_group_code=' + saleproduct_group_code + '&saleproduct_type_code=' + saleproduct_type_code + '&saleproduct_unit_code=' + saleproduct_unit_code +
+                        '&retail_price=' + retail_price + '&wholesale_price=' + wholesale_price + '&wholesale_condition=' + wholesale_condition +
+                        '&product_life=' + product_life + '&capacity_per_day=' + capacity_per_day + '&capacity_per_month=' + capacity_per_month +
+                        '&advance_order_condition=' + advance_order_condition + '&store_quantity=' + store_quantity + '&distribution_channels=' + distribution_channels +
+                        '&contact_email=' + contact_email + '&contact_telephone=' + contact_telephone + '&contact_other=' + contact_other +
+                        '&delivery_post=' + delivery_post + '&delivery_bus=' + delivery_bus + '&delivery_train=' + delivery_train + '&delivery_other=' + delivery_other +
+                        '&product_detail=' + product_detail + '&x_note=' + x_note
+    ,
+                }).done(function (resp) {
+                    if (resp != "") {
+                        if (resp.result == "success") {
+                            $('#mem_saleproductCreateModal').modal('hide');
+                            if ("@ViewBag.isViewOnly" == "1") {
+                                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})" + "&v=1";
+                            } else {
+                                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+                            }
+                        }
+                    }
+                });
+            }
+
+
+
+
+        }
+
+        function delivery_otherTick() {
+            if ($('#delivery_other').prop("checked") == true) {
+                $('#mem_saleproduct_delivery_other').prop('readonly', false);
+            } else {
+                $('#mem_saleproduct_delivery_other').prop('readonly', true);
+            }
+
+        }
+
+        function mem_saleproductClose() {
+            if ("@ViewBag.isViewOnly" == "1") {
+                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})" + "&v=1";
+            } else {
+                window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+            }
+        }
+
+        function loadTableMemProductPlan(pYear) {
+            $.ajax({
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsTableList", "mem_saleproduct_plan")' + '?memberId=' + '@ViewBag.memberId' + '&saleproductCode=' + $('#saleproduct_code').val() + '&unit=' + $("#saleproduct_unit_code option:selected").text() + '&lyear=' + pYear,
+            }).done(function (resp) {
+                $('#mem_saleproduct_planDetailsAsTableListModalRenderBody').html(resp);
+                var tableMemSaleProductPlan = setDataTables($('#dataTablesMemSaleProductPlanDetailsAsTableList'));
+                tableMemSaleProductPlan.$('tr:first').click();
+
+                $('#aAmountOfPeriod').val($('#aAmountOfPeriodHidden').val());
+                $('#aAmountPerYear').val($('#aAmountPerYearHidden').val());
+                $('#aAmountAll').val($('#aAmountAllHidden').val());
+
+
+                $('#btnEditMemSaleProductPlan').off('click').on('click', function () {
+                    var saleproduct_code = $('#saleproduct_code').val();
+                    var datarow = tableMemSaleProductPlan.row('.selected').data();
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("Edit", "mem_saleproduct_plan")' + '?planId=' + datarow[1],
+                    }).done(function (resp) {
+                        $('#mem_saleproduct_planCreateModalRenderBody').html(resp);
+
+                        $('#launch_date').removeAttr("style")
+                        $('#launch_date').attr('readonly', 'readonly');
+
+                        $('#pUnit').val($("#saleproduct_unit_code option:selected").text());
+                    });
+
+                    $('#mem_saleproduct_planCreateModal').modal({ backdrop: 'static', keyboard: false });
+
+                });
+
+                $('#aUnit').val($("#saleproduct_unit_code option:selected").text());
+
+                $('#saleproduct_unit_code').off('change').on('change', function () {
+                    loadTableMemProductPlan($('#aYear').val());
+                });
+
+                $('#aYear').off('change').on('change', function () {
+                    loadTableMemProductPlan($('#aYear').val());
+                });
+
+
+
+
+            });
+
+        }
+
+        function mem_saleproduct_planCreate(memberId) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "mem_saleproduct_plan")' + '?memberId=' + memberId,
+            }).done(function (resp) {
+                $('#mem_saleproduct_planCreateModalRenderBody').html(resp);
+
+
+
+
+
+
+                $.datepicker.regional['th'] = {
+                    dateFormat: 'dd-mm-yy', changeMonth: true, changeYear: true, constrainInput: true,
+                    yearRange: "-5:+20", yearOffSet: 543, beforeShow: function () { if ($("#launch_date").val() == "") { $("#launch_date").datepicker("setDate", new Date()); } }
+                };
+                $.datepicker.setDefaults($.datepicker.regional['th']);
+                $("#launch_date").datepicker($.datepicker.regional["th"]);
+                $('#launch_dateButton').off('click').on('click', function () {
+                    $('#launch_date').datepicker("show");
+                });
+
+                $('#pUnit').val($("#saleproduct_unit_code option:selected").text());
+            });
+
+            $('#mem_saleproduct_planCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+
+
+
+        function mem_saleproduct_planPost() {
+            var planId = $('#planId').val();
+            var saleproduct_code = $('#saleproduct_code').val();
+            var launch_date = $('#launch_date').val().trim();
+            var estimate_qty = $('#estimate_qty').val().trim();
+            $.ajax({
+                type: 'post', url: '@Url.Action("Save", "mem_saleproduct_plan")' + '?id=' + planId + '&memberId=' + '@ViewBag.memberId' + '&saleproduct_code=' + saleproduct_code +
+                    '&launch_date=' + launch_date + '&estimate_qty=' + estimate_qty
+                    ,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        loadTableMemProductPlan(0);
+                        $('#mem_saleproduct_planCreateModal').modal('hide');
+                    }
+                }
+            });
+        }
+
+
+        function saleproduct_standardDetailsAsTableList() {
+            $.ajax({
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsTableList", "saleproduct_standard")',
+            }).done(function (resp) {
+                $('#saleproduct_standardDetailsAsTableListModalRenderBody').html(resp);
+                var tableSaleProductStd = setDataTables($('#dataTablesSaleProductStdDetailsAsTableList'));
+                tableSaleProductStd.$('tr:first').click();
+
+                $('#btnEditSaleProductStd').off('click').on('click', function () {
+                    var datarow = tableSaleProductStd.row('.selected').data();
+                    $.ajax({
+                        type: 'get', url: '@Url.Action("Edit", "saleproduct_standard")' + '?saleproduct_standard_code=' + datarow[1],
+                    }).done(function (resp) {
+                        $('#saleproduct_standardCreateModalRenderBody').html(resp);
+                    });
+
+                    $('#saleproduct_standardCreateModal').modal({ backdrop: 'static', keyboard: false });
+                });
+
+            });
+
+            $('#saleproduct_standardDetailsAsTableListModal').modal({ backdrop: 'static', keyboard: false });
+
+        }
+
+        function saleproduct_standardCreate() {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "saleproduct_standard")',
+            }).done(function (resp) {
+                $('#saleproduct_standardCreateModalRenderBody').html(resp);
+
+
+            });
+
+            $('#saleproduct_standardCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+
+        function saleproduct_standardPost() {
+            var saleproduct_standard_code = $('#saleproduct_standard_code').val();
+            var saleproduct_standard_desc_thai = $('#saleproduct_standard_desc_thai').val().trim();
+            var saleproduct_standard_desc_eng = $('#saleproduct_standard_desc_eng').val().trim();
+
+            if (!saleproduct_standard_desc_thai) { $('#saleproduct_standard_desc_thai_msg').text('กรุณากรอกข้อมูล'); $('#saleproduct_standard_desc_thai_msg').show(); } else { $('#saleproduct_standard_desc_thai_msg').hide(); }
+
+
+            $.ajax({
+                type: 'post', url: '@Url.Action("Save", "saleproduct_standard")' + '?saleproduct_standard_code=' + saleproduct_standard_code +
+                    '&saleproduct_standard_desc_thai=' + saleproduct_standard_desc_thai + '&saleproduct_standard_desc_eng=' + saleproduct_standard_desc_eng
+        ,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                        saleproduct_standardDetailsAsTableList();
+                    } else {
+
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                    }
+                }
+            });
+        }
+
+        function mem_saleproduct_standardCreate(saleproduct_standard_code) {
+            var id = "btn" + saleproduct_standard_code;
+            var oldV = $('#' + id).html();
+            $('#' + id).html('<i class="fa fa-spin fa-refresh" aria-hidden="true" style="color:#093D6A;"></i>');
+            $.ajax({
+                type: 'post', url: '@Url.Action("Create", "mem_saleproduct_standard")' + '?saleproduct_standard_code=' + saleproduct_standard_code +
+                    '&saleproduct_code=' + $('#saleproduct_code').val() + '&memberId=' + '@ViewBag.memberId'
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                    } else {
+
+                        $('#saleproduct_standardCreateModal').modal('hide');
+                    }
+                }
+                setTimeout(function () { $('#' + id).html(oldV); $('#mem_saleproduct_standardPanel').empty(); mem_saleproduct_standardDetails(); }, 500);
+            });
+        }
+
+        function mem_saleproduct_standardDetails() {
+            var memberId = '@ViewBag.memberId';
+            var saleproduct_code = $('#saleproduct_code').val();
+            $.ajax({
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsJson", "mem_saleproduct_standard")' + '?memberId=' + memberId + "&saleproduct_code=" + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    for (var i = 0; i < resp.length; i++) {
+                        var imgblock = '<div id="' + resp[i].saleproduct_standard_code + '" class="img-thumbnail" style="height:200px;width:150px;margin-top:10px;margin-left:15px;margin-right:15px;">';
+                        var idIsMark = "ismark" + resp[i].saleproduct_standard_code; //var idImageCode = "ic" + resp[i].image_code;
+                        imgblock += '<div id="' + idIsMark + '" style="display:none">0</div><div id="imc" style="display:none">' + resp[i].saleproduct_standard_code + '</div>';
+                        imgblock += '<div class="row" style="position:relative;">&nbsp;<br/>&nbsp;';
+                        var idMark = "mark" + resp[i].saleproduct_standard_code;
+                        //imgblock += '<div class="col-xs-6" style="position:absolute;top:0px;left:10px;"><div class="photo-mark" id="' + idMark + '" aria-hidden="true" style="font-size:25px;" onclick="markPhoto(\'' + resp[i].saleproduct_standard_code + '\');"><i class="fa fa-square-o" aria-hidden="true"></i></div></div>';
+                        imgblock += '<div class="col-xs-6" style="position:absolute;top:-5px;left:122px;"><div class="photo-delete" aria-hidden="true" style="font-size:20px;" onclick="mem_saleproduct_standardDelete(\'' + resp[i].member_code + '\',\'' + resp[i].saleproduct_code + '\',\'' + resp[i].saleproduct_standard_code + '\')"><i class="fa fa-times" aria-hidden="true"></i></div></div>';
+                        imgblock += '</div>';
+                        imgblock += '<img id="imgMSTD' + resp[i].saleproduct_standard_code + '" class="img-responsive center-block" style="margin-top:-15px;height:130px;cursor:pointer;cursor:hand;" onclick="$(\'#fileInput' + resp[i].saleproduct_standard_code + '\').click();" src="' + '@Url.Action("image", "pic_image")' + '?id=' + resp[i].ref_image + '" />';
+                        var desc = "";
+                        if (resp[i].saleproduct_standard_desc_thai != "") {
+                            if (resp[i].saleproduct_standard_desc_thai.length > 25) {
+                                desc = resp[i].saleproduct_standard_desc_thai.substring(0, 25) + '...';
+                            } else { desc = resp[i].saleproduct_standard_desc_thai; }
+                        } else { desc = "&nbsp;"; }
+
+                        //var idDesc2 = "desc2" + resp[i].saleproduct_standard_code;
+                        //imgblock += '<div id="' + idDesc2 + '" style="display:none">' + resp[i].image_desc + '</div>';
+                        var idDesc = "desc" + resp[i].saleproduct_standard_code;
+                        //imgblock += '<div id="' + idDesc + '" class="btn btn-default center-block btn-photo-blue" style="margin-top:5px;width:100%" onclick="changeDesc(\'' + resp[i].saleproduct_standard_code + '\');">' + desc + '</div>';
+                        imgblock += '<div id="' + idDesc + '" style="margin-top:5px;width:100%;text-align:center;font-weight:bold;" >' + desc + '</div>';
+
+                        imgblock += '</div>';
+
+                        $('#mem_saleproduct_standardPanel').append(imgblock);
+
+                        var fInput = '<form id="formFileInput' + resp[i].saleproduct_standard_code + '" enctype="multipart/form-data"><input id="fileInput' + resp[i].saleproduct_standard_code + '" type="file" style="visibility:hidden" onchange="mem_saleproduct_standardUploadImage(\'' + resp[i].member_code + '\',\'' + resp[i].saleproduct_code + '\',\'' + resp[i].saleproduct_standard_code + '\')" accept="image/*" /></form>';
+                        $('#mem_saleproduct_standardFileInput').append(fInput);
+                    }
+                }
+            });
+
+
+        }
+
+        function mem_saleproduct_standardUploadImage(member_code, saleproduct_code, saleproduct_standard_code) {
+            var fInput = '#fileInput' + saleproduct_standard_code;
+            var imgMSTD = '#imgMSTD' + saleproduct_standard_code;
+            if ($(fInput)[0].files[0]) {
+                $('#waitMemPhoto').show();
+                var formData = new FormData();
+                formData.append("fileImage", $(fInput)[0].files[0]);
+                formData.append("member_code", member_code); formData.append("saleproduct_code", saleproduct_code); formData.append("saleproduct_standard_code", saleproduct_standard_code);
+                $.ajax({
+                    type: 'post', url: '@Url.Action("uploadImage", "mem_saleproduct_standard")',
+                    data: formData, processData: false, contentType: false,
+                }).done(function (resp) {
+                    var result = resp.result; var fileName = resp.fileName;
+                    @*$('#mem_photo').val(resp.fileName);
+                    $('#waitMemPhoto').hide(); $('#emptyMemPhoto').hide();
+                     $('#picMemPhoto').show();*@
+                    $(imgMSTD).attr('src', '@Url.Action("image", "pic_image")' + '?id=' + resp.fileName);
+                });
+            }
+
+
+        }
+
+        function mem_saleproduct_standardDelete(member_code, saleproduct_code, saleproduct_standard_code) {
+
+            $.ajax({
+                type: 'post', url: '@Url.Action("Delete", "mem_saleproduct_standard")' + '?saleproduct_standard_code=' + saleproduct_standard_code +
+                    '&saleproduct_code=' + $('#saleproduct_code').val() + '&member_code=' + member_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        $('#mem_saleproduct_standardPanel').empty();
+                        mem_saleproduct_standardDetails();
+                    }
+
+                }
+            });
+        }
+
+        function mem_saleproduct_imageUploadImage() {
+            var fInput = '#fileMemSaleProductUploadImage';
+            if ($(fInput)[0].files[0]) {
+                //$('#waitMemPhoto').show();
+                var formData = new FormData();
+                formData.append("fileImage", $(fInput)[0].files[0]);
+                formData.append("memberId", '@ViewBag.memberId'); formData.append("saleproduct_code", $('#saleproduct_code').val());
+                $.ajax({
+                    type: 'post', url: '@Url.Action("uploadImage", "mem_saleproduct_image")',
+                    data: formData, processData: false, contentType: false,
+                }).done(function (resp) {
+                    console.log(resp);
+                    var result = resp.result; var fileName = resp.fileName;
+                    mem_saleproduct_imageDetails();
+                });
+            }
+
+        }
+
+        function mem_saleproduct_imageDetails() {
+            var memberId = '@ViewBag.memberId';
+            var saleproduct_code = $('#saleproduct_code').val();
+            $.ajax({
+                type: 'get', cache: false, url: '@Url.Action("DetailsAsJson", "mem_saleproduct_image")' + '?memberId=' + memberId + "&saleproduct_code=" + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#mem_saleproductUploadImagePanel').empty();
+                    for (var i = 0; i < resp.length; i++) {
+                        var imgblock = '<div id="' + resp[i].saleproduct_image_code + '" class="img-thumbnail" style="height:175px;width:175px;margin-top:10px;margin-left:15px;margin-right:15px;">';
+                        var idIsMark = "ismark" + resp[i].saleproduct_image_code; //var idImageCode = "ic" + resp[i].image_code;
+                        imgblock += '<div id="' + idIsMark + '" style="display:none">0</div><div id="imc" style="display:none">' + resp[i].saleproduct_image_code + '</div>';
+                        imgblock += '<div class="row" style="position:relative;">&nbsp;<br/>&nbsp;';
+                        var idMark = "mark" + resp[i].saleproduct_image_code;
+                        //imgblock += '<div class="col-xs-6" style="position:absolute;top:0px;left:10px;"><div class="photo-mark" id="' + idMark + '" aria-hidden="true" style="font-size:25px;" onclick="markPhoto(\'' + resp[i].saleproduct_standard_code + '\');"><i class="fa fa-square-o" aria-hidden="true"></i></div></div>';
+                        imgblock += '<div class="col-xs-6" style="position:absolute;top:-5px;left:150px;"><div class="photo-delete" aria-hidden="true" style="font-size:20px;" onclick="mem_saleproduct_imageDelete(\'' + resp[i].member_code + '\',\'' + resp[i].saleproduct_code + '\',\'' + resp[i].saleproduct_image_code + '\')"><i class="fa fa-times" aria-hidden="true"></i></div></div>';
+                        imgblock += '</div>';
+                        imgblock += '<img id="imgMSPI' + resp[i].saleproduct_image_code + '" class="img-responsive center-block" style="margin-top:-15px;height:130px;" src="' + '@Url.Action("image", "pic_image")' + '?id=' + resp[i].saleproduct_image_code + '" />';
+
+                        $('#mem_saleproductUploadImagePanel').append(imgblock);
+
+                    }
+                }
+            });
+        }
+
+        function mem_saleproduct_imageDelete(member_code, saleproduct_code, saleproduct_image_code) {
+
+            $.ajax({
+                type: 'post', url: '@Url.Action("Delete", "mem_saleproduct_image")' + '?saleproduct_image_code=' + saleproduct_image_code +
+                    '&saleproduct_code=' + saleproduct_code + '&member_code=' + member_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    if (resp.result == "success") {
+                        mem_saleproduct_imageDetails();
+                    }
+
+                }
+            });
+        }
+
+    </script>
+}
+

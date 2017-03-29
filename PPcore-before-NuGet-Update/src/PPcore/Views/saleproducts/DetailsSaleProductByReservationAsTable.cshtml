@@ -1,0 +1,42 @@
+﻿@model IEnumerable<PPcore.ViewModels.saleproduct.detailsReservationViewModel>
+@{
+    Layout = null;
+}
+<div id="showdate" style="display:none">@ViewBag.displaydate</div>
+<table class="table table-striped table-bordered table-hover" id="a_table">
+    <thead>
+        <tr>
+            <th style="width:15px;">ลำดับ</th>
+            <th style="display:none">@Html.DisplayNameFor(model => model.saleproduct_code)</th>
+            <th>@Html.DisplayNameFor(model => model.saleproduct_desc)</th>
+            <th style="width:50px;">@Html.DisplayNameFor(model => model.store_quantity)</th>
+            <th style="width:50px;">@Html.DisplayNameFor(model => model.reservation_amount)</th>
+            <th style="width:50px;">@Html.DisplayNameFor(model => model.left_in_stock)</th>
+            <th style="width:50px;">@Html.DisplayNameFor(model => model.saleproduct_unit)</th>
+            <th style="width:50px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ var countOrder = 0;}
+        @foreach (var item in Model)
+        {
+            countOrder++;
+            <tr>
+                <td style="width:15px;">
+                    @countOrder
+                </td>
+                <td style="display:none">@Html.DisplayFor(modelItem => item.saleproduct_code)</td>
+                <td>@Html.DisplayFor(modelItem => item.saleproduct_desc)</td>
+                <td>@Html.DisplayFor(modelItem => item.store_quantity)</td>
+                <td>@Html.DisplayFor(modelItem => item.reservation_amount)</td>
+                <td>@Html.DisplayFor(modelItem => item.left_in_stock)</td>
+                <td>@Html.DisplayFor(modelItem => item.saleproduct_unit)</td>
+                <td id="cell-@Html.DisplayFor(modelItem => item.saleproduct_code)">
+                <button class="btn btn-xs btn-panel-yellow" type="button" onclick="showDetails('@Html.DisplayFor(modelItem => item.saleproduct_code)');">รายละเอียด</button>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,775 @@
+﻿<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12" style="padding-top:15px;">
+        </div>
+    </div>
+
+    <div class="panel panel-blue">
+        <div class="panel-heading">
+            <div class="pull-left" style="margin-top:3px;"><span>ข้อมูลผลิตภัณฑ์</span></div>
+
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-3 col-sm-5">
+                    <div class="panel panel-blue-search">
+                        <div class="panel-heading">
+                            <div class="row">
+
+                                <div class="col-md-6 text-left">
+                                    <div style="font-size:16px;margin-top:6px;">เงื่อนไขในการค้นหา</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pull-right" >
+                                        <div class="btn btn-default btn-panel-yellow " onclick="SearchProduct();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <form >
+                                @*<div class="form-group input-group">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                    <input id="searchword" class="form-control" placeholder="ชื่อผลิตภัณฑ์" autocomplete="off" />
+                                </div>*@
+                                <div class="form-group">
+                                    <input id="searchword" class="form-control" placeholder="ชื่อผลิตภัณฑ์" autocomplete="off" />
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">กลุ่มผลิตภัณฑ์</label></div>
+                                        <div class="col-md-7">
+                                            <select id="saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group" ></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;">ประเภทผลิตภัณฑ์</label></div>
+                                        <div class="col-md-7">
+                                            <select id="saleproduct_type_code" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;margin-top:3px;">การรับรองมาตรฐาน</label></div>
+                                        <div class="col-md-7" style="margin-top:0px;">
+                                            <label class="checkbox-inline text-left" onclick="stdAllClick()">
+                                                <input id="stdAll" type="checkbox" /><b>ทั้งหมด</b>
+                                            </label><br />
+                                            <div class="panel-body" style="height:150px;overflow:scroll;background-color:#FAFAFA;">
+                                                <div style="margin-top:-10px;margin-bottom:-15px;" id="stdBox">
+                                                    @Html.Raw(ViewBag.standard)
+                                                </div>
+                                            </div>
+                                            @*<select id="mem_saleproduct_group_code" class="form-control" asp-items="@ViewBag.product_group"></select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="form-group">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-2 text-right"><label class="control-label" style="font-size:13px;margin-top:8px;margin-right:-10px">ราคา</label></div>
+                                        <div class="col-md-4">
+                                            <input id="minPrice" class="form-control" placeholder="จาก" autocomplete="off" />
+                                        </div>
+                                        <div class="col-md-1 text-center"><label class="control-label" style="font-size:16px;margin-top:6px;">-</label></div>
+                                        <div class="col-md-4">
+                                            <input id="maxPrice" class="form-control" placeholder="ถึง" autocomplete="off" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <hr />
+                                <div class="form-group">
+                                    <div class="row" style="margin-top:-10px;margin-bottom:-10px;">
+                                        <div class="col-md-5 text-right"><label class="control-label" style="font-size:13px;">การขนส่ง</label></div>
+                                        <div class="col-md-7" style="margin-top:-1px;">
+                                            <label class="checkbox-inline text-left" onclick="deliverAllClick()">
+                                                <input id="deliverAll" type="checkbox" /><b>ทั้งหมด</b>
+                                            </label><br />
+                                            <div class="panel-body" style="margin-top:-15px;" >
+                                                <div>
+                                                    <label class="checkbox-inline text-left" onclick="deliverClick()">
+                                                        <input id="delivery_post" type="checkbox" />ไปรษณีย์
+                                                    </label><br/>
+                                                    <label class="checkbox-inline text-left" onclick="deliverClick()">
+                                                        <input id="delivery_bus" type="checkbox" />รถทัวร์
+                                                    </label><br/>
+                                                    <label class="checkbox-inline text-left" onclick="deliverClick()">
+                                                        <input id="delivery_train" type="checkbox" />รถไฟ
+                                                    </label><br />
+                                                    <label class="checkbox-inline" onclick="deliverClick()">
+                                                        <input id="delivery_other" type="checkbox" />อื่นๆ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </form>
+
+                        </div>
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <div class="pull-right">
+                                        <div class="btn btn-default btn-panel-yellow " onclick="SearchProduct();">&nbsp;<i class="fa fa-search" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-9 col-sm-7">
+                    <div id="searchResult" class="well col-md-12" style="display:inline-block;" >
+                        <br/><br/><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+                    </div>
+
+                    @*<div id="detailsSaleProduct" class="col-md-12" style="display:none;position:absolute;margin-left:-20px;">
+                        @{ Html.RenderPartial("~/Views/saleproducts/Details.cshtml"); }
+                    </div>*@
+
+
+
+
+<!-- detailsSaleProduct -->
+            <div id="detailsSaleProduct" class="col-md-12" style="display:none;position:absolute;margin-left:-20px;" >
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="pull-left">
+                            <div class="btn btn-default btn-panel-yellow " onclick="hideDetails()">&nbsp;<i class="fa fa-mail-reply" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;กลับ&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                        </div>
+
+@if (ViewBag.IsAdmin)
+{
+    <div class="pull-right">
+        <div id="btnReserve" class="btn btn-default btn-panel-yellow ">&nbsp;&nbsp;&nbsp;จอง&nbsp;&nbsp;&nbsp;&nbsp;</div>
+    </div>
+}
+
+
+                        <div style="margin-left:100px;height:35px;">
+                            <ol class="breadcrumb" id="breadcrumbGroup">
+
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <h1 id="saleproduct_desc"></h1>
+                        <h3 id="totalAmount"></h3>
+
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div id="saleproductImage" class="carousel slide" data-ride="carousel" data-interval="false" style="background-color:#1F1F1F;">
+
+                                    <ol id="saleproductImageIndicators" class="carousel-indicators">
+                                        <li data-target="#saleproductImage" data-slide-to="0" class="active"></li>
+                                    </ol>
+
+
+                                    <div id="saleproductImageInner" class="carousel-inner" role="listbox">
+                                        <div class="item active">
+                                            <img src="">
+                                        </div>
+                                    </div>
+
+                                    <a class="left carousel-control" href="#saleproductImage" role="button" data-slide="prev">
+                                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="right carousel-control" href="#saleproductImage" role="button" data-slide="next">
+                                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-8">
+
+
+                                        <div class="panel panel-default">
+                                            <div class="panel-body" style="background-color:lightgray">
+                                                <div class="row">
+                                                    <div class="col-md-8 text-right">
+                                                        <strong>ราคาขายปลีก:</strong><br />
+                                                        <strong>ราคาขายส่ง:</strong><br />
+                                                        <strong>เงื่อนไขสินค้าราคาส่ง:</strong><br />
+                                                        <strong>สั่งล่วงหน้า:</strong><br />
+                                                        <strong>พร้อมจัดส่ง:</strong><br />
+
+                                                    </div>
+                                                    <div class="col-md-4" style="margin-left:-10px;">
+
+                                                        <em id="retail_price"></em> <strong>บาท</strong><br />
+                                                        <em id="wholesale_price"></em> <strong>บาท</strong><br />
+                                                        <em id="wholesale_condition"></em><br />
+                                                        <em id="advance_order_condition"></em><br />
+                                                        <em id="store_quantity"></em> <strong id="store_quantity_unit"></strong><br />
+                                                    </div>
+                                                </div>
+
+                                                <hr/>
+
+                                                <div class="row">
+                                                    <div class="col-md-8 text-right">
+                                                        <strong>ระยะเวลาในการเก็บรักษา:</strong><br />
+                                                        <strong>กำลังการผลิตต่อวัน:</strong><br />
+                                                        <strong>กำลังการต่อเดือน:</strong><br />
+
+
+                                                    </div>
+                                                    <div class="col-md-4" style="margin-left:-10px;">
+                                                        <em id="product_life"></em><br />
+                                                        <em id="capacity_per_day"></em><br />
+                                                        <em id="capacity_per_month"></em><br />
+
+
+                                                    </div>
+                                                </div>
+
+                                                <hr />
+
+                                                <div class="col-md-12">
+                                                    <p><strong>ช่องทางในการจำหน่าย:</strong></p>
+                                                    <p><em id="distribution_channels"></em></p>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <p><strong>การขนส่ง:</strong></p>
+                                                    <p><em id="delivery"></em></p>
+                                                </div>
+
+
+                                            </div>
+                                            <!-- /.panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">ช่องทางการสั่งซื้อ</div>
+                                            <div class="panel-body">
+                                                <p><strong>โทรศัพท์:</strong></p>
+                                                <p><em id="contact_telephone"></em></p>
+                                                <p><strong>อีเมล:</strong></p>
+                                                <p><em id="contact_email"></em></p>
+                                                <p><strong>อื่นๆ:</strong></p>
+                                                <p><em id="contact_other"></em></p>
+                                            </div>
+                                            <!-- /.panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">การรับรองมาตรฐาน</div>
+                                            <div class="panel-body" style="margin-left:-25px;" id="standardUL">
+                                            </div>
+                                            <!-- /.panel-body -->
+                                        </div>
+                                        <!-- /.panel -->
+
+                                    </div>
+
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+
+
+
+
+
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">รายละเอียดสินค้า</div>
+                            <div class="panel-body" id="product_detail">
+                                ทดสอบ
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">ข้อมูลอื่นๆ</div>
+                            <div class="panel-body" id="x_note">
+                                -
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+<!-- detailsSaleProduct -->
+
+
+
+
+                    </div>
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+        <div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- Modal -->
+<div id="saleproduct_reservationCreateModal" class="modal fade modalForm3" tabindex="-1" role="dialog" aria-labelledby="saleproduct_reservationCreateModalLabel" aria-hidden="true">
+    <div class="modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="pull-left" style="margin-top:-5px;"><h4>ข้อมูลการจอง</h4></div>
+                <div class="pull-right" style="margin-top:0px;">
+                    <div class="btn btn-default btn-panel-yellow" aria-hidden="true" onclick="reservePost();">&nbsp;<i class="fa fa-floppy-o" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;จัดเก็บ&nbsp;&nbsp;</div>
+                </div>
+            </div>
+            <div class="modal-body container-fluid modalForm3Body">
+
+                <div id="saleproduct_reservationCreateModalRenderBody"></div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right" style="margin-top:-2px;">
+                    <div class="btn btn-default btn-danger" data-dismiss="modal" aria-hidden="true" onclick="reserveClose();">&nbsp;&nbsp;&nbsp;ปิด&nbsp;&nbsp;&nbsp;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+@section Scripts {
+    <script src="~/lib/bootstrap/js/modal.js"></script>
+    <script src="~/lib/bootstrap/js/carousel.js"></script>
+
+    <style>
+.carousel-control.left, .carousel-control.right{ background: none !important; filter: none !important; progid:none !important; }
+    </style>
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#saleproduct_group_code').off('change').on('change', function () {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("GetProductTypeAsSelect", "saleproducts")' + '?product_group_code=' + $('#saleproduct_group_code').val(),
+                }).done(function (resp) {
+                    if (resp != "") {
+                        $('#saleproduct_type_code').empty();
+                        $('#saleproduct_type_code').append(resp);
+                        $('#saleproduct_type_code').trigger("change");
+                    } else {
+                        $('#saleproduct_type_code').empty();
+                    }
+                });
+            });
+            $('#saleproduct_group_code').trigger("change");
+
+            $("#stdAll").prop('checked', true); stdAllClick();
+            $("#deliverAll").prop('checked', true); deliverAllClick();
+        });
+
+        function stdAllClick() {
+            if ($("#stdAll").prop('checked')) {
+                $("input[id*='std_']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            } else {
+                $("input[id*='std_']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+        function stdClick() {
+            var countAll = 0; var countCheck = 0;
+            $("input[id*='std_']").each(function () {
+                countAll++;
+                if ($(this).prop('checked')) { countCheck++; }
+            });
+            if (countAll == countCheck) { $("#stdAll").prop('checked', true); } else { $("#stdAll").prop('checked', false); }
+        }
+        function deliverAllClick() {
+            if ($("#deliverAll").prop('checked')) {
+                $("input[id*='delivery']").each(function () {
+                    $(this).prop('checked', true);
+                });
+            } else {
+                $("input[id*='delivery']").each(function () {
+                    $(this).prop('checked', false);
+                });
+            }
+        }
+        function deliverClick() {
+            var countAll = 0; var countCheck = 0;
+            $("input[id*='delivery']").each(function () {
+                countAll++;
+                if ($(this).prop('checked')) { countCheck++; }
+            });
+            if (countAll == countCheck) { $("#deliverAll").prop('checked', true); } else { $("#deliverAll").prop('checked', false); }
+        }
+        function SearchProduct() {
+            var searchword = $("#searchword").val().trim();
+            $('#searchResult').empty();
+            var std = "";
+            $("input[id*='std_']").each(function () {
+                if ($(this).prop('checked')) { std += $(this).attr('id').substring(4) + "|"; }
+            });
+            $.ajax({
+                type: 'post', url: '@Url.Action("Search", "saleproducts")' + '?searchword=' + searchword +
+                    "&saleproduct_group_code=" + $('#saleproduct_group_code').val() + "&saleproduct_type_code=" + $('#saleproduct_type_code').val() +
+                    "&minPrice=" + $('#minPrice').val() + "&maxPrice=" + $('#maxPrice').val() +
+                    "&delivery_post=" + $('#delivery_post').prop('checked') + "&delivery_bus=" + $('#delivery_bus').prop('checked') + "&delivery_train=" + $('#delivery_train').prop('checked') + "&delivery_other=" + $('#delivery_other').prop('checked') +
+                    "&std=" + std,
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    for (var i = 0; i < resp.length; i++) {
+                        var imgblock = '<div id="' + resp[i].saleproduct_code + '" class="img-thumbnail" style="height:265px;width:250px;margin-bottom:15px;margin-right:15px;" onclick="showDetails(\'' + resp[i].saleproduct_code + '\');">';
+                        var idIsMark = "ismark" + resp[i].saleproduct_code;
+                        imgblock += '<img id="imgPd' + resp[i].saleproduct_code + '" class="img-responsive center-block" style="margin-top:0px;height:200px;cursor:pointer;cursor:hand;" src="' + '@Url.Action("image", "pic_image")' + '?id=' + resp[i].image_code + '" />';
+
+                        var desc = "";
+                        if (resp[i].saleproduct_desc != "") {
+                            //if (resp[i].saleproduct_desc.length > 25) {
+                            //    desc = resp[i].saleproduct_desc.substring(0, 25) + '...';
+                            //} else { desc = resp[i].saleproduct_desc; }
+                            desc = resp[i].saleproduct_desc;
+                        } else { desc = "&nbsp;"; }
+                        var idDesc = "desc" + resp[i].saleproduct_code;
+                        imgblock += '<div id="' + idDesc + '" style="margin-top:5px;width:100%;text-align:center;font-weight:bold;" >' + desc + '</div>';
+
+                        var desc2 = "";
+                        if (resp[i].retail_price != "") {
+                            desc2 = resp[i].retail_price;
+                        } else { desc2 = "&nbsp;"; }
+                        var idDesc2 = "desc2" + resp[i].retail_price;
+                        imgblock += '<div id="' + idDesc2 + '" style="margin-top:5px;width:100%;text-align:center;font-weight:bold;" >ราคา ' + desc2 + ' บาท</div>';
+
+
+                        imgblock += '</div>';
+                        $('#searchResult').append(imgblock);
+                    }
+                }
+            });
+        }
+
+        function showDetailsXX(saleproduct_code) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Details", "saleproducts")' + '?saleproduct_code=' + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    $("#detailsSaleProduct").empty();
+                    $("#detailsSaleProduct").html(resp);
+                    console.log($("#detailsSaleProduct").html());
+                        $("#searchResult").toggle("slide", { direction: "left" }, 500);
+                        $("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
+                }
+            });
+
+        }
+        function showDetails(saleproduct_code) {
+            $.ajax({
+                type: 'post', url: '@Url.Action("Details", "saleproducts")' + '?saleproduct_code=' + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#breadcrumbGroup').html(resp.breadcrumb);
+
+
+                    var is = resp.images.substring(0, resp.images.length - 1);
+                    var iss = is.split('|');
+                    var dList = []; var urlPath = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
+                    $('#saleproductImageIndicators').empty();
+                    $('#saleproductImageInner').empty();
+                    for (var i = 0; i < iss.length; i++) {
+                        var cActive = ""; var cActive2 = "";
+                        if (i == 0) { cActive = 'class="active"'; cActive2 = "active" }
+                        $('#saleproductImageIndicators').append('<li data-target="#saleproductImage" data-slide-to="' + i + '" ' + cActive + '></li>');
+                        $('#saleproductImageInner').append('<div class="item ' + cActive2 + '"><img style="height:400px;width:auto;" class="img-responsive center-block" src="' + urlPath + '@Url.Action("image", "pic_image")' + "?id=" + iss[i] + '"></div>');
+                    }
+
+                    //console.log($('#saleproductImageIndicators').html());
+                    //console.log($('#saleproductImageInner').html());
+
+
+                    $('#saleproduct_desc').html(resp.saleproduct_desc);
+                    $('#totalAmount').html("จำนวน <em>"+ resp.total_quantity +"</em> " + resp.saleproduct_unit);
+
+                    $('#retail_price').html(resp.retail_price);
+                    $('#wholesale_price').html(resp.wholesale_price);
+                    $('#wholesale_condition').html(resp.wholesale_condition);
+
+                    $('#advance_order_condition').html(resp.advance_order_condition);
+                    $('#store_quantity').html(resp.store_quantity);
+                    $('#store_quantity_unit').html(resp.saleproduct_unit);
+
+
+                    $('#product_life').html(resp.product_life);
+                    $('#capacity_per_day').html(resp.capacity_per_day);
+                    $('#capacity_per_month').html(resp.capacity_per_month);
+
+                    $('#distribution_channels').html(resp.distribution_channels);
+                    $('#delivery').html(resp.delivery);
+
+                    $('#contact_telephone').html(resp.contact_telephone);
+                    $('#contact_email').html(resp.contact_email);
+                    $('#contact_other').html(resp.contact_other);
+
+                    $('#standardUL').html(resp.standardUL);
+
+                    $('#product_detail').html(resp.product_detail);
+                    $('#x_note').html(resp.x_note);
+
+                    $('#btnReserve').off('click').on('click', function () {
+                        reserve(saleproduct_code);
+                    });
+
+                    $("#searchResult").toggle("slide", { direction: "left" }, 500);
+                    $("#detailsSaleProduct").toggle("slide", { direction: "right" }, 500);
+                }
+            });
+
+        }
+
+        function hideDetails() {
+            $("#searchResult").toggle("slide", { direction: "left" },500);
+            $("#detailsSaleProduct").toggle("slide", { direction: "right" },500);
+        }
+
+
+
+        function reserve(saleproduct_code) {
+            $.ajax({
+                type: 'get', url: '@Url.Action("Create", "saleproduct_reservation")' + '?saleproduct_code=' + saleproduct_code,
+            }).done(function (resp) {
+                if (resp != "") {
+                    $("#saleproduct_reservationCreateModalRenderBody").empty();
+                    $("#saleproduct_reservationCreateModalRenderBody").html(resp);
+                    setEventDropdownProvince();
+                    $('#province_code').trigger("change"); $('#district_code').trigger("change"); $('#subdistrict_code').trigger("change");
+                }
+            });
+            $('#saleproduct_reservationCreateModal').modal({ backdrop: 'static', keyboard: false });
+        }
+        function reserveAmountKeyPress(charCode) {
+            if ((charCode >= 48 && charCode <= 57)) {
+                var a = $('#reservation_amount').val() + String.fromCharCode(charCode);
+                reserveAmountChange(a);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        Number.prototype.format = function (n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        };
+
+        function reserveAmountChange(a) {
+            if ((a != null) && (a != "") && (a != 0)) {
+                $('#buyingtype_retail_sum').html(($('#retail_price').html() * a).format(2).toString() + "  บาท");
+                $('#buyingtype_wholesale_sum').html(($('#wholesale_price').html() * a).format(2).toString() + " บาท");
+            } else {
+                $('#buyingtype_retail_sum').html("&nbsp;");
+                $('#buyingtype_wholesale_sum').html("&nbsp;");
+            }
+        }
+        function setEventDropdownProvince() {
+            $('#province_code').off("change").on("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_district")' + '?provinceCode=' + $('#province_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#district_code').empty();
+                        $("#district_code").prop("disabled", true);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#district_code").prop("disabled", false);
+                        $('#district_code').empty();
+                        $('#district_code').append(resp);
+                        $('#district_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#district_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_subdistrict")' + '?districtCode=' + $('#district_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').prop("disabled", true);
+                        $('#zip_code').val('');
+
+                    } else {
+                        $("#subdistrict_code").prop("disabled", false);
+                        $('#subdistrict_code').empty();
+                        $('#subdistrict_code').append(resp);
+                        $('#subdistrict_code').trigger("change");
+
+                    }
+                });
+
+            });
+            $('#subdistrict_code').unbind("change").bind("change", function (e) {
+                $.ajax({
+                    type: 'get', url: '@Url.Action("SelectBy", "ini_list_zip")' + '?subdistrictCode=' + $('#subdistrict_code').val(),
+                }).done(function (resp) {
+                    if (resp == "") {
+                        $('#zip_code').val('');
+                    } else {
+                        $('#zip_code').val(resp);
+                    }
+                });
+
+            });
+        }
+        function getMemberAddress() {
+            $.ajax({
+                type: 'get', url: '@Url.Action("getMemberAddress", "saleproduct_reservation")' + '?member_code=' + $('#reserving_member_code').val().trim(),
+            }).done(function (resp) {
+                if (resp != "") {
+                    resp = JSON.parse(resp);
+                    $('#fname').val(resp.fname); $('#lname').val(resp.lname);
+                    $('#place_name').val(resp.place_name); $('#tel').val(resp.tel);
+                    $('#building').val(resp.building); $('#floor').val(resp.floor);
+
+                    $('#room').val(resp.room); $('#village').val(resp.village);
+                    $('#h_no').val(resp.h_no); $('#lot_no').val(resp.lot_no);
+                    $('#street').val(resp.street); $('#lane').val(resp.lane);
+
+                    $('#province_code').val(resp.province_code);
+                    $('#province_code').trigger("change");
+                    setTimeout(function () {
+                        $('#district_code').val(resp.district_code);
+                        $('#district_code').trigger("change");
+                        setTimeout(function () {
+                            $('#subdistrict_code').val(resp.subdistrict_code);
+                            setTimeout(function () {
+                                $('#zip_code').val(resp.zip_code);
+                            }, 300);
+                        }, 300);
+                    }, 300);
+                }
+            });
+
+        }
+        function reservePost() {
+            var reservation_amount = $('#reservation_amount').val();
+            var reservation_status = $('#reservation_status').val();
+            var buyingtype = $("input[name='buyingtype']:checked").val();
+            var is_retail_price = (buyingtype == "retail") ? "Y" : "N";
+            var down_payment = $('#down_payment').val().trim();
+            var reserveBy = $("input[name='reserveBy']:checked").val();
+            var is_member = (reserveBy == "ismember") ? "Y" : "N";
+            var reserving_member_code = $('#reserving_member_code').val().trim();
+
+            var fname = $('#fname').val(); var lname = $('#lname').val();
+            var place_name = $('#place_name').val();
+            var tel = $('#tel').val();
+            var building = $('#building').val();
+            var floor = $('#floor').val();
+            var room = $('#room').val();
+            var village = $('#village').val();
+            var h_no = $('#h_no').val();
+            var lot_no = $('#lot_no').val();
+            var street = $('#street').val();
+            var lane = $('#lane').val();
+            var province_code = $('#province_code').val();
+            var district_code = $('#district_code').val();
+            var subdistrict_code = $('#subdistrict_code').val();
+            var zip_code = $('#zip_code').val();
+
+            if (saleproduct_reservation_form_valid()) {
+                $.ajax({
+                    type: 'post', url: '@Url.Action("Create", "saleproduct_reservation")' + '?reservation_code=' + $('#reservation_code').val().trim() +
+                    '&saleproduct_code=' + $('#saleproduct_code').val().trim() + '&reservation_amount=' + reservation_amount +
+                    '&reservation_status=' + reservation_status + '&is_retail_price=' + is_retail_price + '&down_payment=' + down_payment +
+                    '&is_member=' + is_member + '&reserving_member_code=' + reserving_member_code +
+                    '&fname=' + fname + '&lname=' + lname + '&place_name=' + place_name + '&tel=' + tel + '&building=' + building +
+                    '&floor=' + floor + '&room=' + room + '&village=' + village + '&h_no=' + h_no + '&lot_no=' + lot_no +
+                    '&street=' + street + '&lane=' + lane + '&province_code=' + province_code + '&district_code=' + district_code +
+                    '&subdistrict_code=' + subdistrict_code + '&zip_code=' + zip_code + '&CreatedBy=' + $('#CreatedBy').val() + '&CreatedDate=' + $('#CreatedDate').val() +
+                    '&reservation_note=' + $('#reservation_note').val().trim()
+                    ,
+                }).done(function (resp) {
+                    if (resp != "") {
+                        if (resp == "success") { reserveClose(); }
+                    }
+                });
+            }
+        }
+        function reserveClose() {
+            $('#saleproduct_reservationCreateModal').modal('hide');
+            //window.location.href = "@Url.Action("Index", "mem_saleproduct", new {memberId = ViewBag.memberId})";
+        }
+        function saleproduct_reservation_form_valid() {
+            var result = false;
+            $("#reservation_amount_msg").text(''); 
+            $("#reservation_status_msg").text(''); 
+            $("#down_payment_msg").text('');
+
+            if ($("#reservation_amount").val() && $("#reservation_status").val() != "0" && $('#down_payment').val()) {
+                result = true;
+            } else {
+                result = false;
+                if (!$("#reservation_amount").val()) { $("#reservation_amount_msg").text('กรุณากรอกข้อมูล'); }
+                if ($("#reservation_status").val() == 0) { $("#reservation_status_msg").text('กรุณาเลือกสถานะ'); }
+                if ($("#down_payment").val() == 0) { $("#down_payment_msg").text('กรุณากรอกข้อมูล'); }
+            }
+            return result;
+        }
+    </script>
+}
