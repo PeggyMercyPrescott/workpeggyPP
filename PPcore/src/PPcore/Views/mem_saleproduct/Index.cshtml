@@ -19,7 +19,7 @@
     <div class="panel-heading">
         <div class="pull-left" style="padding-top:5px;">แสดงข้อมูลทั้งหมด</div>
         <div id="btnBar" class="pull-right" style="margin-top:-2px;">
-            กดปุ่มเพิ่ม ถ้าต้องการใส่มากกว่า 1 รายการ&nbsp;&nbsp;&nbsp;
+            <label id="labelAddText" style="font-weight: normal !important;">กดปุ่มเพิ่ม ถ้าต้องการใส่มากกว่า 1 รายการ&nbsp;&nbsp;&nbsp;</label>
             <div id="btnCreate" class="btn btn-default btn-panel-yellow" onclick="mem_saleproductCreate('@ViewBag.memberId');">&nbsp;<i class="fa fa-file" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;&nbsp;เพิ่ม&nbsp;&nbsp;&nbsp;&nbsp;</div>
             <div id="btnEdit" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true" style="color:white;"></i>&nbsp;แก้ไข&nbsp;&nbsp;</div>
             <div id="btnDetails" class="btn btn-default btn-panel-yellow">&nbsp;<i class="fa fa-file-text" aria-hidden="true" style="color:white;"></i>&nbsp;&nbsp;ดูข้อมูล</div>
@@ -192,6 +192,7 @@
 
             if ("@ViewBag.isViewOnly" == "1") {
                 //$('#btnBar').hide();
+                $('#labelAddText').hide();
                 $('#btnCreate').hide();
                 $('#btnEdit').hide();
             }
